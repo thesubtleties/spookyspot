@@ -68,4 +68,4 @@ const setTokenCookie = (res, user) => {
     return next(err);
   }
 
-module.exports = { restoreUser, setTokenCookie }
+module.exports = { restoreUser, setTokenCookie, requireAuth }
