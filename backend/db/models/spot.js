@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       country: {
         type: DataTypes.TEXT,
         allowNull: false,
-      }
+      },
       lat: {
         type: DataTypes.DECIMAL(10, 4),
         allowNull: false,
