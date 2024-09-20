@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Spot.belongsTo(models.User, {
-        foreignKey: 'ownerId',
-      })
+        foreignKey: "ownerId",
+      });
     }
   }
   Spot.init(
@@ -20,9 +20,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users',
-          key: 'id',
-        }
+          model: "Users",
+          key: "id",
+        },
       },
       address: {
         type: DataTypes.TEXT,
@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       lat: {
         type: DataTypes.DECIMAL(10, 4),
         allowNull: false,
-      }
+      },
       lng: {
         type: DataTypes.DECIMAL(10, 4),
         allowNull: false,
@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
       price: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
-      }
+      },
     },
     {
       sequelize,
