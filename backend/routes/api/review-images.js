@@ -9,28 +9,22 @@ const router = express.Router();
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
-router.post("/:reviewId/images", async (req, res) => {
-  const { reviewId } = req.params;
-  const { url } = req.body;
+router.delete("/:imageId", async (req, res) => {
+  const { imageId } = req.params;
+  console.log(imageId);
+  const obj = {};
   try {
-    const newImage = await ReviewImage.create({
-      reviewId,
-      url,
+    await ReviewImage.destroy({
+      where: {
+        id: imageId,
+      },
     });
-    return res.status(201).json(newImage);
   } catch (err) {
-    res.status(400).json(err.message);
+    obj.message = "Review Image couldn't be found";
+    return res.status(400).json(obj);
   }
-});
-
-router.get("/current", async (req, res) => {
-  const { user } = req;
-  const ourReviews = await Review.findAll({
-    where: {
-      userId: user.id,
-    },
-  });
-  res.status(200).json(ourReviews);
+  obj.message = "Successfully deleted";
+  res.status(200).json(obj);
 });
 
 module.exports = router;
