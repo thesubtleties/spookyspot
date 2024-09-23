@@ -37,6 +37,7 @@ router.get("/", (req, res) => {
   } else return res.json({ user: null });
 });
 
+//login
 router.post("/", validateLogin, async (req, res, next) => {
   const { credential, password } = req.body;
 
