@@ -1,6 +1,6 @@
 "use strict";
 
-const review = require("../models/review");
+const { Review } = require("../models");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -20,44 +20,51 @@ module.exports = {
     const userRows = demoUsers[0];
 
     const demoSpots = await queryInterface.sequelize.query(
-      `SELECT id, name FROM Spots WHERE name IN ('Cozy SF Apartment','Manhattan Loft', 'Hollywood Hills Villa', 'Beachfront Condo', 'Rocky Mountain Retreat')`
-    )
+      `SELECT id, name FROM Spots WHERE name IN ('Cozy SF Apartment','Manhattan Loft', 'Hollywood Hills Villa', 'Beachfront Condo', 'Rocky Mountain Retreat', 'Luxury Lakeshore Apartment')`
+    );
+    const spotRows = demoSpots[0];
 
-    await review.bulkCreate([
-      {
-        spotId: ,
-        userId: userRows.find((user) => user.username === "Demo-lition").id,
-        review:
-          "Great location with stunning views. The amenities were top-notch.",
-        stars: 5,
-      },
-      {
-        spotId: 2,
-        userId: 1,
-        review:
-          "Cozy place but could use some updates. The host was very friendly.",
-        stars: 4,
-      },
-      {
-        spotId: 3,
-        userId: 3,
-        review:
-          "Disappointing experience. The place wasn't as clean as expected.",
-        stars: 2,
-      },
-      {
-        spotId: 1,
-        userId: 3,
-        review: "Absolutely loved it! Will definitely come back.",
-        stars: 5,
-      },
-      {
-        spotId: 2,
-        userId: 2,
-        review: "Good value for money. Location was convenient.",
-        stars: 4,
-      },
-    ]);
+    await Review.bulkCreate(
+      [
+        {
+          spotId: spotRows.find((spot) => spot.name === "Cozy SF Apartment").id,
+          userId: userRows.find((user) => user.username === "FakeUser1").id,
+          review:
+            "Great location with stunning views. The amenities were top-notch.",
+          stars: 5,
+        },
+        {
+          spotId: spotRows.find((spot) => spot.name === "Beachfront Condo").id,
+          userId: userRows.find((user) => user.username === "Demo-lition").id,
+          review:
+            "Cozy place but could use some updates. The host was very friendly.",
+          stars: 4,
+        },
+        {
+          spotId: spotRows.find(
+            (spot) => spot.name === "Luxury Lakeshore Apartment"
+          ).id,
+          userId: userRows.find((user) => user.username === "FakeUser1").id,
+          review:
+            "Disappointing experience. The place wasn't as clean as expected.",
+          stars: 2,
+        },
+        {
+          spotId: spotRows.find((spot) => spot.name === "Hollywood Hills Villa")
+            .id,
+          userId: userRows.find((user) => user.username === "FakeUser2").id,
+          review: "Absolutely loved it! Will definitely come back.",
+          stars: 5,
+        },
+        {
+          spotId: spotRows.find((spot) => spot.name === "Cozy SF Apartment").id,
+          userId: userRows.find((user) => user.username === "FakeUser2").id,
+          review: "Good value for money. Location was convenient.",
+          stars: 4,
+        },
+      ],
+      { validate: true }
+    );
   },
 
   async down(queryInterface, Sequelize) {
