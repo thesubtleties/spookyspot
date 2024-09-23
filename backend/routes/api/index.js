@@ -6,6 +6,7 @@ const spotsRouter = require("./spots.js");
 const bookingsRouter = require("./bookings");
 const reviewsRouter = require("./reviews.js");
 const reviewImagesRouter = require("./review-images.js");
+
 const { setTokenCookie } = require("../../utils/auth.js");
 const { User } = require("../../db/models");
 const { restoreUser } = require("../../utils/auth.js");
