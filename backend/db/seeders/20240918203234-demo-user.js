@@ -2,6 +2,7 @@
 
 const { User } = require("../models");
 const bcrypt = require("bcryptjs");
+const { Op } = require("sequelize");
 
 let options = {};
 if (process.env.NODE_ENV === "production") {
@@ -40,7 +41,6 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     options.tableName = "Users";
-    const Op = Sequelize.Op;
     return queryInterface.bulkDelete(
       options,
       {

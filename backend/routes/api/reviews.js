@@ -8,7 +8,6 @@ const app = require("../../app");
 const router = express.Router();
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
-const reviewimage = require("../../db/models/reviewimage");
 
 router.post("/:reviewId/images", async (req, res) => {
   const { reviewId } = req.params;
