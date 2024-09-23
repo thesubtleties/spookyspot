@@ -3,8 +3,8 @@ const express = require("express");
 const { Op, QueryInterface } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const { setTokenCookie, restoreUser } = require("../../utils/auth");
-const { Spot, Review } = require("../../db/models");
-
+const { Spot, Review, SpotImage } = require("../../db/models");
+const { requireAuth } = require("../../utils/auth");
 const app = require("../../app");
 const router = express.Router();
 const { check } = require("express-validator");
@@ -36,6 +36,33 @@ router.post("/spotId/reviews", async (req, res) => {
 router.get("/", async (req, res) => {
   const allSpots = await Spot.findAll();
   res.json(allSpots);
+});
+
+router.post("/:spotId/images", requireAuth, async (req, res) => {
+  const { spotId } = req.params;
+  const { url, preview } = req.body;
+
+  // Find the spot
+  const spot = await Spot.findByPk(spotId);
+
+  if (!spot) {
+    return res.status(404).json({
+      message: "Spot couldn't be found",
+    });
+  }
+
+  // Create the image
+  const newImage = await SpotImage.create({
+    spotId,
+    url,
+    preview,
+  });
+
+  return res.status(201).json({
+    id: newImage.id,
+    url: newImage.url,
+    preview: newImage.preview,
+  });
 });
 
 module.exports = router;
