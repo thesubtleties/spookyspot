@@ -12,13 +12,25 @@ const { handleValidationErrors } = require("../../utils/validation");
 
 router.get("/:spotId/reviews", async (req, res) => {
   const spotId = req.params.spotId;
-  console.log("spotId", spotId);
+
   const spotIdReviews = await Review.findAll({
     where: {
       spotId,
     },
   });
   res.status(200).json(spotIdReviews);
+});
+
+router.post("/spotId/reviews", async (req, res) => {
+  const spotId = req.params.spotId;
+  const newReview = req.body;
+  let submittedReview;
+  try {
+    submittedReview = await Review.create(newReview);
+  } catch (err) {
+    return res.status(400).json(err.message);
+  }
+  res.status(201).json(submittedReview);
 });
 
 router.get("/", async (req, res) => {
