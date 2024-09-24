@@ -264,7 +264,64 @@ router.post("/", async (req, res) => {
     return res.status(400).json(responseError);
   }
   const addedSpot = await Spot.create(spot);
-  res.json(addedSpot);
+  res.status(201).json(addedSpot);
+});
+
+router.put("/:spotId", async (req, res) => {
+  const spotId = parseInt(req.params.spotId);
+  const userId = req.user.id;
+  const spot = await Spot.findByPk(spotId);
+  const errorsObj = {};
+  if (!spot) {
+    errorsObj.message = "Spot couldn't be found";
+    return res.status(400).json(errorsObj);
+  }
+  const { address, city, state, country, lat, lng, name, description, price } =
+    req.body;
+  const newSpotInfo = {
+    address,
+    city,
+    state,
+    country,
+    lat,
+    lng,
+    name,
+    description,
+    price,
+  };
+
+  if (spot.ownerId !== userId) {
+    errorsObj.message = "Cannot update a Spot you do not own";
+    return res.status(400).json(errorsObj);
+  }
+  const errorOptions = {
+    address: "Street address is required",
+    city: "City is required",
+    state: "State is required",
+    country: "Country is required",
+    lat: "Latitude must be within -90 and 90",
+    lng: "Longitude must be within -180 and 180",
+    name: "Name is required",
+    nameLength: "Name must be less than 50 characters",
+    description: "Description is required",
+    price: "Price per day must be a positive number",
+  };
+  for (item in newSpotInfo) {
+    if (newSpotInfo[item] === undefined) {
+      errorsObj[item] = errorOptions[item];
+    }
+  }
+  if (newSpotInfo.name.length >= 50) {
+    errorsObj.name = errorOptions.nameLength;
+  }
+  if (Object.entries(errorsObj).length > 0) {
+    const responseError = {};
+    responseError.message = "Bad Request";
+    responseError.errors = errorsObj;
+    return res.status(400).json(responseError);
+  }
+  const updatedSpot = await Spot.findByPk(spotId);
+  res.status(201).json(updatedSpot);
 });
 
 module.exports = router;
