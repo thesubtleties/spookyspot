@@ -163,15 +163,9 @@ router.get("/:spotId", async (req, res) => {
     attributes: {
       include: [
         // Include avgStarRating
-        [
-          sequelize.fn("AVG", sequelize.col("Reviews.stars")),
-          "avgStarRating",
-        ],
+        [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgStarRating"],
         // Include numReviews
-        [
-          sequelize.fn("COUNT", sequelize.col("Reviews.id")),
-          "numReviews",
-        ],
+        [sequelize.fn("COUNT", sequelize.col("Reviews.id")), "numReviews"],
       ],
     },
     include: [
@@ -226,13 +220,50 @@ router.get("/:spotId", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const spot = req.body;
-  console.log(spot);
-  try {
-    const addedSpot = await Spot.create(spot);
-  } catch (err) {
-    return res.json(err);
+  const { address, city, state, country, lat, lng, name, description, price } =
+    req.body;
+
+  const spot = {
+    ownerId: req.user.id,
+    address,
+    city,
+    state,
+    country,
+    lat,
+    lng,
+    name,
+    description,
+    price,
+  };
+  const errorOptions = {
+    address: "Street address is required",
+    city: "City is required",
+    state: "State is required",
+    country: "Country is required",
+    lat: "Latitude must be within -90 and 90",
+    lng: "Longitude must be within -180 and 180",
+    name: "Name is required",
+    nameLength: "Name must be less than 50 characters",
+    description: "Description is required",
+    price: "Price per day must be a positive number",
+  };
+  const errorsObj = {};
+
+  for (item in spot) {
+    if (spot[item] === undefined) {
+      errorsObj[item] = errorOptions[item];
+    }
   }
+  if (spot.name.length >= 50) {
+    errorsObj.name = errorOptions.nameLength;
+  }
+  if (Object.entries(errorsObj).length > 0) {
+    const responseError = {};
+    responseError.message = "Bad Request";
+    responseError.errors = errorsObj;
+    return res.status(400).json(responseError);
+  }
+  const addedSpot = await Spot.create(spot);
   res.json(addedSpot);
 });
 
