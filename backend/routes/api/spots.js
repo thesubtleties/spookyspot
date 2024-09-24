@@ -12,10 +12,7 @@ router.get("/", async (req, res) => {
       attributes: {
         include: [
           // Include avgRating
-          [
-            sequelize.fn("AVG", sequelize.col("Reviews.stars")),
-            "avgRating",
-          ],
+          [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
         ],
       },
       include: [
@@ -57,7 +54,9 @@ router.get("/", async (req, res) => {
     return res.status(200).json({ Spots });
   } catch (err) {
     console.error(err); // Log the error for debugging
-    return res.status(500).json({ message: "Server error", errors: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", errors: err.message });
   }
 });
 
@@ -101,8 +100,14 @@ router.get("/current", requireAuth, async (req, res) => {
       const spotData = spot.toJSON();
 
       // Format createdAt and updatedAt to 'YYYY-MM-DD HH:mm:ss'
-      spotData.createdAt = new Date(spotData.createdAt).toISOString().replace('T', ' ').slice(0, 19);
-      spotData.updatedAt = new Date(spotData.updatedAt).toISOString().replace('T', ' ').slice(0, 19);
+      spotData.createdAt = new Date(spotData.createdAt)
+        .toISOString()
+        .replace("T", " ")
+        .slice(0, 19);
+      spotData.updatedAt = new Date(spotData.updatedAt)
+        .toISOString()
+        .replace("T", " ")
+        .slice(0, 19);
 
       // Format avgRating to one decimal place if not null
       if (spotData.avgRating !== null) {
@@ -115,7 +120,9 @@ router.get("/current", requireAuth, async (req, res) => {
     return res.status(200).json({ Spots });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Server error", errors: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", errors: err.message });
   }
 });
 
@@ -202,6 +209,17 @@ router.get("/:spotId", async (req, res) => {
   spotData.updatedAt = formatDate(spotData.updatedAt);
 
   return res.status(200).json(spotData);
+});
+
+router.post("/", async (req, res) => {
+  const spot = req.body;
+  console.log(spot);
+  try {
+    const addedSpot = await Spot.create(spot);
+  } catch (err) {
+    return res.json(err);
+  }
+  res.json(addedSpot);
 });
 
 module.exports = router;
