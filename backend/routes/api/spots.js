@@ -155,11 +155,31 @@ router.post("/:spotId/images", requireAuth, async (req, res) => {
 
 // Get details of a Spot from an id
 router.get("/:spotId", async (req, res) => {
-  const spotId = req.params.spotId;
+  const { spotId } = req.params;
 
-  // Find the spot by its ID
-  const spot = await Spot.findByPk(spotId, {
+  // Find the spot by its ID with aggregated avgStarRating and numReviews
+  const spot = await Spot.findOne({
+    where: { id: spotId },
+    attributes: {
+      include: [
+        // Include avgStarRating
+        [
+          sequelize.fn("AVG", sequelize.col("Reviews.stars")),
+          "avgStarRating",
+        ],
+        // Include numReviews
+        [
+          sequelize.fn("COUNT", sequelize.col("Reviews.id")),
+          "numReviews",
+        ],
+      ],
+    },
     include: [
+      // Include associated Reviews for aggregation
+      {
+        model: Review,
+        attributes: [],
+      },
       // Include SpotImages
       {
         model: SpotImage,
@@ -167,11 +187,12 @@ router.get("/:spotId", async (req, res) => {
       },
       // Include Owner (aliased User)
       {
-        model: User, // Ensure User is correctly imported and used
+        model: User,
         as: "Owner",
         attributes: ["id", "firstName", "lastName"],
       },
     ],
+    group: ["Spot.id", "SpotImages.id", "Owner.id"],
   });
 
   // If spot doesn't exist, return 404 error
@@ -181,25 +202,18 @@ router.get("/:spotId", async (req, res) => {
     });
   }
 
-  // Get number of reviews and average star rating
-  const numReviews = await Review.count({
-    where: { spotId },
-  });
-
-  let avgStarRating = 0;
-  if (numReviews > 0) {
-    const ratingSum = await Review.sum("stars", {
-      where: { spotId },
-    });
-    avgStarRating = parseFloat((ratingSum / numReviews).toFixed(1));
-  }
-
   // Convert spot instance to plain object
   const spotData = spot.toJSON();
 
-  // Add numReviews and avgStarRating to spotData
-  spotData.numReviews = numReviews;
-  spotData.avgStarRating = avgStarRating;
+  // Format avgStarRating to one decimal place if not null
+  if (spotData.avgStarRating !== null) {
+    spotData.avgStarRating = parseFloat(spotData.avgStarRating).toFixed(1);
+  } else {
+    spotData.avgStarRating = null;
+  }
+
+  // Format numReviews as integer
+  spotData.numReviews = parseInt(spotData.numReviews) || 0;
 
   // Format createdAt and updatedAt
   const formatDate = (date) => {
