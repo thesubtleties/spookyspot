@@ -10,6 +10,54 @@ const router = express.Router();
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
+// Get all Spots
+router.get("/", async (req, res) => {
+  try {
+    // Fetch all spots
+    const spots = await Spot.findAll({
+      attributes: {
+        include: [
+          // Include avgRating
+          [
+            sequelize.literal(`(
+              SELECT AVG("Reviews"."stars")
+              FROM "Reviews"
+              WHERE "Reviews"."spotId" = "Spot"."id"
+            )`),
+            "avgRating",
+          ],
+          // Include previewImage
+          [
+            sequelize.literal(`(
+              SELECT "url"
+              FROM "SpotImages"
+              WHERE "SpotImages"."spotId" = "Spot"."id" AND "SpotImages"."preview" = true
+              LIMIT 1
+            )`),
+            "previewImage",
+          ],
+        ],
+      },
+    });
+
+    // Format the spots data
+    const Spots = spots.map((spot) => {
+      const spotData = spot.toJSON();
+
+      // Format avgRating to one decimal place if not null
+      if (spotData.avgRating !== null) {
+        spotData.avgRating = parseFloat(spotData.avgRating).toFixed(1);
+      }
+
+      return spotData;
+    });
+
+    return res.status(200).json({ Spots });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error", errors: err });
+  }
+});
+
 router.get("/:spotId/reviews", async (req, res) => {
   const spotId = req.params.spotId;
 
@@ -31,11 +79,6 @@ router.post("/spotId/reviews", async (req, res) => {
     return res.status(400).json(err.message);
   }
   res.status(201).json(submittedReview);
-});
-
-router.get("/", async (req, res) => {
-  const allSpots = await Spot.findAll();
-  res.json(allSpots);
 });
 
 router.post("/:spotId/images", requireAuth, async (req, res) => {
