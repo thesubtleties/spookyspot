@@ -274,7 +274,7 @@ router.put("/:spotId", async (req, res) => {
   const errorsObj = {};
   if (!spot) {
     errorsObj.message = "Spot couldn't be found";
-    return res.status(400).json(errorsObj);
+    return res.status(404).json(errorsObj);
   }
   const { address, city, state, country, lat, lng, name, description, price } =
     req.body;
@@ -322,6 +322,30 @@ router.put("/:spotId", async (req, res) => {
   }
   const updatedSpot = await Spot.findByPk(spotId);
   res.status(201).json(updatedSpot);
+});
+
+router.delete("/:spotId", async (req, res) => {
+  const spotId = parseInt(req.params.spotId);
+  const userId = req.user.id;
+  const spot = await Spot.findByPk(spotId);
+  const errorsObj = {};
+  if (!spot) {
+    errorsObj.message = "Spot couldn't be found";
+    return res.status(404).json(errorsObj);
+  }
+  const spotToDelete = await Spot.findByPk(spotId);
+  if (spotToDelete.ownerId !== userId) {
+    errorsObj.message = "Cannot delete a Spot you do not own";
+    return res.status(400).json(errorsObj);
+  }
+  await Spot.destroy({
+    where: {
+      id: spotId,
+    },
+  });
+  const successMessage = {};
+  successMessage.message = "Successfully deleted";
+  res.json(successMessage);
 });
 
 module.exports = router;
