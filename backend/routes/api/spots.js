@@ -1,14 +1,7 @@
 const express = require("express");
-
-const { Op, QueryInterface } = require("sequelize");
-const bcrypt = require("bcryptjs");
-const { setTokenCookie, restoreUser } = require("../../utils/auth");
-const { Spot, Review, SpotImage } = require("../../db/models");
-const { requireAuth } = require("../../utils/auth");
-const app = require("../../app");
 const router = express.Router();
-const { check } = require("express-validator");
-const { handleValidationErrors } = require("../../utils/validation");
+const { Spot, Review, SpotImage, sequelize } = require("../../db/models");
+const { Op } = require("sequelize");
 
 // Get all Spots
 router.get("/", async (req, res) => {
@@ -19,30 +12,38 @@ router.get("/", async (req, res) => {
         include: [
           // Include avgRating
           [
-            sequelize.literal(`(
-              SELECT AVG("Reviews"."stars")
-              FROM "Reviews"
-              WHERE "Reviews"."spotId" = "Spot"."id"
-            )`),
+            sequelize.fn("AVG", sequelize.col("Reviews.stars")),
             "avgRating",
-          ],
-          // Include previewImage
-          [
-            sequelize.literal(`(
-              SELECT "url"
-              FROM "SpotImages"
-              WHERE "SpotImages"."spotId" = "Spot"."id" AND "SpotImages"."preview" = true
-              LIMIT 1
-            )`),
-            "previewImage",
           ],
         ],
       },
+      include: [
+        // Include associated Reviews
+        {
+          model: Review,
+          attributes: [],
+        },
+        // Include associated SpotImages to get previewImage
+        {
+          model: SpotImage,
+          attributes: ["url", "preview"],
+        },
+      ],
+      group: ["Spot.id", "SpotImages.id"],
     });
 
     // Format the spots data
     const Spots = spots.map((spot) => {
       const spotData = spot.toJSON();
+
+      // Get previewImage URL where preview is true
+      const previewImageObj = spotData.SpotImages.find(
+        (image) => image.preview === true
+      );
+      spotData.previewImage = previewImageObj ? previewImageObj.url : null;
+
+      // Remove SpotImages array from spotData
+      delete spotData.SpotImages;
 
       // Format avgRating to one decimal place if not null
       if (spotData.avgRating !== null) {
@@ -54,58 +55,9 @@ router.get("/", async (req, res) => {
 
     return res.status(200).json({ Spots });
   } catch (err) {
-    return res.status(500).json({ message: "Server error", errors: err });
+    console.error(err); // Log the error for debugging
+    return res.status(500).json({ message: "Server error", errors: err.message });
   }
-});
-
-router.get("/:spotId/reviews", async (req, res) => {
-  const spotId = req.params.spotId;
-
-  const spotIdReviews = await Review.findAll({
-    where: {
-      spotId,
-    },
-  });
-  res.status(200).json(spotIdReviews);
-});
-
-router.post("/spotId/reviews", async (req, res) => {
-  const spotId = req.params.spotId;
-  const newReview = req.body;
-  let submittedReview;
-  try {
-    submittedReview = await Review.create(newReview);
-  } catch (err) {
-    return res.status(400).json(err.message);
-  }
-  res.status(201).json(submittedReview);
-});
-
-router.post("/:spotId/images", requireAuth, async (req, res) => {
-  const { spotId } = req.params;
-  const { url, preview } = req.body;
-
-  // Find the spot
-  const spot = await Spot.findByPk(spotId);
-
-  if (!spot) {
-    return res.status(404).json({
-      message: "Spot couldn't be found",
-    });
-  }
-
-  // Create the image
-  const newImage = await SpotImage.create({
-    spotId,
-    url,
-    preview,
-  });
-
-  return res.status(201).json({
-    id: newImage.id,
-    url: newImage.url,
-    preview: newImage.preview,
-  });
 });
 
 module.exports = router;
