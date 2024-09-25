@@ -122,4 +122,89 @@ router.get("/current", requireAuth, async (req, res) => {
   res.status(200).json({ Reviews: formattedReviews });
 });
 
+// Edit a Review
+router.put(
+  "/:reviewId",
+  requireAuth,
+  [
+    check("review")
+      .exists({ checkFalsy: true })
+      .withMessage("Review text is required"),
+    check("stars")
+      .isInt({ min: 1, max: 5 })
+      .withMessage("Stars must be an integer from 1 to 5"),
+  ],
+  async (req, res) => {
+    const { reviewId } = req.params;
+    const { review, stars } = req.body;
+    const userId = req.user.id;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const formattedErrors = {};
+      errors.array().forEach((error) => {
+        formattedErrors[error.path] = error.msg;
+      });
+      return res.status(400).json({
+        message: "Bad Request",
+        errors: formattedErrors,
+      });
+    }
+
+    try {
+      const reviewToUpdate = await Review.findByPk(reviewId);
+
+      if (!reviewToUpdate) {
+        return res.status(404).json({ message: "Review couldn't be found" });
+      }
+
+      if (reviewToUpdate.userId !== userId) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      reviewToUpdate.review = review;
+      reviewToUpdate.stars = stars;
+      await reviewToUpdate.save();
+
+      res.status(200).json({
+        id: reviewToUpdate.id,
+        userId: reviewToUpdate.userId,
+        spotId: reviewToUpdate.spotId,
+        review: reviewToUpdate.review,
+        stars: reviewToUpdate.stars,
+        createdAt: reviewToUpdate.createdAt,
+        updatedAt: reviewToUpdate.updatedAt,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error" });
+    }
+  }
+);
+
+// Delete a Review
+router.delete("/:reviewId", requireAuth, async (req, res) => {
+  const { reviewId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const review = await Review.findByPk(reviewId);
+
+    if (!review) {
+      return res.status(404).json({ message: "Review couldn't be found" });
+    }
+
+    if (review.userId !== userId) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    await review.destroy();
+
+    res.status(200).json({ message: "Successfully deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

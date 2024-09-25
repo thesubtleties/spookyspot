@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { requireAuth } = require("../../utils/auth");
 const { Booking, Spot, SpotImage } = require("../../db/models");
+const { check, validationResult } = require("express-validator");
+const { Op } = require("sequelize");
 
 // Get all of the Current User's Bookings
 router.get('/current', requireAuth, async (req, res) => {

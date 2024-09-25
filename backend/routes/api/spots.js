@@ -475,13 +475,30 @@ router.post("/:spotId/bookings", requireAuth, async (req, res, next) => {
     });
 
     if (conflictingBookings.length > 0) {
-      return res.status(403).json({
-        message: "Sorry, this spot is already booked for the specified dates",
-        errors: {
-          startDate: "Start date conflicts with an existing booking",
-          endDate: "End date conflicts with an existing booking",
-        },
-      });
+      const conflictErrors = {};
+      
+      // Check for start date conflicts
+      const startDateConflict = conflictingBookings.some(booking => 
+        (new Date(startDate) >= new Date(booking.startDate) && new Date(startDate) <= new Date(booking.endDate))
+      );
+      if (startDateConflict) {
+        conflictErrors.startDate = "Start date conflicts with an existing booking";
+      }
+    
+      // Check for end date conflicts
+      const endDateConflict = conflictingBookings.some(booking => 
+        (new Date(endDate) >= new Date(booking.startDate) && new Date(endDate) <= new Date(booking.endDate))
+      );
+      if (endDateConflict) {
+        conflictErrors.endDate = "End date conflicts with an existing booking";
+      }
+    
+      if (Object.keys(conflictErrors).length > 0) {
+        return res.status(403).json({
+          message: "Sorry, this spot is already booked for the specified dates",
+          errors: conflictErrors,
+        });
+      }
     }
 
     // Create the booking
