@@ -5,3 +5,4 @@ build
 *.db
 package-lock.json
 package_lock.json
+nukeDB.sh

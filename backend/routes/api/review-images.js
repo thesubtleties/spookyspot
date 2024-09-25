@@ -8,23 +8,38 @@ const app = require("../../app");
 const router = express.Router();
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
+const { requireAuth } = require("../../utils/auth");
 
-router.delete("/:imageId", async (req, res) => {
+// Delete a Review Image
+router.delete("/:imageId", requireAuth, async (req, res) => {
   const { imageId } = req.params;
-  console.log(imageId);
-  const obj = {};
+  const userId = req.user.id;
+
   try {
-    await ReviewImage.destroy({
-      where: {
-        id: imageId,
+    const reviewImage = await ReviewImage.findByPk(imageId, {
+      include: {
+        model: Review,
+        attributes: ["userId"],
       },
     });
-  } catch (err) {
-    obj.message = "Review Image couldn't be found";
-    return res.status(400).json(obj);
+
+    if (!reviewImage) {
+      return res
+        .status(404)
+        .json({ message: "Review Image couldn't be found" });
+    }
+
+    if (reviewImage.Review.userId !== userId) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    await reviewImage.destroy();
+
+    res.status(200).json({ message: "Successfully deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
-  obj.message = "Successfully deleted";
-  res.status(200).json(obj);
 });
 
 module.exports = router;

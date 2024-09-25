@@ -42,8 +42,8 @@ module.exports = {
       {
         spotId: spotRows.find((spot) => spot.address === '101 Beach Boulevard').id,
         userId: userRows.find((user) => user.username === 'Demo-lition').id,
-        startDate: '2022-02-20',
-        endDate: '2022-02-25',
+        startDate: '2025-02-20',
+        endDate: '2025-02-25',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
