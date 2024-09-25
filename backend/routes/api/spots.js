@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { Spot, Review, SpotImage, sequelize, User, Booking } = require("../../db/models");
+const { Spot, Review, SpotImage, sequelize, User, Booking, ReviewImage } = require("../../db/models");
 const { Op } = require("sequelize");
 const { requireAuth } = require("../../utils/auth");
+const { check, validationResult } = require("express-validator");
 
 // Get all Spots
 router.get("/", async (req, res) => {
@@ -308,14 +309,6 @@ router.post("/:spotId/bookings", requireAuth, async (req, res, next) => {
     errors.endDate = "endDate cannot be on or before startDate";
   }
 
-  // If there are validation errors, return 400
-  if (Object.keys(errors).length > 0) {
-    return res.status(400).json({
-      message: "Bad Request",
-      errors,
-    });
-  }
-
   try {
     // Find the spot
     const spot = await Spot.findByPk(spotId);
@@ -323,13 +316,6 @@ router.post("/:spotId/bookings", requireAuth, async (req, res, next) => {
     if (!spot) {
       return res.status(404).json({
         message: "Spot couldn't be found",
-      });
-    }
-
-    // Check if the spot belongs to the current user
-    if (spot.ownerId === userId) {
-      return res.status(403).json({
-        message: "Forbidden: You cannot book your own spot",
       });
     }
 
@@ -394,5 +380,116 @@ router.post("/:spotId/bookings", requireAuth, async (req, res, next) => {
     next(err);
   }
 });
+
+// Get all Reviews by a Spot's id
+router.get("/:spotId/reviews", async (req, res) => {
+  const { spotId } = req.params;
+
+  try {
+    const spot = await Spot.findByPk(spotId);
+
+    if (!spot) {
+      return res.status(404).json({ message: "Spot couldn't be found" });
+    }
+
+    const reviews = await Review.findAll({
+      where: { spotId },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "firstName", "lastName"],
+        },
+        {
+          model: ReviewImage,
+          attributes: ["id", "url"],
+        },
+      ],
+    });
+
+    const formattedReviews = reviews.map((review) => {
+      const reviewData = review.toJSON();
+      reviewData.ReviewImages = reviewData.ReviewImages || [];
+      return reviewData;
+    });
+
+    res.status(200).json({ Reviews: formattedReviews });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", errors: err.message });
+  }
+});
+
+// Create a Review for a Spot based on the Spot's id
+router.post(
+  "/:spotId/reviews", requireAuth,
+  [
+    check("review")
+      .exists({ checkFalsy: true })
+      .withMessage("Review text is required"),
+    check("stars")
+      .isInt({ min: 1, max: 5 })
+      .withMessage("Stars must be an integer from 1 to 5"),
+  ],
+  async (req, res) => {
+    const { spotId } = req.params;
+    const { review, stars } = req.body;
+    const userId = req.user.id;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const formattedErrors = {};
+      errors.array().forEach((error) => {
+        formattedErrors[error.path] = error.msg;
+      });
+      return res.status(400).json({
+        message: "Bad Request",
+        errors: formattedErrors,
+      });
+    }
+
+    try {
+      const spot = await Spot.findByPk(spotId);
+
+      if (!spot) {
+        return res.status(404).json({ message: "Spot couldn't be found" });
+      }
+
+      const existingReview = await Review.findOne({
+        where: {
+          spotId,
+          userId,
+        },
+      });
+
+      if (existingReview) {
+        return res.status(500).json({
+          message: "User already has a review for this spot",
+        });
+      }
+
+      const newReview = await Review.create({
+        spotId,
+        userId,
+        review,
+        stars,
+      });
+
+      const formattedReview = {
+        id: newReview.id,
+        userId: newReview.userId,
+        spotId: newReview.spotId,
+        review: newReview.review,
+        stars: newReview.stars,
+        createdAt: newReview.createdAt.toISOString().replace("T", " ").slice(0, 19),
+        updatedAt: newReview.updatedAt.toISOString().replace("T", " ").slice(0, 19),
+      };
+
+      res.status(201).json(formattedReview);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server error", errors: err.message });
+    }
+  }
+);
 
 module.exports = router;
