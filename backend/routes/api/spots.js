@@ -124,6 +124,14 @@ router.get("/current", requireAuth, async (req, res) => {
 router.post("/:spotId/images", requireAuth, async (req, res) => {
   const { spotId } = req.params;
   const { url, preview } = req.body;
+  const userId = req.user?.id;
+
+  // Check if user is logged in
+  if (!userId) {
+    return res.status(401).json({
+      message: "Authentication required",
+    });
+  }
 
   // Find the spot
   const spot = await Spot.findByPk(spotId);
@@ -131,6 +139,13 @@ router.post("/:spotId/images", requireAuth, async (req, res) => {
   if (!spot) {
     return res.status(404).json({
       message: "Spot couldn't be found",
+    });
+  }
+
+  // Check if the current user is the owner of the spot
+  if (spot.ownerId !== userId) {
+    return res.status(403).json({
+      message: "Forbidden",
     });
   }
 
@@ -262,7 +277,7 @@ router.post("/", async (req, res) => {
   res.status(201).json(addedSpot);
 });
 
-router.put("/:spotId", async (req, res) => {
+router.put("/:spotId", requireAuth, async (req, res) => {
   const spotId = parseInt(req.params.spotId);
   const userId = req.user.id;
   const spot = await Spot.findByPk(spotId);
@@ -319,28 +334,29 @@ router.put("/:spotId", async (req, res) => {
   res.status(201).json(updatedSpot);
 });
 
-router.delete("/:spotId", async (req, res) => {
+router.delete("/:spotId", requireAuth, async (req, res) => {
   const spotId = parseInt(req.params.spotId);
   const userId = req.user.id;
+
   const spot = await Spot.findByPk(spotId);
-  const errorsObj = {};
+
   if (!spot) {
-    errorsObj.message = "Spot couldn't be found";
-    return res.status(404).json(errorsObj);
+    return res.status(404).json({
+      message: "Spot couldn't be found"
+    });
   }
-  const spotToDelete = await Spot.findByPk(spotId);
-  if (spotToDelete.ownerId !== userId) {
-    errorsObj.message = "Cannot delete a Spot you do not own";
-    return res.status(400).json(errorsObj);
+
+  if (spot.ownerId !== userId) {
+    return res.status(403).json({
+      message: "Forbidden"
+    });
   }
-  await Spot.destroy({
-    where: {
-      id: spotId,
-    },
+
+  await spot.destroy();
+
+  res.status(200).json({
+    message: "Successfully deleted"
   });
-  const successMessage = {};
-  successMessage.message = "Successfully deleted";
-  res.json(successMessage);
 });
 
 // Get all Bookings for a Spot based on the Spot's id
