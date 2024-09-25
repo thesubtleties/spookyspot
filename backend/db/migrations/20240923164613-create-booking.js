@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
 let options = {};
 if (process.env.NODE_ENV === "production") {
-  options.schema = process.env.SCHEMA; 
+  options.schema = process.env.SCHEMA;
 }
 
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "Bookings",
+      "bookings",
       {
         id: {
           allowNull: false,
@@ -20,19 +20,19 @@ module.exports = {
           allowNull: false,
           type: Sequelize.INTEGER,
           references: {
-            model: 'Spots',
-            key: 'id',
+            model: "spots",
+            key: "id",
           },
-          onDelete: 'CASCADE',
+          onDelete: "CASCADE",
         },
         userId: {
           allowNull: false,
           type: Sequelize.INTEGER,
           references: {
-            model: 'Users',
-            key: 'id',
+            model: "users",
+            key: "id",
           },
-          onDelete: 'CASCADE',
+          onDelete: "CASCADE",
         },
         startDate: {
           allowNull: false,
@@ -57,8 +57,8 @@ module.exports = {
     );
   },
 
-  async down (queryInterface, Sequelize) {
-    options.tableName = "Bookings";
+  async down(queryInterface, Sequelize) {
+    options.tableName = "bookings";
     return queryInterface.dropTable(options);
-  }
+  },
 };

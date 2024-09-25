@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const { SpotImage } = require("../models");
 
@@ -28,7 +28,8 @@ module.exports = {
           preview: true,
         },
         {
-          spotId: spotRows.find((spot) => spot.name === "Hollywood Hills Villa").id,
+          spotId: spotRows.find((spot) => spot.name === "Hollywood Hills Villa")
+            .id,
           url: "https://example.com/image3.jpg",
           preview: true,
         },
@@ -38,6 +39,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("SpotImages", null, {});
+    await queryInterface.bulkDelete("spot_images", null, {});
   },
 };

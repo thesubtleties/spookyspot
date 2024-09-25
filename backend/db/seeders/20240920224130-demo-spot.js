@@ -167,6 +167,6 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
 
-    await queryInterface.bulkDelete("Spots", null, {});
+    await queryInterface.bulkDelete("spots", null, {});
   },
 };
