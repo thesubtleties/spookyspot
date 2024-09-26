@@ -149,7 +149,8 @@ module.exports = {
             "Charming bungalow in a historic Atlanta neighborhood, close to major attractions.",
           price: 190.0,
         },
-      ]
+      ],
+      { validate: true }
     );
   },
 
