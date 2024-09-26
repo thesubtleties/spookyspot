@@ -126,65 +126,78 @@ router.get('/', async (req, res) => {
   const limit = size;
   const offset = (page - 1) * size;
 
+  const reviewTable = Review.getTableName({ schema: true });
+  const spotImageTable = SpotImage.getTableName({ schema: true });
+
   // Query spots with filters and pagination
-  const spots = await Spot.findAll({
-    where,
-    limit,
-    offset,
-    attributes: {
-      include: [
-        // Calculate average rating using a subquery
-        [
-          sequelize.literal(`(
-            SELECT ROUND(AVG("Reviews"."stars"), 1)
-            FROM "Reviews"
-            WHERE "Reviews"."spotId" = "Spot"."id"
-          )`),
-          'avgRating',
+  try {
+    const spots = await Spot.findAll({
+      where,
+      limit,
+      offset,
+      attributes: {
+        include: [
+          // Calculate average rating using a subquery
+          [
+            sequelize.literal(`(
+              SELECT ROUND(AVG("Reviews"."stars"), 1)
+              FROM ${reviewTable} AS "Reviews"
+              WHERE "Reviews"."spotId" = "Spot"."id"
+            )`),
+            'avgRating',
+          ],
+          // Include previewImage using a subquery
+          [
+            sequelize.literal(`(
+              SELECT "url"
+              FROM ${spotImageTable} AS "SpotImages"
+              WHERE "SpotImages"."spotId" = "Spot"."id" AND "SpotImages"."preview" = true
+              LIMIT 1
+            )`),
+            'previewImage',
+          ],
         ],
-        // Include previewImage using a subquery
-        [
-          sequelize.literal(`(
-            SELECT "url"
-            FROM "SpotImages"
-            WHERE "SpotImages"."spotId" = "Spot"."id" AND "SpotImages"."preview" = true
-            LIMIT 1
-          )`),
-          'previewImage',
-        ],
-      ],
-    },
-  });
+      },
+    });
 
-  // Format the response data
-  const Spots = spots.map((spot) => {
-    return {
-      id: spot.id,
-      ownerId: spot.ownerId,
-      address: spot.address,
-      city: spot.city,
-      state: spot.state,
-      country: spot.country,
-      lat: spot.lat,
-      lng: spot.lng,
-      name: spot.name,
-      description: spot.description,
-      price: spot.price,
-      createdAt: spot.createdAt,
-      updatedAt: spot.updatedAt,
-      avgRating: spot.dataValues.avgRating
-        ? parseFloat(spot.dataValues.avgRating)
-        : null,
-      previewImage: spot.dataValues.previewImage || null,
-    };
-  });
+    // Format the response data
+    const Spots = spots.map((spot) => {
+      return {
+        id: spot.id,
+        ownerId: spot.ownerId,
+        address: spot.address,
+        city: spot.city,
+        state: spot.state,
+        country: spot.country,
+        lat: spot.lat,
+        lng: spot.lng,
+        name: spot.name,
+        description: spot.description,
+        price: spot.price,
+        createdAt: spot.createdAt,
+        updatedAt: spot.updatedAt,
+        avgRating: spot.dataValues.avgRating
+          ? parseFloat(spot.dataValues.avgRating)
+          : null,
+        previewImage: spot.dataValues.previewImage || null,
+      };
+    });
 
-  // Return the response
-  return res.json({
-    Spots,
-    page,
-    size,
-  });
+    // Return the response
+    return res.json({
+      Spots,
+      page,
+      size,
+    });
+  } catch (error) {
+    // Log the error for debugging
+    console.error('Error fetching spots:', error);
+
+    // Return a 500 Internal Server Error with a generic message
+    return res.status(500).json({
+      message: 'Internal Server Error',
+    });
+  }
 });
 
 
