@@ -63,62 +63,40 @@ router.get("/", async (req, res) => {
 });
 
 // Get all Spots owned by the Current User
-router.get("/current", requireAuth, async (req, res) => {
+router.get('/current', requireAuth, async (req, res) => {
   try {
-    const userId = req.user.id;
-
-    // Fetch all spots where ownerId matches current user
-    const spots = await Spot.findAll({
-      where: {
-        ownerId: userId,
-      },
+    const Spots = await Spot.findAll({
+      where: { ownerId: req.user.id },
+      include: [
+        {
+          model: SpotImage,
+          where: { preview: true },
+          required: false,
+          attributes: ['url'],
+        },
+        {
+          model: Review,
+          attributes: [],
+        },
+      ],
       attributes: {
         include: [
-          // Include avgRating
-          [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
-          // Include previewImage
-          [
-            {
-              model: SpotImage,
-              as: "previewImage",
-              attributes: ["url"],
-              where: { preview: true },
-              required: false,
-              limit: 1,
-            },
-          ],
+          [sequelize.fn('AVG', sequelize.col('Reviews.stars')), 'avgRating'],
         ],
       },
+      group: ['Spot.id', 'SpotImages.id'],
     });
 
-    // Format spots data
-    const Spots = spots.map((spot) => {
-      const spotData = spot.toJSON();
+    const formattedSpots = Spots.map(spot => ({
+      ...spot.toJSON(),
+      previewImage: spot.SpotImages[0]?.url || null,
+      avgRating: Number(spot.dataValues.avgRating).toFixed(1),
+    }));
 
-      // Format createdAt and updatedAt to 'YYYY-MM-DD HH:mm:ss'
-      spotData.createdAt = new Date(spotData.createdAt)
-        .toISOString()
-        .replace("T", " ")
-        .slice(0, 19);
-      spotData.updatedAt = new Date(spotData.updatedAt)
-        .toISOString()
-        .replace("T", " ")
-        .slice(0, 19);
-
-      // Format avgRating to one decimal place if not null
-      if (spotData.avgRating !== null) {
-        spotData.avgRating = parseFloat(spotData.avgRating).toFixed(1);
-      }
-
-      return spotData;
-    });
-
-    return res.status(200).json({ Spots });
-  } catch (err) {
-    console.error(err);
-    return res
-      .status(500)
-      .json({ message: "Server error", errors: err.message });
+    return res.json({ Spots: formattedSpots });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
   }
 });
 
