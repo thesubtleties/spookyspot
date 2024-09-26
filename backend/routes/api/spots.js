@@ -14,7 +14,7 @@ const { requireAuth } = require("../../utils/auth");
 const { check, validationResult } = require("express-validator");
 
 // GET /api/spots
-router.get('/', async (req, res) => {
+router.get('/', requireAuth, async (req, res) => {
   let {
     page = 1,
     size = 20,
