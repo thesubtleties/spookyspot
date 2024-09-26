@@ -14,7 +14,7 @@ const { requireAuth } = require("../../utils/auth");
 const { check, validationResult } = require("express-validator");
 
 // GET /api/spots
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   let {
     page = 1,
     size = 20,
@@ -34,26 +34,26 @@ router.get('/', async (req, res) => {
 
   // Validate 'page'
   if (isNaN(page) || page < 1) {
-    errors.page = 'Page must be greater than or equal to 1';
+    errors.page = "Page must be greater than or equal to 1";
   }
 
   // Validate 'size'
   if (isNaN(size) || size < 1 || size > 20) {
-    errors.size = 'Size must be between 1 and 20';
+    errors.size = "Size must be between 1 and 20";
   }
 
   // Validate 'minLat' and 'maxLat'
   if (minLat !== undefined) {
     minLat = parseFloat(minLat);
     if (isNaN(minLat)) {
-      errors.minLat = 'Minimum latitude is invalid';
+      errors.minLat = "Minimum latitude is invalid";
     }
   }
 
   if (maxLat !== undefined) {
     maxLat = parseFloat(maxLat);
     if (isNaN(maxLat)) {
-      errors.maxLat = 'Maximum latitude is invalid';
+      errors.maxLat = "Maximum latitude is invalid";
     }
   }
 
@@ -61,14 +61,14 @@ router.get('/', async (req, res) => {
   if (minLng !== undefined) {
     minLng = parseFloat(minLng);
     if (isNaN(minLng)) {
-      errors.minLng = 'Minimum longitude is invalid';
+      errors.minLng = "Minimum longitude is invalid";
     }
   }
 
   if (maxLng !== undefined) {
     maxLng = parseFloat(maxLng);
     if (isNaN(maxLng)) {
-      errors.maxLng = 'Maximum longitude is invalid';
+      errors.maxLng = "Maximum longitude is invalid";
     }
   }
 
@@ -76,21 +76,21 @@ router.get('/', async (req, res) => {
   if (minPrice !== undefined) {
     minPrice = parseFloat(minPrice);
     if (isNaN(minPrice) || minPrice < 0) {
-      errors.minPrice = 'Minimum price must be greater than or equal to 0';
+      errors.minPrice = "Minimum price must be greater than or equal to 0";
     }
   }
 
   if (maxPrice !== undefined) {
     maxPrice = parseFloat(maxPrice);
     if (isNaN(maxPrice) || maxPrice < 0) {
-      errors.maxPrice = 'Maximum price must be greater than or equal to 0';
+      errors.maxPrice = "Maximum price must be greater than or equal to 0";
     }
   }
 
   // If there are validation errors, return a 400 response
   if (Object.keys(errors).length > 0) {
     return res.status(400).json({
-      message: 'Bad Request',
+      message: "Bad Request",
       errors,
     });
   }
@@ -144,7 +144,7 @@ router.get('/', async (req, res) => {
               FROM ${reviewTable} AS "Reviews"
               WHERE "Reviews"."spotId" = "Spot"."id"
             )`),
-            'avgRating',
+            "avgRating",
           ],
           // Include previewImage using a subquery
           [
@@ -154,7 +154,7 @@ router.get('/', async (req, res) => {
               WHERE "SpotImages"."spotId" = "Spot"."id" AND "SpotImages"."preview" = true
               LIMIT 1
             )`),
-            'previewImage',
+            "previewImage",
           ],
         ],
       },
@@ -184,24 +184,27 @@ router.get('/', async (req, res) => {
     });
 
     // Return the response
-    return res.json({
-      Spots,
-      page,
-      size,
-    });
+    if (req.query.page && req.query.size) {
+      return res.json({
+        Spots,
+        page,
+        size,
+      });
+    } else {
+      return res.json({
+        Spots,
+      });
+    }
   } catch (error) {
     // Log the error for debugging
-    console.error('Error fetching spots:', error);
+    console.error("Error fetching spots:", error);
 
     // Return a 500 Internal Server Error with a generic message
     return res.status(500).json({
-      message: 'Internal Server Error',
+      message: "Internal Server Error",
     });
   }
 });
-
-
-
 
 // Get all Spots owned by the Current User
 router.get("/current", requireAuth, async (req, res) => {
