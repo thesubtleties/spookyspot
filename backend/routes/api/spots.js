@@ -75,23 +75,17 @@ router.get("/current", requireAuth, async (req, res) => {
       attributes: {
         include: [
           // Include avgRating
-          [
-            sequelize.literal(`(
-              SELECT AVG("Reviews"."stars")
-              FROM "Reviews"
-              WHERE "Reviews"."spotId" = "Spot"."id"
-            )`),
-            "avgRating",
-          ],
+          [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
           // Include previewImage
           [
-            sequelize.literal(`(
-              SELECT "url"
-              FROM "SpotImages"
-              WHERE "SpotImages"."spotId" = "Spot"."id" AND "SpotImages"."preview" = true
-              LIMIT 1
-            )`),
-            "previewImage",
+            {
+              model: SpotImage,
+              as: "previewImage",
+              attributes: ["url"],
+              where: { preview: true },
+              required: false,
+              limit: 1,
+            },
           ],
         ],
       },
@@ -658,7 +652,7 @@ router.post(
 
 // delete a spot image
 
-router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
+router.delete("/spot-images/:imageId", requireAuth, async (req, res) => {
   const { imageId } = req.params;
   const userId = req.user.id;
 
@@ -666,8 +660,8 @@ router.delete('/spot-images/:imageId', requireAuth, async (req, res) => {
     const spotImage = await SpotImage.findByPk(imageId, {
       include: {
         model: Spot,
-        attributes: ['ownerId']
-      }
+        attributes: ["ownerId"],
+      },
     });
 
     if (!spotImage) {
