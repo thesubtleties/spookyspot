@@ -143,69 +143,44 @@ router.post("/:spotId/images", requireAuth, async (req, res) => {
 });
 
 // Get details of a Spot from an id
-router.get("/:spotId", async (req, res) => {
-  const { spotId } = req.params;
-
-  // Find the spot by its ID with aggregated avgStarRating and numReviews
-  const spot = await Spot.findOne({
-    where: { id: spotId },
-    attributes: {
+router.get('/:spotId', async (req, res) => {
+    const spot = await Spot.findByPk(req.params.spotId, {
       include: [
-        // Include avgStarRating
-        [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgStarRating"],
-        // Include numReviews
-        [sequelize.fn("COUNT", sequelize.col("Reviews.id")), "numReviews"],
+        {
+          model: SpotImage,
+          attributes: ['id', 'url', 'preview'],
+        },
+        {
+          model: User,
+          attributes: ['id', 'firstName', 'lastName'],
+        },
       ],
-    },
-    include: [
-      // Include associated Reviews for aggregation
-      {
-        model: Review,
-        attributes: [],
-      },
-      // Include SpotImages
-      {
-        model: SpotImage,
-        attributes: ["id", "url", "preview"],
-      },
-      // Include Owner (aliased User)
-      {
-        model: User,
-        as: "Owner",
-        attributes: ["id", "firstName", "lastName"],
-      },
-    ],
-    group: ["Spot.id", "SpotImages.id", "Owner.id"],
-  });
-
-  // If spot doesn't exist, return 404 error
-  if (!spot) {
-    return res.status(404).json({
-      message: "Couldn't find a Spot with the specified id",
     });
-  }
 
-  // Convert spot instance to plain object
-  const spotData = spot.toJSON();
+    if (!spot) {
+      return res.status(404).json({ message: "Spot couldn't be found" });
+    }
 
-  // Format avgStarRating to one decimal place if not null
-  if (spotData.avgStarRating !== null) {
-    spotData.avgStarRating = parseFloat(spotData.avgStarRating).toFixed(1);
-  } else {
-    spotData.avgStarRating = null;
-  }
+    const reviews = await Review.findAll({
+      where: { spotId: spot.id },
+      attributes: ['stars'],
+    });
 
-  // Format numReviews as integer
-  spotData.numReviews = parseInt(spotData.numReviews) || 0;
+    const numReviews = reviews.length;
+    const avgStarRating = numReviews > 0
+      ? parseFloat((reviews.reduce((sum, review) => sum + review.stars, 0) / numReviews).toFixed(1))
+      : null;
 
-  // Format createdAt and updatedAt
-  const formatDate = (date) => {
-    return new Date(date).toISOString().replace("T", " ").slice(0, 19);
-  };
-  spotData.createdAt = formatDate(spotData.createdAt);
-  spotData.updatedAt = formatDate(spotData.updatedAt);
+    const spotData = spot.toJSON();
+    spotData.numReviews = numReviews;
+    spotData.avgStarRating = avgStarRating;
 
-  return res.status(200).json(spotData);
+    // Rename User to Owner and SpotImages to match API docs
+    spotData.Owner = spotData.User;
+    delete spotData.User;
+    spotData.SpotImages = spotData.SpotImages || [];
+
+    res.json(spotData);
 });
 
 router.post("/", requireAuth, async (req, res) => {
