@@ -13,12 +13,16 @@ module.exports = {
     const demoSpots = await Spot.findAll({
       where: {
         name: {
-          [Op.in]: ['Cozy SF Apartment', 'Manhattan Loft', 'Hollywood Hills Villa']
-        }
+          [Op.in]: [
+            "Cozy SF Apartment",
+            "Manhattan Loft",
+            "Hollywood Hills Villa",
+          ],
+        },
       },
-      attributes: ['id', 'name']
+      attributes: ["id", "name"],
     });
-    
+
     if (demoSpots.length === 0) {
       console.error("No spots found. Ensure the spots exist in the database.");
       return;
@@ -27,12 +31,14 @@ module.exports = {
     await SpotImage.bulkCreate(
       [
         {
-          spotId: demoSpots.find((spot) => spot.name === "Cozy SF Apartment").id,
+          spotId: demoSpots.find((spot) => spot.name === "Cozy SF Apartment")
+            .id,
           url: "https://example.com/sf-apartment1.jpg",
           preview: true,
         },
         {
-          spotId: demoSpots.find((spot) => spot.name === "Cozy SF Apartment").id,
+          spotId: demoSpots.find((spot) => spot.name === "Cozy SF Apartment")
+            .id,
           url: "https://example.com/sf-apartment2.jpg",
           preview: false,
         },
@@ -47,12 +53,16 @@ module.exports = {
           preview: false,
         },
         {
-          spotId: demoSpots.find((spot) => spot.name === "Hollywood Hills Villa").id,
+          spotId: demoSpots.find(
+            (spot) => spot.name === "Hollywood Hills Villa"
+          ).id,
           url: "https://example.com/hollywood-villa1.jpg",
           preview: true,
         },
         {
-          spotId: demoSpots.find((spot) => spot.name === "Hollywood Hills Villa").id,
+          spotId: demoSpots.find(
+            (spot) => spot.name === "Hollywood Hills Villa"
+          ).id,
           url: "https://example.com/hollywood-villa2.jpg",
           preview: false,
         },
@@ -63,6 +73,6 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     options.tableName = "SpotImages";
-    await queryInterface.bulkDelete(options, null, {});
+    return queryInterface.bulkDelete(options, null, {});
   },
 };
