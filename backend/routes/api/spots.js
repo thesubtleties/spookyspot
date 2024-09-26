@@ -169,8 +169,8 @@ router.get("/", async (req, res) => {
         city: spot.city,
         state: spot.state,
         country: spot.country,
-        lat: Number(spot.lat),
-        lng: Number(spot.lng),
+        lat: parseFloat(spot.lat),
+        lng: parseFloat(spot.lng),
         name: spot.name,
         description: spot.description,
         price: spot.price,
@@ -182,19 +182,14 @@ router.get("/", async (req, res) => {
         previewImage: spot.dataValues.previewImage || null,
       };
     });
+    console.log(Spots);
 
     // Return the response
-    if (req.query.page && req.query.size) {
-      return res.json({
-        Spots,
-        page,
-        size,
-      });
-    } else {
-      return res.json({
-        Spots,
-      });
-    }
+    return res.json({
+      Spots,
+      page,
+      size,
+    });
   } catch (error) {
     // Log the error for debugging
     console.error("Error fetching spots:", error);
