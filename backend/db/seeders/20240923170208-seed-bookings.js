@@ -1,16 +1,28 @@
 'use strict';
 
+const { Spot, User } = require('../models');
+const { Op } = require('sequelize');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const spots = await queryInterface.sequelize.query(
-      `SELECT id, address FROM Spots WHERE address IN ('123 Maple Street', '456 Oak Avenue', '789 Pine Road', '101 Beach Boulevard', '202 Mountain View Drive');`
-    );
+    const spots = await Spot.findAll({
+      where: {
+        address: {
+          [Op.in]: ['123 Maple Street', '456 Oak Avenue', '789 Pine Road', '101 Beach Boulevard', '202 Mountain View Drive']
+        }
+      },
+      attributes: ['id', 'address']
+    });
 
-    const users = await queryInterface.sequelize.query(
-      `SELECT id, username FROM Users WHERE username IN ('Demo-lition', 'FakeUser1', 'FakeUser2');`
-    );
-
+    const users = await User.findAll({
+      where: {
+        username: {
+          [Op.in]: ['Demo-lition', 'FakeUser1', 'FakeUser2']
+        }
+      },
+      attributes: ['id', 'username']
+    });
 
     await queryInterface.bulkInsert('Bookings', [
       {
