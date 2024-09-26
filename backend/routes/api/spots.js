@@ -264,7 +264,7 @@ router.put("/:spotId", requireAuth, async (req, res) => {
 
   if (spot.ownerId !== userId) {
     errorsObj.message = "Forbidden";
-    return res.status(400).json(errorsObj);
+    return res.status(403).json(errorsObj);
   }
   const errorOptions = {
     address: "Street address is required",
