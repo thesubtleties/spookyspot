@@ -1,7 +1,11 @@
-'use strict';
+"use strict";
 
 const { SpotImage } = require("../models");
 
+let options = {};
+if (process.env.NODE_ENV === "production") {
+  options.schema = process.env.SCHEMA; // define your schema in options object
+}
 module.exports = {
   async up(queryInterface, Sequelize) {
     const demoSpots = await queryInterface.sequelize.query(
@@ -28,7 +32,8 @@ module.exports = {
           preview: true,
         },
         {
-          spotId: spotRows.find((spot) => spot.name === "Hollywood Hills Villa").id,
+          spotId: spotRows.find((spot) => spot.name === "Hollywood Hills Villa")
+            .id,
           url: "https://example.com/image3.jpg",
           preview: true,
         },
@@ -38,6 +43,8 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    options.tableName = "SpotImages";
+    const Op = Sequelize.Op;
     await queryInterface.bulkDelete("SpotImages", null, {});
   },
 };
