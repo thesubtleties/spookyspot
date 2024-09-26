@@ -131,56 +131,29 @@ router.get('/', async (req, res) => {
     where,
     limit,
     offset,
-    subQuery: false,
-    attributes: [
-      'id',
-      'ownerId',
-      'address',
-      'city',
-      'state',
-      'country',
-      'lat',
-      'lng',
-      'name',
-      'description',
-      'price',
-      'createdAt',
-      'updatedAt',
-      // Include previewImage and avgRating
-      [sequelize.fn('ROUND', sequelize.fn('AVG', col('Reviews.stars')), 1), 'avgRating'],
-      [sequelize.col('SpotImages.url'), 'previewImage'],
-    ],
-    include: [
-      {
-        model: Review,
-        attributes: [],
-      },
-      {
-        model: SpotImage,
-        as: 'SpotImages',
-        attributes: [],
-        where: {
-          preview: true,
-        },
-        required: false,
-      },
-    ],
-    group: [
-      'Spot.id',
-      'SpotImages.url',
-      'Spot.ownerId',
-      'Spot.address',
-      'Spot.city',
-      'Spot.state',
-      'Spot.country',
-      'Spot.lat',
-      'Spot.lng',
-      'Spot.name',
-      'Spot.description',
-      'Spot.price',
-      'Spot.createdAt',
-      'Spot.updatedAt',
-    ],
+    attributes: {
+      include: [
+        // Calculate average rating using a subquery
+        [
+          sequelize.literal(`(
+            SELECT ROUND(AVG("Reviews"."stars"), 1)
+            FROM "Reviews"
+            WHERE "Reviews"."spotId" = "Spot"."id"
+          )`),
+          'avgRating',
+        ],
+        // Include previewImage using a subquery
+        [
+          sequelize.literal(`(
+            SELECT "url"
+            FROM "SpotImages"
+            WHERE "SpotImages"."spotId" = "Spot"."id" AND "SpotImages"."preview" = true
+            LIMIT 1
+          )`),
+          'previewImage',
+        ],
+      ],
+    },
   });
 
   // Format the response data
