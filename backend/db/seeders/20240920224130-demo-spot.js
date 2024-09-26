@@ -6,20 +6,10 @@ const { User } = require("../models");
 /** @type {import('sequelize-cli').Migration} */
 let options = {};
 if (process.env.NODE_ENV === "production") {
-  options.schema = process.env.SCHEMA; // define your schema in options object
+  options.schema = process.env.SCHEMA; 
 }
 module.exports = {
   async up(queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-     */
-
     const demoUsers = await User.findAll({
       attributes: ["id", "username"],
       where: {
@@ -27,12 +17,10 @@ module.exports = {
       },
     });
 
-    const userRows = demoUsers[0];
-    //prettier-ignore-start
     await Spot.bulkCreate(
       [
         {
-          ownerId: userRows.find((user) => user.username === "Demo-lition").id,
+          ownerId: demoUsers.find((user) => user.username === "Demo-lition").id,
           address: "123 Maple Street",
           city: "San Francisco",
           state: "California",
@@ -45,7 +33,7 @@ module.exports = {
           price: 250.0,
         },
         {
-          ownerId: userRows.find((user) => user.username === "Demo-lition").id,
+          ownerId: demoUsers.find((user) => user.username === "Demo-lition").id,
           address: "456 Oak Avenue",
           city: "New York",
           state: "New York",
@@ -57,8 +45,8 @@ module.exports = {
             "Spacious loft in downtown Manhattan, walking distance to major attractions.",
           price: 300.0,
         },
-        {
-          ownerId: userRows.find((user) => user.username === "Demo-lition").id,
+{
+          ownerId: demoUsers.find((user) => user.username === "Demo-lition").id,
           address: "789 Pine Road",
           city: "Los Angeles",
           state: "California",
@@ -71,7 +59,7 @@ module.exports = {
           price: 500.0,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser1").id,
+          ownerId: demoUsers.find((user) => user.username === "FakeUser1").id,
           address: "101 Beach Boulevard",
           city: "Miami",
           state: "Florida",
@@ -84,7 +72,7 @@ module.exports = {
           price: 275.0,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser1").id,
+          ownerId: demoUsers.find((user) => user.username === "FakeUser1").id,
           address: "202 Mountain View Drive",
           city: "Denver",
           state: "Colorado",
@@ -97,7 +85,7 @@ module.exports = {
           price: 180.0,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser1").id,
+          ownerId: demoUsers.find((user) => user.username === "FakeUser1").id,
           address: "303 Bourbon Street",
           city: "New Orleans",
           state: "Louisiana",
@@ -110,7 +98,7 @@ module.exports = {
           price: 220.0,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser2").id,
+          ownerId: demoUsers.find((user) => user.username === "FakeUser2").id,
           address: "404 Lakeside Lane",
           city: "Chicago",
           state: "Illinois",
@@ -123,7 +111,7 @@ module.exports = {
           price: 280.0,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser2").id,
+          ownerId: demoUsers.find((user) => user.username === "FakeUser2").id,
           address: "505 Desert Road",
           city: "Phoenix",
           state: "Arizona",
@@ -136,7 +124,7 @@ module.exports = {
           price: 200.0,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser2").id,
+          ownerId: demoUsers.find((user) => user.username === "FakeUser2").id,
           address: "606 Rainier Avenue",
           city: "Seattle",
           state: "Washington",
@@ -149,7 +137,7 @@ module.exports = {
           price: 260.0,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser2").id,
+          ownerId: demoUsers.find((user) => user.username === "FakeUser2").id,
           address: "707 Peachtree Street",
           city: "Atlanta",
           state: "Georgia",
@@ -161,19 +149,11 @@ module.exports = {
             "Charming bungalow in a historic Atlanta neighborhood, close to major attractions.",
           price: 190.0,
         },
-      ],
-      { validate: true }
+      ]
     );
   },
-  //prettier-ignore-end
 
   async down(queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
 
     options.tableName = "Spots";
     const Op = Sequelize.Op;
