@@ -13,54 +13,187 @@ const { Op } = require("sequelize");
 const { requireAuth } = require("../../utils/auth");
 const { check, validationResult } = require("express-validator");
 
-// Get all Spots
-router.get("/", async (req, res) => {
-  // Fetch all spots
+// GET /api/spots
+router.get('/', async (req, res) => {
+  let {
+    page = 1,
+    size = 20,
+    minLat,
+    maxLat,
+    minLng,
+    maxLng,
+    minPrice,
+    maxPrice,
+  } = req.query;
+
+  // Convert query parameters to appropriate types
+  page = parseInt(page);
+  size = parseInt(size);
+
+  const errors = {};
+
+  // Validate 'page'
+  if (isNaN(page) || page < 1) {
+    errors.page = 'Page must be greater than or equal to 1';
+  }
+
+  // Validate 'size'
+  if (isNaN(size) || size < 1 || size > 20) {
+    errors.size = 'Size must be between 1 and 20';
+  }
+
+  // Validate 'minLat' and 'maxLat'
+  if (minLat !== undefined) {
+    minLat = parseFloat(minLat);
+    if (isNaN(minLat)) {
+      errors.minLat = 'Minimum latitude is invalid';
+    }
+  }
+
+  if (maxLat !== undefined) {
+    maxLat = parseFloat(maxLat);
+    if (isNaN(maxLat)) {
+      errors.maxLat = 'Maximum latitude is invalid';
+    }
+  }
+
+  // Validate 'minLng' and 'maxLng'
+  if (minLng !== undefined) {
+    minLng = parseFloat(minLng);
+    if (isNaN(minLng)) {
+      errors.minLng = 'Minimum longitude is invalid';
+    }
+  }
+
+  if (maxLng !== undefined) {
+    maxLng = parseFloat(maxLng);
+    if (isNaN(maxLng)) {
+      errors.maxLng = 'Maximum longitude is invalid';
+    }
+  }
+
+  // Validate 'minPrice' and 'maxPrice'
+  if (minPrice !== undefined) {
+    minPrice = parseFloat(minPrice);
+    if (isNaN(minPrice) || minPrice < 0) {
+      errors.minPrice = 'Minimum price must be greater than or equal to 0';
+    }
+  }
+
+  if (maxPrice !== undefined) {
+    maxPrice = parseFloat(maxPrice);
+    if (isNaN(maxPrice) || maxPrice < 0) {
+      errors.maxPrice = 'Maximum price must be greater than or equal to 0';
+    }
+  }
+
+  // If there are validation errors, return a 400 response
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({
+      message: 'Bad Request',
+      errors,
+    });
+  }
+
+  // Build the 'where' clause for Sequelize
+  const where = {};
+
+  if (minLat !== undefined) {
+    where.lat = { [Op.gte]: minLat };
+  }
+
+  if (maxLat !== undefined) {
+    where.lat = { ...where.lat, [Op.lte]: maxLat };
+  }
+
+  if (minLng !== undefined) {
+    where.lng = { [Op.gte]: minLng };
+  }
+
+  if (maxLng !== undefined) {
+    where.lng = { ...where.lng, [Op.lte]: maxLng };
+  }
+
+  if (minPrice !== undefined) {
+    where.price = { [Op.gte]: minPrice };
+  }
+
+  if (maxPrice !== undefined) {
+    where.price = { ...where.price, [Op.lte]: maxPrice };
+  }
+
+  // Set limit and offset for pagination
+  const limit = size;
+  const offset = (page - 1) * size;
+
+  // Query spots with filters and pagination
   const spots = await Spot.findAll({
+    where,
+    limit,
+    offset,
+    subQuery: false,
     attributes: {
       include: [
-        // Include avgRating
-        [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
+        // Calculate average rating
+        [
+          sequelize.fn('ROUND', sequelize.fn('AVG', sequelize.col('Reviews.stars')), 1),
+          'avgRating',
+        ],
+        // Include previewImage
+        [sequelize.col('SpotImages.url'), 'previewImage'],
       ],
     },
     include: [
-      // Include associated Reviews
       {
         model: Review,
         attributes: [],
       },
-      // Include associated SpotImages to get previewImage
       {
         model: SpotImage,
-        attributes: ["url", "preview"],
+        as: 'SpotImages',
+        attributes: [],
+        where: {
+          preview: true,
+        },
+        required: false,
       },
     ],
-    group: ["Spot.id", "SpotImages.id"],
+    group: ['Spot.id'],
   });
 
-  // Format the spots data
+  // Format the response data
   const Spots = spots.map((spot) => {
-    const spotData = spot.toJSON();
-
-    // Get previewImage URL where preview is true
-    const previewImageObj = spotData.SpotImages.find(
-      (image) => image.preview === true
-    );
-    spotData.previewImage = previewImageObj ? previewImageObj.url : null;
-
-    // Remove SpotImages array from spotData
-    delete spotData.SpotImages;
-
-    // Format avgRating to one decimal place if not null
-    if (spotData.avgRating !== null) {
-      spotData.avgRating = parseFloat(spotData.avgRating).toFixed(1);
-    }
-
-    return spotData;
+    return {
+      id: spot.id,
+      ownerId: spot.ownerId,
+      address: spot.address,
+      city: spot.city,
+      state: spot.state,
+      country: spot.country,
+      lat: spot.lat,
+      lng: spot.lng,
+      name: spot.name,
+      description: spot.description,
+      price: spot.price,
+      createdAt: spot.createdAt,
+      updatedAt: spot.updatedAt,
+      avgRating: spot.dataValues.avgRating
+        ? parseFloat(spot.dataValues.avgRating)
+        : null,
+      previewImage: spot.dataValues.previewImage || null,
+    };
   });
 
-  return res.status(200).json({ Spots });
+  // Return the response
+  return res.json({
+    Spots,
+    page,
+    size,
+  });
 });
+
+
+
 
 // Get all Spots owned by the Current User
 router.get("/current", requireAuth, async (req, res) => {
