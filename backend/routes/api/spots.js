@@ -294,8 +294,22 @@ router.put("/:spotId", requireAuth, async (req, res) => {
     responseError.errors = errorsObj;
     return res.status(400).json(responseError);
   }
-  const updatedSpot = await Spot.findByPk(spotId);
-  res.status(201).json(updatedSpot);
+  const updatedSpot = await Spot.update(
+    {
+      address: newSpotInfo.address,
+      city: newSpotInfo.city,
+      state: newSpotInfo.state,
+      country: newSpotInfo.country,
+      lat: newSpotInfo.lat,
+      lng: newSpotInfo.lng,
+      name: newSpotInfo.name,
+      description: newSpotInfo.description,
+      price: newSpotInfo.price,
+    },
+    { where: { id: spotId } }
+  );
+  const returnSpot = await Spot.findByPk(spotId);
+  res.status(200).json(returnSpot);
 });
 
 router.delete("/:spotId", requireAuth, async (req, res) => {
