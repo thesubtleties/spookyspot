@@ -263,7 +263,7 @@ router.put("/:spotId", requireAuth, async (req, res) => {
   };
 
   if (spot.ownerId !== userId) {
-    errorsObj.message = "Cannot update a Spot you do not own";
+    errorsObj.message = "Forbidden";
     return res.status(400).json(errorsObj);
   }
   const errorOptions = {
