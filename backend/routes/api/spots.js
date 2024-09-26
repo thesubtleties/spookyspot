@@ -143,44 +143,49 @@ router.post("/:spotId/images", requireAuth, async (req, res) => {
 });
 
 // Get details of a Spot from an id
-router.get('/:spotId', async (req, res) => {
-    const spot = await Spot.findByPk(req.params.spotId, {
-      include: [
-        {
-          model: SpotImage,
-          attributes: ['id', 'url', 'preview'],
-        },
-        {
-          model: User,
-          attributes: ['id', 'firstName', 'lastName'],
-        },
-      ],
-    });
+router.get("/:spotId", async (req, res) => {
+  const spot = await Spot.findByPk(req.params.spotId, {
+    include: [
+      {
+        model: SpotImage,
+        attributes: ["id", "url", "preview"],
+      },
+      {
+        model: User,
+        attributes: ["id", "firstName", "lastName"],
+      },
+    ],
+  });
 
-    if (!spot) {
-      return res.status(404).json({ message: "Spot couldn't be found" });
-    }
+  if (!spot) {
+    return res.status(404).json({ message: "Spot couldn't be found" });
+  }
 
-    const reviews = await Review.findAll({
-      where: { spotId: spot.id },
-      attributes: ['stars'],
-    });
+  const reviews = await Review.findAll({
+    where: { spotId: spot.id },
+    attributes: ["stars"],
+  });
 
-    const numReviews = reviews.length;
-    const avgStarRating = numReviews > 0
-      ? parseFloat((reviews.reduce((sum, review) => sum + review.stars, 0) / numReviews).toFixed(1))
+  const numReviews = reviews.length;
+  const avgStarRating =
+    numReviews > 0
+      ? parseFloat(
+          (
+            reviews.reduce((sum, review) => sum + review.stars, 0) / numReviews
+          ).toFixed(1)
+        )
       : null;
 
-    const spotData = spot.toJSON();
-    spotData.numReviews = numReviews;
-    spotData.avgStarRating = avgStarRating;
+  const spotData = spot.toJSON();
+  spotData.numReviews = numReviews;
+  spotData.avgStarRating = avgStarRating;
 
-    // Rename User to Owner and SpotImages to match API docs
-    spotData.Owner = spotData.User;
-    delete spotData.User;
-    spotData.SpotImages = spotData.SpotImages || [];
+  // Rename User to Owner and SpotImages to match API docs
+  spotData.Owner = spotData.User;
+  delete spotData.User;
+  spotData.SpotImages = spotData.SpotImages || [];
 
-    res.json(spotData);
+  res.json(spotData);
 });
 
 router.post("/", requireAuth, async (req, res) => {
@@ -218,9 +223,12 @@ router.post("/", requireAuth, async (req, res) => {
       errorsObj[item] = errorOptions[item];
     }
   }
-  if (spot.name.length >= 50) {
-    errorsObj.name = errorOptions.nameLength;
+  if (spot.name) {
+    if (spot.name.length >= 50) {
+      errorsObj.name = errorOptions.nameLength;
+    }
   }
+
   if (Object.entries(errorsObj).length > 0) {
     const responseError = {};
     responseError.message = "Bad Request";
