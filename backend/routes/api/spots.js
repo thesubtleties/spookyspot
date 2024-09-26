@@ -132,17 +132,24 @@ router.get('/', async (req, res) => {
     limit,
     offset,
     subQuery: false,
-    attributes: {
-      include: [
-        // Calculate average rating
-        [
-          sequelize.fn('ROUND', sequelize.fn('AVG', sequelize.col('Reviews.stars')), 1),
-          'avgRating',
-        ],
-        // Include previewImage
-        [sequelize.col('SpotImages.url'), 'previewImage'],
-      ],
-    },
+    attributes: [
+      'id',
+      'ownerId',
+      'address',
+      'city',
+      'state',
+      'country',
+      'lat',
+      'lng',
+      'name',
+      'description',
+      'price',
+      'createdAt',
+      'updatedAt',
+      // Include previewImage and avgRating
+      [sequelize.fn('ROUND', sequelize.fn('AVG', col('Reviews.stars')), 1), 'avgRating'],
+      [sequelize.col('SpotImages.url'), 'previewImage'],
+    ],
     include: [
       {
         model: Review,
@@ -158,7 +165,22 @@ router.get('/', async (req, res) => {
         required: false,
       },
     ],
-    group: ['Spot.id', 'SpotImages.url'],
+    group: [
+      'Spot.id',
+      'SpotImages.url',
+      'Spot.ownerId',
+      'Spot.address',
+      'Spot.city',
+      'Spot.state',
+      'Spot.country',
+      'Spot.lat',
+      'Spot.lng',
+      'Spot.name',
+      'Spot.description',
+      'Spot.price',
+      'Spot.createdAt',
+      'Spot.updatedAt',
+    ],
   });
 
   // Format the response data
