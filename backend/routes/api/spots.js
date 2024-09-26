@@ -283,8 +283,10 @@ router.put("/:spotId", requireAuth, async (req, res) => {
       errorsObj[item] = errorOptions[item];
     }
   }
-  if (newSpotInfo.name.length >= 50) {
-    errorsObj.name = errorOptions.nameLength;
+  if (newSpotInfo.name) {
+    if (newSpotInfo.name.length >= 50) {
+      errorsObj.name = errorOptions.nameLength;
+    }
   }
   if (Object.entries(errorsObj).length > 0) {
     const responseError = {};
