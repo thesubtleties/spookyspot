@@ -173,7 +173,7 @@ router.get("/", async (req, res) => {
         lng: parseFloat(spot.lng),
         name: spot.name,
         description: spot.description,
-        price: parseFloat(spot.price),
+        price: parseInt(spot.price),
         createdAt: spot.createdAt,
         updatedAt: spot.updatedAt,
         avgRating: spot.dataValues.avgRating
