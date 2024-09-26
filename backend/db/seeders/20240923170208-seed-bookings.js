@@ -12,7 +12,6 @@ module.exports = {
     );
 
 
-
     await queryInterface.bulkInsert('Bookings', [
       {
         spotId: spots.find((spot) => spot.address === '123 Maple Street').id,
