@@ -14,7 +14,7 @@ const { requireAuth } = require("../../utils/auth");
 const { check, validationResult } = require("express-validator");
 
 // GET /api/spots
-router.get('/', requireAuth, async (req, res) => {
+router.get('/', async (req, res) => {
   let {
     page = 1,
     size = 20,
@@ -158,7 +158,7 @@ router.get('/', requireAuth, async (req, res) => {
         required: false,
       },
     ],
-    group: ['Spot.id'],
+    group: ['Spot.id', 'SpotImages.url'],
   });
 
   // Format the response data
