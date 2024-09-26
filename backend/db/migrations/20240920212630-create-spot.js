@@ -20,7 +20,7 @@ module.exports = {
           allowNull: false,
           references: {
             model: {
-              tableName: "Users",
+              tableName: "users",
               schema: process.env.SCHEMA,
             },
             key: "id",
