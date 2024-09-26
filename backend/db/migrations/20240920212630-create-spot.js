@@ -20,6 +20,7 @@ module.exports = {
           allowNull: false,
           references: {
             model: "Users",
+            schema: process.env.SCHEMA
             key: "id",
           },
           onUpdate: "CASCADE",

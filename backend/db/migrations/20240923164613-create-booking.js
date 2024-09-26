@@ -20,7 +20,10 @@ module.exports = {
           allowNull: false,
           type: Sequelize.INTEGER,
           references: {
-            model: "Spots",
+            model: {
+              tableName: "Spots",
+              schema: process.env.SCHEMA,
+            },
             key: "id",
           },
           onDelete: "CASCADE",
@@ -29,7 +32,10 @@ module.exports = {
           allowNull: false,
           type: Sequelize.INTEGER,
           references: {
-            model: "Users",
+            model: {
+              tableName: "Users",
+              schema: process.env.SCHEMA,
+            },
             key: "id",
           },
           onDelete: "CASCADE",
