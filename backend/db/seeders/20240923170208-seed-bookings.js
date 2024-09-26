@@ -1,9 +1,12 @@
 "use strict";
 
-const { Spot, User } = require("../models");
-const { Op } = require("sequelize");
+const { Spot, User, Bookings } = require("../models");
 
 /** @type {import('sequelize-cli').Migration} */
+let options = {};
+if (process.env.NODE_ENV === "production") {
+  options.schema = process.env.SCHEMA;
+}
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const spots = await Spot.findAll({
@@ -30,8 +33,7 @@ module.exports = {
       attributes: ["id", "username"],
     });
 
-    await queryInterface.bulkInsert(
-      "Bookings",
+    await Booking.bulkCreate(
       [
         {
           spotId: spots.find((spot) => spot.address === "123 Maple Street").id,
@@ -77,7 +79,7 @@ module.exports = {
           updatedAt: new Date(),
         },
       ],
-      {}
+      { validate: true }
     );
   },
 
