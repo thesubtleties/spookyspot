@@ -1,12 +1,11 @@
 "use strict";
 
-const { Spot } = require("../models");
-const { User } = require("../models");
+const { Spot, User } = require("../models");
 
 /** @type {import('sequelize-cli').Migration} */
 let options = {};
 if (process.env.NODE_ENV === "production") {
-  options.schema = process.env.SCHEMA; 
+  options.schema = process.env.SCHEMA;
 }
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -45,7 +44,7 @@ module.exports = {
             "Spacious loft in downtown Manhattan, walking distance to major attractions.",
           price: 300.0,
         },
-{
+        {
           ownerId: demoUsers.find((user) => user.username === "Demo-lition").id,
           address: "789 Pine Road",
           city: "Los Angeles",
@@ -155,7 +154,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-
     options.tableName = "Spots";
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, null, {});
