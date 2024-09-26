@@ -1,6 +1,7 @@
 "use strict";
 
 const { Spot, User, Bookings } = require("../models");
+const { Op } = require("sequelize");
 
 /** @type {import('sequelize-cli').Migration} */
 let options = {};
@@ -85,7 +86,6 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     options.tableName = "Bookings";
-    const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, null, {});
   },
 };
