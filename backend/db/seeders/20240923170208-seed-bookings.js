@@ -1,6 +1,6 @@
 "use strict";
 
-const { Spot, User, Bookings } = require("../models");
+const { Spot, User, Booking } = require("../models");
 const { Op } = require("sequelize");
 
 /** @type {import('sequelize-cli').Migration} */
