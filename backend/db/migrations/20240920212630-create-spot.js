@@ -19,10 +19,7 @@ module.exports = {
           type: Sequelize.INTEGER,
           allowNull: false,
           references: {
-            model: {
-              tableName: "Users",
-              schema: process.env.SCHEMA,
-            },
+            model: "Users",
             key: "id",
           },
           onUpdate: "CASCADE",
