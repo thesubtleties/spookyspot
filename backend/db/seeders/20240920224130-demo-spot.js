@@ -1,6 +1,7 @@
 "use strict";
 
 const { Spot } = require("../models");
+const { User } = require("../models");
 
 /** @type {import('sequelize-cli').Migration} */
 let options = {};
@@ -19,9 +20,12 @@ module.exports = {
      * }], {});
      */
 
-    const demoUsers = await queryInterface.sequelize.query(
-      `SELECT id, username FROM Users WHERE username IN ('Demo-lition', 'FakeUser1', 'FakeUser2');`
-    );
+    const demoUsers = await User.findAll({
+      attributes: ["id", "username"],
+      where: {
+        username: ["Demo-lition", "FakeUser1", "FakeUser2"],
+      },
+    });
 
     const userRows = demoUsers[0];
     //prettier-ignore-start
