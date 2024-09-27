@@ -26,11 +26,8 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE",
       },
       url: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          isUrl: true,
-        },
       },
     },
     {

@@ -19,9 +19,8 @@ module.exports = {
           type: Sequelize.INTEGER,
         },
         url: {
-          type: Sequelize.TEXT,
+          type: Sequelize.STRING,
           allowNull: false,
-          unique: true,
         },
         createdAt: {
           allowNull: false,
