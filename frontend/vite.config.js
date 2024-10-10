@@ -1,16 +1,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import eslint from 'vite-plugin-eslint';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    eslint({
-      lintOnStart: true,
-      failOnError: mode === "production"
-    })
-  ],
+  plugins: [react()],
   server: {
     proxy: {
       '/api': {
@@ -18,5 +11,5 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
-  }
+  },
 });
