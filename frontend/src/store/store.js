@@ -1,9 +1,10 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 // Change this line to use a named import
 import { thunk } from 'redux-thunk'; // Correct import for redux-thunk
+import sessionReducer from './session';
 
 const rootReducer = combineReducers({
-    
+  session: sessionReducer,
 });
 
 let enhancer;
