@@ -1,7 +1,8 @@
 /* frontend/src/components/Navigation/Navigation.css */
 
 ul {
-  list-style-type: none;
+  position: relative;
+  list-style: none; /* Optional: Remove bullet points */
   padding: 0;
   margin: 0;
   display: flex;
@@ -10,7 +11,8 @@ ul {
 }
 
 li {
-  margin: 0 10px;
+  display: inline-block; /* Ensure list items are displayed inline */
+  margin-right: 20px; /* Add space between list items */
 }
 
 .profile-dropdown {
@@ -25,4 +27,18 @@ li {
 
 .hidden {
   display: none;
+}
+
+.navbar-icon {
+  position: relative; /* Change to relative to work with flexbox */
+  margin-right: 20px; /* Add margin to separate the icon from the next item */
+}
+
+.navbar-title {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.profile-button {
+  margin-left: auto;
 }

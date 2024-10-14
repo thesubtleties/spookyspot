@@ -13,9 +13,17 @@ function Navigation({ isLoaded }) {
         <NavLink to="/">Home</NavLink>
       </li>
       {isLoaded && (
-        <li>
-          <ProfileButton user={sessionUser} />
-        </li>
+        <React.Fragment>
+          <li className="navbar-icon">
+            <img src="/favicon.ico" alt="Favicon" className="navbar-favicon" />
+          </li>
+          <li className="navbar-title">
+            <h1>Airbnb Clone</h1>
+          </li>
+          <li className="profile-button">
+            <ProfileButton user={sessionUser} />
+          </li>
+        </React.Fragment>
       )}
     </ul>
   );
