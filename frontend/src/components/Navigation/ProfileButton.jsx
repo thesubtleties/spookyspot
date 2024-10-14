@@ -1,16 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
 import * as sessionActions from '../../store/session';
 import OpenModalButton from '../OpenModalButton/OpenModalButton';
 import LoginFormModal from '../LoginFormPage/LoginFormModal';
 import SignupFormModal from '../SignupFormPage/SignupFormModal';
 import OpenModalMenuItem from './OpenModalMenuItem';
+import { NavLink } from 'react-router-dom';
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
+  const sessionUser = useSelector(state => state.session.user);
 
   const toggleMenu = (e) => {
     e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
