@@ -93,7 +93,10 @@ function SignupFormModal() {
           />
         </label>
         {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-        <button type="submit">Sign Up</button>
+        {Object.values(errors).map((error, idx) => (
+          <p key={idx}>{error}</p>
+        ))}
+        <button type="submit" disabled={username.length < 4 || password.length < 6}>Sign Up</button>
       </form>
     </>
   );
