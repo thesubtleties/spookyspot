@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Navigation from "./components/Navigation/Navigation";
-import SpotList from './components/SpotList'; // Import the SpotList component
 import * as sessionActions from "./store/session";
+import SpotList from './components/SpotList';
+import SpotDetail from './components/SpotDetail'; // Import the SpotDetail component
 
 function Layout() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
-
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
   }, [dispatch]);
@@ -27,7 +27,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <SpotList />, // Use SpotList as the main element for the root path
+        element: <SpotList />,
+      },
+      {
+        path: '/spots/:id', // Add route for spot detail
+        element: <SpotDetail />,
       },
     ],
   },
