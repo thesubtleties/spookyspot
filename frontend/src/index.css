@@ -1,1 +1,9 @@
 /* TODO: Add sitewide styles */
+@import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  color: white; /*text color*/
+}
