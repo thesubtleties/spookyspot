@@ -182,7 +182,6 @@ router.get("/", async (req, res) => {
         previewImage: spot.dataValues.previewImage || null,
       };
     });
-    console.log(req.query);
 
     // Return the response
     return res.json({
