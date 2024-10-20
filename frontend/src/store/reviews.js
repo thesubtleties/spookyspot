@@ -1,12 +1,8 @@
 import { csrfFetch } from './csrf';
 
 // Constants
-const GET_ALL_SPOTS = 'spots/getAllSpots';
-const ADD_SPOT = 'spots/addSpot';
-const UPDATE_SPOT = 'spots/updateSpot';
-const DELETE_SPOT = 'spots/deleteSpot';
-const SET_CURRENT_SPOT = 'spots/setSpot';
-const GET_USER_SPOTS = 'spots/getUserSpots';
+const ADD_REVIEW = 'reviews/addReview';
+const DELETE_REVIEW = 'reviews/deleteReview';
 
 // Actions
 export const getAllSpots = (spotsData) => ({
@@ -32,11 +28,6 @@ export const deleteSpot = (spotId) => ({
 export const setSpot = (spot) => ({
   type: SET_CURRENT_SPOT,
   payload: spot,
-});
-
-export const getUserSpots = (spots) => ({
-  type: GET_USER_SPOTS,
-  payload: spots,
 });
 
 // Thunks
@@ -80,21 +71,9 @@ export const deleteSpotThunk = (spotId) => async (dispatch) => {
   }
 };
 
-export const getUserSpotsThunk = () => async (dispatch) => {
-  try {
-   const response = await csrfFetch("/spots/current")
-   const userSpots = await response.json();
-   dispatch(getUserSpots(userSpots));
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-
 // Initial State
 const initialState = {
   allSpots: [],
-  userSpots: [],
   currentSpot: null,
 };
 
@@ -122,19 +101,12 @@ function spotReducer(state = initialState, action) {
       return {
         ...state,
         allSpots: state.allSpots.filter((spot) => spot.id !== action.payload),
-        userSpots: state.userSpots.filter((spot) => spot.id !== action.payload),
-        currentSpot: state.currentSpot && state.currentSpot.id === action.payload ? null : state.currentSpot)
       };
     case SET_CURRENT_SPOT:
       return {
         ...state,
         currentSpot: action.payload,
       };
-    case GET_USER_SPOTS:
-      return {
-        ...state,
-        userSpots: action.payload,
-      }
     default:
       return state;
   }
