@@ -3,116 +3,91 @@ import { csrfFetch } from './csrf';
 // Constants
 const ADD_REVIEW = 'reviews/addReview';
 const DELETE_REVIEW = 'reviews/deleteReview';
+const GET_REVIEWS_BY_SPOT = 'reviews/getReviewsBySpot';
 
 // Actions
-export const getAllSpots = (spotsData) => ({
-  type: GET_ALL_SPOTS,
-  payload: spotsData,
+export const addReview = (review) => ({
+  type: ADD_REVIEW,
+  payload: review,
 });
 
-export const addSpot = (spot) => ({
-  type: ADD_SPOT,
-  payload: spot,
+export const getReviewsBySpot = (spotReviews) => ({
+  type: GET_REVIEWS_BY_SPOT,
+  payload: spotReviews,
 });
 
-export const updateSpot = (spot) => ({
-  type: UPDATE_SPOT,
-  payload: spot,
-});
-
-export const deleteSpot = (spotId) => ({
-  type: DELETE_SPOT,
-  payload: spotId,
-});
-
-export const setSpot = (spot) => ({
-  type: SET_CURRENT_SPOT,
-  payload: spot,
-});
+export const deleteReview = (reviewId) => ({
+    type: DELETE_REVIEW,
+    payload: reviewId
+})
 
 // Thunks
-export const fetchAllSpotsThunk = () => async (dispatch) => {
+export const addReviewThunk = (review) => async (dispatch) => {
   try {
-    const response = await csrfFetch('/spots');
-    if (!response.ok) throw new Error('Failed to fetch spots');
-    const data = await response.json();
-    dispatch(getAllSpots(data));
+    const response = await csrfFetch('/reviews', 'POST', review);
+    const newReview = await response.json();
+    dispatch(addReview(newReview));
   } catch (error) {
     console.log(error);
   }
 };
 
-export const createSpotThunk = (spotData) => async (dispatch) => {
-  try {
-    const response = await csrfFetch('/spots', 'POST', spotData);
-    const newSpot = await response.json();
-    dispatch(addSpot(newSpot));
-  } catch (error) {
-    console.log(error);
-  }
-};
+export const getReviewsBySpotThunk = (spotId) => async (dispatch) {
+    try {
+        const response = await csrfFetch(`/spots/${spotId}/reviews`)
+        const spotReviews = await response.json();
+        dispatch(getReviewsBySpot(spotReviews))
+    } catch (error) {
+        console.log(error);
+    }
+}
 
-export const updateSpotThunk = (spotData) => async (dispatch) => {
-  try {
-    const response = await csrfFetch(`/spots/${spotData.id}`, 'PUT', spotData);
-    const newSpot = await response.json();
-    dispatch(updateSpot(newSpot));
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const deleteSpotThunk = (spotId) => async (dispatch) => {
-  try {
-    await csrfFetch(`/spots/${spotId}`, 'DELETE');
-    dispatch(deleteSpot(spotId));
-  } catch (error) {
-    console.log(error);
-  }
-};
-
+export const deleteReviewThunk = (reviewId) => async (dispatch) => {
+    try {
+        const response = await csrfFetch(`/reviews/${reviewId}`, "DELETE")
+        dispatch(deleteReview(reviewId))
+    } catch (error) {
+        console.log(error)
+    }
+}
 // Initial State
 const initialState = {
-  allSpots: [],
-  currentSpot: null,
+  reviews: []
 };
 
 // Reducer
-function spotReducer(state = initialState, action) {
+function reviewReducer(state = initialState, action) {
   switch (action.type) {
-    case GET_ALL_SPOTS:
+    case ADD_REVIEW:
       return {
         ...state,
-        ...action.payload,
+        reviews: [...state.reviews, action.payload]
       };
-    case ADD_SPOT:
-      return {
-        ...state,
-        allSpots: [...state.allSpots, action.payload],
-      };
-    case UPDATE_SPOT:
-      return {
-        ...state,
-        allSpots: state.allSpots.map((spot) =>
-          spot.id === action.payload.id ? action.payload : spot
-        ),
-      };
-    case DELETE_SPOT:
-      return {
-        ...state,
-        allSpots: state.allSpots.filter((spot) => spot.id !== action.payload),
-      };
-    case SET_CURRENT_SPOT:
-      return {
-        ...state,
-        currentSpot: action.payload,
-      };
+    case GET_REVIEWS_BY_SPOT:
+        return {
+            ...state,
+            reviews: [...action.payload]
+
+        };
+    case DELETE_REVIEW:
+        return {
+            ...state,
+            reviews: state.reviews.filter(review => review.id !== action.payload)
+        };
     default:
       return state;
   }
 }
 // Selectors
-export const selectAllSpots = (state) => state.spots?.Spots || [];
-export const selectCurrentSpot = (state) => state.spots.currentSpot;
+export const selectReviewsBySpotId = (state, spotId) => {
+    return state.reviews.reviews.filter(review => review.spotId === spotId)
+}
+export const averageRatingBySpotId = (state, spotId) => {
+    const spotReviews = selectReviewsBySpotId(state, spotId);
+    if (spotReviews.length === 0)  return 0;
 
-export default spotReducer;
+    const sum = spotReviews.reduce((total, review) => total + review.stars, 0);
+    return Number((sum / spotReviews.length).toFixed(2));
+}
+
+export default reviewReducer;

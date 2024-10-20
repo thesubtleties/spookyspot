@@ -82,14 +82,13 @@ export const deleteSpotThunk = (spotId) => async (dispatch) => {
 
 export const getUserSpotsThunk = () => async (dispatch) => {
   try {
-   const response = await csrfFetch("/spots/current")
-   const userSpots = await response.json();
-   dispatch(getUserSpots(userSpots));
+    const response = await csrfFetch('/spots/current');
+    const userSpots = await response.json();
+    dispatch(getUserSpots(userSpots));
   } catch (error) {
     console.log(error);
   }
-}
-
+};
 
 // Initial State
 const initialState = {
@@ -123,7 +122,10 @@ function spotReducer(state = initialState, action) {
         ...state,
         allSpots: state.allSpots.filter((spot) => spot.id !== action.payload),
         userSpots: state.userSpots.filter((spot) => spot.id !== action.payload),
-        currentSpot: state.currentSpot && state.currentSpot.id === action.payload ? null : state.currentSpot)
+        currentSpot:
+          state.currentSpot && state.currentSpot.id === action.payload
+            ? null
+            : state.currentSpot,
       };
     case SET_CURRENT_SPOT:
       return {
@@ -134,7 +136,7 @@ function spotReducer(state = initialState, action) {
       return {
         ...state,
         userSpots: action.payload,
-      }
+      };
     default:
       return state;
   }
