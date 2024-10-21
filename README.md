@@ -1,4 +1,74 @@
-# AirBnB Clone
+
+# SpookySpot
+
+## Features
+
+- User authentication (signup, login, logout)
+- Spot listings with detailed information and images
+- Search functionality to find spots by location
+- Booking system for users to reserve spots
+- Review system for users to rate and comment on their stays
+- User dashboard to manage listings and bookings
+- Responsive design for mobile and desktop use
+
+## Technologies Used
+
+- Frontend:
+
+  - React
+  - Redux for state management
+  - React Router for navigation
+  - CSS Modules for styling
+
+- Backend:
+
+  - Node.js
+  - Express.js
+  - Sequelize ORM
+  - PostgreSQL database
+
+- Deployment:
+  - Render for hosting
+
+## Key Components
+
+### Spots
+
+- Users can create, read, update, and delete their spot listings
+- Each spot has details like location, price, description, and images
+- Spots are displayed in a grid layout with preview images and basic information
+
+### Reviews
+
+- Users can leave reviews for spots they've stayed at
+- Reviews include a rating (represented by pumpkins) and a text description
+- Average ratings are displayed on spot cards and detail pages
+
+### User Profiles
+
+- Users have profiles displaying their information and listings
+- Profile pages show user's spots and reviews
+
+## Unique Features
+
+- Spooky theming throughout the site (e.g., pumpkin icons for ratings)
+- Tooltip hover effects on spot cards for additional information
+- Responsive design adapts to different screen sizes
+
+## Future Enhancements
+
+- Users can book available dates for spots
+- Booking form includes date selection and displays total price
+- Users can view and manage their bookings in their dashboard
+- Implement a messaging system between hosts and guests
+- Add a map view for spot locations
+- Introduce a "Spook Level" feature for categorizing haunted locations
+- Implement social sharing functionality for spots and experiences
+
+## Installation and Setup
+
+1. Clone the repository
+2. Install dependencies:
 
 ## Database Schema Design
 
