@@ -7,6 +7,7 @@ const UPDATE_SPOT = 'spots/updateSpot';
 const DELETE_SPOT = 'spots/deleteSpot';
 const SET_CURRENT_SPOT = 'spots/setSpot';
 const GET_USER_SPOTS = 'spots/getUserSpots';
+const ADD_SPOT_IMAGE = 'spots/addSpotImage';
 
 // Actions
 export const getAllSpots = (spotsData) => ({
@@ -39,6 +40,11 @@ export const getUserSpots = (spots) => ({
   payload: spots,
 });
 
+export const addSpotImage = (spotId, imageUrl) => ({
+  type: ADD_SPOT_IMAGE,
+  payload: { spotId, imageUrl },
+});
+
 // Thunks
 export const fetchAllSpotsThunk = () => async (dispatch) => {
   try {
@@ -51,11 +57,31 @@ export const fetchAllSpotsThunk = () => async (dispatch) => {
   }
 };
 
-export const createSpotThunk = (spotData) => async (dispatch) => {
+export const fetchSpotDetailsThunk = (spotId) => async (dispatch) => {
+  try {
+    const response = await csrfFetch(`/spots/${spotId}`);
+    const spot = await response.json();
+    dispatch(setSpot(spot));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const createSpotThunk = (spotData, images) => async (dispatch) => {
   try {
     const response = await csrfFetch('/spots', 'POST', spotData);
     const newSpot = await response.json();
     dispatch(addSpot(newSpot));
+
+    if (images && images.length > 0) {
+      for (let i = 0; i < images.length; i++) {
+        const imageUrl = images[i];
+        if (imageUrl) {
+          await dispatch(addSpotImageThunk(newSpot.id, imageUrl, i === 0));
+        }
+      }
+    }
+    dispatch(fetchSpotDetailsThunk(newSpot.id));
   } catch (error) {
     console.log(error);
   }
@@ -90,6 +116,21 @@ export const getUserSpotsThunk = () => async (dispatch) => {
   }
 };
 
+export const addSpotImageThunk =
+  (spotId, imageUrl, preview = false) =>
+  async (dispatch) => {
+    try {
+      const response = await csrfFetch(`/spots/${spotId}/images`, 'POST', {
+        url: imageUrl,
+        preview,
+      });
+      const newImage = await response.json();
+      dispatch(addSpotImage(spotId, newImage));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 // Initial State
 const initialState = {
   allSpots: [],
@@ -103,7 +144,7 @@ function spotReducer(state = initialState, action) {
     case GET_ALL_SPOTS:
       return {
         ...state,
-        ...action.payload,
+        allSpots: action.payload.Spots || [],
       };
     case ADD_SPOT:
       return {
@@ -137,12 +178,39 @@ function spotReducer(state = initialState, action) {
         ...state,
         userSpots: action.payload,
       };
+    case ADD_SPOT_IMAGE:
+      return {
+        ...state,
+        allSpots: state.allSpots.map((spot) =>
+          spot.id === action.payload.spotId
+            ? {
+                ...spot,
+                images: [...(spot.images || []), action.payload.imageUrl],
+              }
+            : spot
+        ),
+        currentSpot:
+          state.currentSpot && state.currentSpot.id === action.payload.spotId
+            ? {
+                ...state.currentSpot,
+                images: [
+                  ...(state.currentSpot.images || []),
+                  action.payload.imageUrl,
+                ],
+              }
+            : state.currentSpot,
+      };
     default:
       return state;
   }
 }
 // Selectors
-export const selectAllSpots = (state) => state.spots?.Spots || [];
+export const selectAllSpots = (state) => state.spots?.allSpots || [];
 export const selectCurrentSpot = (state) => state.spots.currentSpot;
+export const selectIsCurrentUserOwner = (state, spotId) => {
+  const currentUserId = state.session.user?.id;
+  const spot = state.spots.allSpots[spotId];
+  return spot?.ownerId === currentUserId;
+};
 
 export default spotReducer;

@@ -17,9 +17,9 @@ export const getReviewsBySpot = (spotReviews) => ({
 });
 
 export const deleteReview = (reviewId) => ({
-    type: DELETE_REVIEW,
-    payload: reviewId
-})
+  type: DELETE_REVIEW,
+  payload: reviewId,
+});
 
 // Thunks
 export const addReviewThunk = (review) => async (dispatch) => {
@@ -32,27 +32,27 @@ export const addReviewThunk = (review) => async (dispatch) => {
   }
 };
 
-export const getReviewsBySpotThunk = (spotId) => async (dispatch) {
-    try {
-        const response = await csrfFetch(`/spots/${spotId}/reviews`)
-        const spotReviews = await response.json();
-        dispatch(getReviewsBySpot(spotReviews))
-    } catch (error) {
-        console.log(error);
-    }
-}
+export const getReviewsBySpotThunk = (spotId) => async (dispatch) => {
+  try {
+    const response = await csrfFetch(`/spots/${spotId}/reviews`);
+    const spotReviews = await response.json();
+    dispatch(getReviewsBySpot(spotReviews));
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const deleteReviewThunk = (reviewId) => async (dispatch) => {
-    try {
-        const response = await csrfFetch(`/reviews/${reviewId}`, "DELETE")
-        dispatch(deleteReview(reviewId))
-    } catch (error) {
-        console.log(error)
-    }
-}
+  try {
+    const response = await csrfFetch(`/reviews/${reviewId}`, 'DELETE');
+    dispatch(deleteReview(reviewId));
+  } catch (error) {
+    console.log(error);
+  }
+};
 // Initial State
 const initialState = {
-  reviews: []
+  reviews: [],
 };
 
 // Reducer
@@ -61,33 +61,32 @@ function reviewReducer(state = initialState, action) {
     case ADD_REVIEW:
       return {
         ...state,
-        reviews: [...state.reviews, action.payload]
+        reviews: [...state.reviews, action.payload],
       };
     case GET_REVIEWS_BY_SPOT:
-        return {
-            ...state,
-            reviews: [...action.payload]
-
-        };
+      return {
+        ...state,
+        reviews: [...action.payload],
+      };
     case DELETE_REVIEW:
-        return {
-            ...state,
-            reviews: state.reviews.filter(review => review.id !== action.payload)
-        };
+      return {
+        ...state,
+        reviews: state.reviews.filter((review) => review.id !== action.payload),
+      };
     default:
       return state;
   }
 }
 // Selectors
 export const selectReviewsBySpotId = (state, spotId) => {
-    return state.reviews.reviews.filter(review => review.spotId === spotId)
-}
+  return state.reviews.reviews.filter((review) => review.spotId === spotId);
+};
 export const averageRatingBySpotId = (state, spotId) => {
-    const spotReviews = selectReviewsBySpotId(state, spotId);
-    if (spotReviews.length === 0)  return 0;
+  const spotReviews = selectReviewsBySpotId(state, spotId);
+  if (spotReviews.length === 0) return 0;
 
-    const sum = spotReviews.reduce((total, review) => total + review.stars, 0);
-    return Number((sum / spotReviews.length).toFixed(2));
-}
+  const sum = spotReviews.reduce((total, review) => total + review.stars, 0);
+  return Number((sum / spotReviews.length).toFixed(2));
+};
 
 export default reviewReducer;
