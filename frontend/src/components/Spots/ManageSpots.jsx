@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getUserSpotsThunk } from '../../store/spots';
@@ -50,7 +50,7 @@ function ManageSpots() {
         </div>
       ) : (
         <div className={styles.noSpots}>
-          <p>You don't have any Spots yet!</p>
+          <p>You dont have any Spots yet!</p>
           <button onClick={handleCreateSpot} className={styles.createButton}>
             Create a New Spot
           </button>

@@ -40,14 +40,14 @@ export const getReviewsBySpotThunk = (spotId) => async (dispatch) => {
   try {
     const response = await csrfFetch(`/spots/${spotId}/reviews`);
     const data = await response.json();
-    dispatch(setReviewsForSpot(data.Reviews)); // Now this should work
+    dispatch(setReviewsForSpot(data.Reviews));
   } catch (error) {
     console.log(error);
   }
 };
 export const deleteReviewThunk = (reviewId) => async (dispatch) => {
   try {
-    const response = await csrfFetch(`/reviews/${reviewId}`, 'DELETE');
+    await csrfFetch(`/reviews/${reviewId}`, 'DELETE');
     dispatch(deleteReview(reviewId));
   } catch (error) {
     console.log(error);

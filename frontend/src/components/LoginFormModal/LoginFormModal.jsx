@@ -18,7 +18,7 @@ function LoginFormModal() {
       .then(() => {
         closeModal();
       })
-      .catch((error) => {
+      .catch(() => {
         setErrors({ credential: 'The provided credentials were invalid' });
       });
   };
@@ -29,7 +29,7 @@ function LoginFormModal() {
       .then(() => {
         closeModal();
       })
-      .catch((error) => {
+      .catch(() => {
         setErrors({ credential: 'The provided credentials were invalid' });
       });
   };

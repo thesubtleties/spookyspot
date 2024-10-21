@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { validateSpotForm } from '../utils/formValidations';
@@ -267,7 +267,7 @@ function SpotForm({ mode }) {
         <section>
           <h2>Give your Spot a name</h2>
           <p>
-            Catch guests' attention with a spot name that highlights what makes
+            Catch guests attention with a spot name that highlights what makes
             your place special.
           </p>
           <input

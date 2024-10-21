@@ -1,4 +1,3 @@
-import React from 'react';
 import { useModal } from '../../context/Modal';
 import styles from './OpenModalButton.module.css'; // Create this CSS module
 

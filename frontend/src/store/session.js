@@ -21,7 +21,7 @@ export const login = (user) => async (dispatch) => {
       throw new Error('The provided credentials were invalid');
     }
   } catch (error) {
-    throw error;
+    console.log(error);
   }
 };
 
