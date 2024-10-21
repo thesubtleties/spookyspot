@@ -23,12 +23,16 @@ module.exports = {
       where: {
         name: {
           [Op.in]: [
-            "Cozy SF Apartment",
-            "Manhattan Loft",
-            "Hollywood Hills Villa",
-            "Beachfront Condo",
-            "Rocky Mountain Retreat",
-            "Luxury Lakeshore Apartment",
+            "Whisper Manor",
+            "Crypt Cavern Inn",
+            "Banshee's Bungalow",
+            "Phantom Lighthouse",
+            "Witch's Treehouse",
+            "Dracula's Chateau",
+            "Werewolf Lodge",
+            "Mermaid's Sunken Palace",
+            "Pharaoh's Pyramid Retreat",
+            "Alien Abode",
           ],
         },
       },
@@ -38,49 +42,81 @@ module.exports = {
     await Review.bulkCreate(
       [
         {
-          spotId: demoSpots.find((spot) => spot.name === "Cozy SF Apartment")
+          spotId: demoSpots.find((spot) => spot.name === "Whisper Manor").id,
+          userId: demoUsers.find((user) => user.username === "FakeUser1").id,
+          review:
+            "Truly haunting experience! The ghostly ballroom dance was unforgettable.",
+          stars: 5,
+        },
+        {
+          spotId: demoSpots.find((spot) => spot.name === "Crypt Cavern Inn").id,
+          userId: demoUsers.find((user) => user.username === "Demo-lition").id,
+          review:
+            "Chillingly cozy. The skeleton staff was surprisingly accommodating.",
+          stars: 4,
+        },
+        {
+          spotId: demoSpots.find((spot) => spot.name === "Banshee's Bungalow")
+            .id,
+          userId: demoUsers.find((user) => user.username === "FakeUser2").id,
+          review:
+            "Hauntingly beautiful. The banshee's lullaby was actually quite soothing.",
+          stars: 5,
+        },
+        {
+          spotId: demoSpots.find((spot) => spot.name === "Phantom Lighthouse")
             .id,
           userId: demoUsers.find((user) => user.username === "FakeUser1").id,
           review:
-            "Great location with stunning views. The amenities were top-notch.",
-          stars: 5,
-        },
-        {
-          spotId: demoSpots.find((spot) => spot.name === "Manhattan Loft").id,
-          userId: demoUsers.find((user) => user.username === "Demo-lition").id,
-          review: "Stylish and comfortable. Perfect for a city getaway.",
+            "Spectacular views and spine-tingling atmosphere. Watch out for the ghostly keeper!",
           stars: 4,
         },
         {
-          spotId: demoSpots.find(
-            (spot) => spot.name === "Hollywood Hills Villa"
-          ).id,
+          spotId: demoSpots.find((spot) => spot.name === "Witch's Treehouse")
+            .id,
+          userId: demoUsers.find((user) => user.username === "Demo-lition").id,
+          review:
+            "Magical stay! The flying books were a bit of a hazard though.",
+          stars: 4,
+        },
+        {
+          spotId: demoSpots.find((spot) => spot.name === "Dracula's Chateau")
+            .id,
           userId: demoUsers.find((user) => user.username === "FakeUser2").id,
-          review: "Luxurious and spacious. The view of LA was breathtaking.",
+          review:
+            "Absolutely fang-tastic! The Bloody Mary at the bar was to die for.",
           stars: 5,
         },
         {
-          spotId: demoSpots.find((spot) => spot.name === "Beachfront Condo").id,
+          spotId: demoSpots.find((spot) => spot.name === "Werewolf Lodge").id,
           userId: demoUsers.find((user) => user.username === "FakeUser1").id,
-          review: "Relaxing beach vacation. The sound of waves was soothing.",
+          review: "Howlingly good time! The full moon view was spectacular.",
           stars: 4,
         },
         {
           spotId: demoSpots.find(
-            (spot) => spot.name === "Rocky Mountain Retreat"
+            (spot) => spot.name === "Mermaid's Sunken Palace"
           ).id,
           userId: demoUsers.find((user) => user.username === "Demo-lition").id,
-          review: "A perfect escape into nature. Hiking trails were amazing.",
+          review:
+            "An underwater dream! The bioluminescent display was mesmerizing.",
           stars: 5,
         },
         {
           spotId: demoSpots.find(
-            (spot) => spot.name === "Luxury Lakeshore Apartment"
+            (spot) => spot.name === "Pharaoh's Pyramid Retreat"
           ).id,
           userId: demoUsers.find((user) => user.username === "FakeUser2").id,
           review:
-            "Serene lakeside stay. The apartment was well-equipped and comfortable.",
+            "Felt like ancient royalty! The sarcophagus bar was a unique touch.",
           stars: 4,
+        },
+        {
+          spotId: demoSpots.find((spot) => spot.name === "Alien Abode").id,
+          userId: demoUsers.find((user) => user.username === "FakeUser1").id,
+          review:
+            "Out of this world experience! The anti-gravity shower was a trip.",
+          stars: 5,
         },
       ],
       { validate: true }

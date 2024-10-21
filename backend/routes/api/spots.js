@@ -219,11 +219,20 @@ router.get("/current", requireAuth, async (req, res) => {
       ],
       attributes: {
         include: [
-          [sequelize.fn("AVG", sequelize.col("Reviews.stars")), "avgRating"],
+          [
+            sequelize.fn(
+              "ROUND",
+              sequelize.fn("AVG", sequelize.col("Reviews.stars")),
+              2
+            ),
+            "avgRating",
+          ],
         ],
       },
       group: ["Spot.id", "SpotImages.id"],
     });
+
+    // ... rest of your code
 
     const formattedSpots = Spots.map((spot) => ({
       ...spot.toJSON(),
@@ -378,6 +387,10 @@ router.post("/", requireAuth, async (req, res) => {
 });
 
 router.put("/:spotId", requireAuth, async (req, res) => {
+  console.log("Received data:", req.body);
+  console.log("lat type:", typeof req.body.lat);
+  console.log("lng type:", typeof req.body.lng);
+
   const spotId = parseInt(req.params.spotId);
   const userId = req.user.id;
   const spot = await Spot.findByPk(spotId);
