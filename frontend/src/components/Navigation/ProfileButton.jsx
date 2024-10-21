@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { FaUserCircle } from 'react-icons/fa';
+import { TbGhost2 } from 'react-icons/tb';
 import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
+import styles from './Navigation.module.css';
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -38,23 +39,30 @@ function ProfileButton({ user }) {
     closeMenu();
   };
 
-  const ulClassName = 'profile-dropdown' + (showMenu ? '' : ' hidden');
+  const ulClassName = `${styles.profileDropdown} ${
+    showMenu ? '' : styles.hidden
+  }`;
 
   return (
     <>
-      <button onClick={toggleMenu}>
-        <FaUserCircle />
+      <button className={styles.userButton} onClick={toggleMenu}>
+        <TbGhost2 className={styles.ghost} />
       </button>
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
             <li>{user.username}</li>
-            <li>
+            <li className={styles.name}>
               {user.firstName} {user.lastName}
             </li>
-            <li>{user.email}</li>
+            <li className={styles.email}>{user.email}</li>
             <li>
-              <button onClick={logout}>Log Out</button>
+              <button
+                className={`${styles.logoutButton} ${styles.bloodyButton}`}
+                onClick={logout}
+              >
+                Log Out
+              </button>
             </li>
           </>
         ) : (
@@ -62,11 +70,13 @@ function ProfileButton({ user }) {
             <OpenModalMenuItem
               itemText="Log In"
               onItemClick={closeMenu}
+              className={styles.menuButton}
               modalComponent={<LoginFormModal />}
             />
             <OpenModalMenuItem
               itemText="Sign Up"
               onItemClick={closeMenu}
+              className={styles.menuButton}
               modalComponent={<SignupFormModal />}
             />
           </>

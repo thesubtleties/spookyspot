@@ -1,0 +1,94 @@
+@keyframes fadeIn {
+  from {
+    color: white;
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.hidden {
+  display: none;
+}
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* padding: 1rem; */
+  background-color: #000000;
+}
+
+.logoContainer {
+}
+
+.profileContainer {
+  width: 5rem;
+}
+.profileDropdown {
+  position: absolute;
+  right: 2.5rem;
+  border-radius: 5px;
+  background-color: white;
+  color: rgb(243, 13, 13);
+  font-family: 'Nosifer', cursive;
+  animation: fadeIn 1s ease-out forwards;
+  opacity: 0;
+  padding: 10px;
+}
+.userButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none; /* Removes the outline */
+  color: white; /* Makes the font color white */
+}
+
+.ghost {
+  font-size: 2.5rem;
+}
+ul,
+ol {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.animated-list li {
+  animation: fadeIn 1s ease-out forwards;
+  opacity: 0;
+}
+
+.menuButton {
+  padding-left: 100px;
+  padding-right: 1rem;
+}
+
+.logoutButton {
+  margin-top: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.bloodyButton {
+  background-color: #8a0303; /* Dark red base */
+  color: #ffffff; /* White text */
+  border: 2px solid #ff0000; /* Bright red border */
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px #ff0000, 0 0 20px rgba(255, 0, 0, 0.5) inset;
+}
+
+.bloodyButton:hover {
+  background-color: #500202;
+}
+
+.bloodyButton:active {
+  background-color: #500202; /* Darker red when pressed */
+  box-shadow: 0 0 5px #ff0000, 0 0 10px rgba(255, 0, 0, 0.3) inset;
+}

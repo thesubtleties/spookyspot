@@ -50,4 +50,6 @@ const sessionReducer = (state = initialState, action) => {
   }
 };
 
+export const selectCurrentUserId = (state) => state.session.user?.id;
+
 export default sessionReducer;

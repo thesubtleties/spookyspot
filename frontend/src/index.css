@@ -1,1 +1,11 @@
 /* TODO: Add sitewide styles */
+@import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jolly+Lodger&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nosifer&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  color: white; /*text color*/
+}
