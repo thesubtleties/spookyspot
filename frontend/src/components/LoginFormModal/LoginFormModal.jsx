@@ -14,16 +14,28 @@ function LoginFormModal() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors({});
-    return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal)
-      .catch(async (res) => {
-        const data = await res.json();
-        if (data && data?.errors) setErrors(data.errors);
+    dispatch(sessionActions.login({ credential, password }))
+      .then(() => {
+        closeModal();
+      })
+      .catch((error) => {
+        setErrors({ credential: 'The provided credentials were invalid' });
+      });
+  };
+  const handleDemoLogin = () => {
+    dispatch(
+      sessionActions.login({ credential: 'Demo-lition', password: 'password' })
+    )
+      .then(() => {
+        closeModal();
+      })
+      .catch((error) => {
+        setErrors({ credential: 'The provided credentials were invalid' });
       });
   };
 
   return (
-    <>
+    <div className={styles.loginForm}>
       <h1>Log In</h1>
       <form onSubmit={handleSubmit}>
         <label>
@@ -44,10 +56,16 @@ function LoginFormModal() {
             required
           />
         </label>
-        {errors.credential && <p>{errors.credential}</p>}
+
         <button type="submit">Log In</button>
+        <button onClick={handleDemoLogin} className={styles.demoButton}>
+          Log in as Demo User
+        </button>
+        {errors.credential && (
+          <p className={styles.error}>{errors.credential}</p>
+        )}
       </form>
-    </>
+    </div>
   );
 }
 

@@ -4,6 +4,10 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import * as sessionActions from './store/session';
 import SpotsLayout from './components/Spots/SpotsLayout';
+import AllSpots from './components/Spots/AllSpots';
+import SpotDetail from './components/Spots/SpotDetail';
+import SpotForm from './components/Spots/SpotForm';
+import ManageSpots from './components/Spots/ManageSpots';
 
 function Layout() {
   const dispatch = useDispatch();
@@ -30,6 +34,28 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <SpotsLayout />,
+        children: [
+          {
+            index: true,
+            element: <AllSpots />,
+          },
+          {
+            path: 'spots/:id/edit',
+            element: <SpotForm mode="update" />,
+          },
+          {
+            path: 'spots/new',
+            element: <SpotForm />,
+          },
+          {
+            path: 'spots/:id',
+            element: <SpotDetail />,
+          },
+          {
+            path: 'profile',
+            element: <ManageSpots />,
+          },
+        ],
       },
     ],
   },
@@ -40,24 +66,3 @@ function App() {
 }
 
 export default App;
-
-/*
-        // children: [
-        //   {
-        //     index: true,
-        //     element: <AllSpots />,
-        //   },
-        //   {
-        //     path: ':id',
-        //     element: <SpotDetail />,
-        //   },
-        //   {
-        //     path: 'new',
-        //     element: <SpotForm />,
-        //   },
-        //   {
-        //     path: 'update',
-        //     element: <SpotForm mode="update" />,
-        //   },
-        // ],
-        */

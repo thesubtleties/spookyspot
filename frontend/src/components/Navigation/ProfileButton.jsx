@@ -5,15 +5,17 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
-import styles from './Navigation.module.css';
+import styles from './ProfileButton.module.css';
+import { useNavigate } from 'react-router-dom';
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
+  const navigate = useNavigate();
 
   const toggleMenu = (e) => {
-    e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
+    e.stopPropagation();
     setShowMenu(!showMenu);
   };
 
@@ -37,6 +39,10 @@ function ProfileButton({ user }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
+    navigate('/');
+  };
+  const goToManageSpots = () => {
+    navigate('/profile');
   };
 
   const ulClassName = `${styles.profileDropdown} ${
@@ -51,12 +57,17 @@ function ProfileButton({ user }) {
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
-            <li>{user.username}</li>
-            <li className={styles.name}>
-              {user.firstName} {user.lastName}
-            </li>
+            <li className={styles.name}>Hello, {user.firstName}</li>
             <li className={styles.email}>{user.email}</li>
-            <li>
+            <li className={styles.buttonLi}>
+              <button
+                className={`${styles.manageButton} ${styles.bloodyButton}`}
+                onClick={goToManageSpots}
+              >
+                Manage Spots
+              </button>
+            </li>
+            <li className={styles.buttonLi}>
               <button
                 className={`${styles.logoutButton} ${styles.bloodyButton}`}
                 onClick={logout}
@@ -68,16 +79,16 @@ function ProfileButton({ user }) {
         ) : (
           <>
             <OpenModalMenuItem
-              itemText="Log In"
-              onItemClick={closeMenu}
-              className={styles.menuButton}
-              modalComponent={<LoginFormModal />}
-            />
-            <OpenModalMenuItem
               itemText="Sign Up"
               onItemClick={closeMenu}
               className={styles.menuButton}
               modalComponent={<SignupFormModal />}
+            />
+            <OpenModalMenuItem
+              itemText="Log In"
+              onItemClick={closeMenu}
+              className={styles.menuButton}
+              modalComponent={<LoginFormModal />}
             />
           </>
         )}

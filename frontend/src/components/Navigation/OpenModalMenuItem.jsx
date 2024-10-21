@@ -1,4 +1,5 @@
 import { useModal } from '../../context/Modal';
+import styles from './OpenModalMenuItem.module.css';
 
 function OpenModalMenuItem({
   modalComponent, // component to render inside the modal
@@ -14,7 +15,11 @@ function OpenModalMenuItem({
     if (typeof onItemClick === 'function') onItemClick();
   };
 
-  return <li onClick={onClick}>{itemText}</li>;
+  return (
+    <li className={styles.menuButton} onClick={onClick}>
+      {itemText}
+    </li>
+  );
 }
 
 export default OpenModalMenuItem;
