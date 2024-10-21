@@ -30,7 +30,7 @@ export const deleteSpot = (spotId) => ({
   payload: spotId,
 });
 
-export const setSpot = (spot) => ({
+export const setCurrentSpot = (spot) => ({
   type: SET_CURRENT_SPOT,
   payload: spot,
 });
@@ -61,7 +61,7 @@ export const fetchSpotDetailsThunk = (spotId) => async (dispatch) => {
   try {
     const response = await csrfFetch(`/spots/${spotId}`);
     const spot = await response.json();
-    dispatch(setSpot(spot));
+    dispatch(setCurrentSpot(spot));
   } catch (error) {
     console.log(error);
   }
@@ -82,6 +82,7 @@ export const createSpotThunk = (spotData, images) => async (dispatch) => {
       }
     }
     dispatch(fetchSpotDetailsThunk(newSpot.id));
+    return newSpot;
   } catch (error) {
     console.log(error);
   }
@@ -89,14 +90,27 @@ export const createSpotThunk = (spotData, images) => async (dispatch) => {
 
 export const updateSpotThunk = (spotData) => async (dispatch) => {
   try {
+    console.log('updateSpotThunk called with data:', spotData);
+    console.log('Spot data before sending:', spotData);
+    console.log('lat type:', typeof spotData.lat);
+    console.log('lng type:', typeof spotData.lng);
     const response = await csrfFetch(`/spots/${spotData.id}`, 'PUT', spotData);
-    const newSpot = await response.json();
-    dispatch(updateSpot(newSpot));
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Update failed. Server response:', errorData);
+      throw new Error(errorData.message || 'Failed to update spot');
+    }
+
+    const updatedSpot = await response.json();
+    console.log('Spot updated successfully:', updatedSpot);
+    dispatch(updateSpot(updatedSpot));
+    return updatedSpot;
   } catch (error) {
-    console.log(error);
+    console.error('Error in updateSpotThunk:', error);
+    throw error;
   }
 };
-
 export const deleteSpotThunk = (spotId) => async (dispatch) => {
   try {
     await csrfFetch(`/spots/${spotId}`, 'DELETE');
@@ -109,10 +123,15 @@ export const deleteSpotThunk = (spotId) => async (dispatch) => {
 export const getUserSpotsThunk = () => async (dispatch) => {
   try {
     const response = await csrfFetch('/spots/current');
+    if (!response.ok) {
+      throw new Error('Failed to fetch user spots');
+    }
     const userSpots = await response.json();
+    console.log('Fetched user spots:', userSpots); // Add this log
     dispatch(getUserSpots(userSpots));
   } catch (error) {
-    console.log(error);
+    console.error('Error in getUserSpotsThunk:', error);
+    throw error; // Re-throw the error so it can be caught in the component
   }
 };
 
@@ -124,13 +143,19 @@ export const addSpotImageThunk =
         url: imageUrl,
         preview,
       });
-      const newImage = await response.json();
-      dispatch(addSpotImage(spotId, newImage));
+
+      if (response.ok) {
+        const newImage = await response.json();
+        dispatch(addSpotImage(spotId, newImage));
+        return newImage;
+      } else {
+        throw new Error('Failed to add image');
+      }
     } catch (error) {
-      console.log(error);
+      console.error('Error adding spot image:', error);
+      throw error;
     }
   };
-
 // Initial State
 const initialState = {
   allSpots: [],
@@ -176,7 +201,7 @@ function spotReducer(state = initialState, action) {
     case GET_USER_SPOTS:
       return {
         ...state,
-        userSpots: action.payload,
+        userSpots: action.payload.Spots,
       };
     case ADD_SPOT_IMAGE:
       return {

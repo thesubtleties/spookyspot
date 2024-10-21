@@ -1,0 +1,84 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.spotInfo {
+  margin-bottom: 20px;
+}
+
+.spotName {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.spotLocation,
+.spotAddress {
+  font-size: 16px;
+  color: #555;
+  margin: 0;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  aspect-ratio: 3 / 2;
+}
+
+.mainImage {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+}
+
+.thumbnails {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+}
+
+.loading {
+  opacity: 0;
+}
+
+.loaded {
+  opacity: 1;
+  transition: opacity 0.3s ease-in;
+}
+
+@media (max-width: 768px) {
+  .gallery {
+    grid-template-columns: 1fr;
+    grid-template-rows: 2fr 1fr;
+    aspect-ratio: auto;
+  }
+
+  .mainImage {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+
+  .thumbnails {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+  }
+}

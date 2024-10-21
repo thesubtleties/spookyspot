@@ -8,13 +8,21 @@ export const logoutUser = () => ({ type: LOGOUT_USER });
 
 export const login = (user) => async (dispatch) => {
   const { credential, password } = user;
-  const response = await csrfFetch('/session', 'POST', {
-    credential,
-    password,
-  });
-  const data = await response.json();
-  dispatch(setUser(data.user));
-  return response;
+  try {
+    const response = await csrfFetch('/session', 'POST', {
+      credential,
+      password,
+    });
+    const data = await response.json();
+    if (response.ok) {
+      dispatch(setUser(data.user));
+      return data;
+    } else {
+      throw new Error('The provided credentials were invalid');
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const restoreUser = () => async (dispatch) => {

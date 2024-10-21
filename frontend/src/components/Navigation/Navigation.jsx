@@ -1,8 +1,8 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import LogoWithText from './LogoWithText';
-import styles from './Navigation.module.css'; // We'll create this file
+import styles from './Navigation.module.css';
+import AddSpotButton from './AddSpotButton';
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
@@ -12,6 +12,11 @@ function Navigation({ isLoaded }) {
       <div className={styles.logoContainer}>
         <LogoWithText />
       </div>
+      {isLoaded && sessionUser && (
+        <div className={styles.addSpotButtonContainer}>
+          <AddSpotButton />
+        </div>
+      )}
       {isLoaded && (
         <div className={styles.profileContainer}>
           <ProfileButton user={sessionUser} />

@@ -3,7 +3,7 @@ import { csrfFetch } from './csrf';
 // Constants
 const ADD_REVIEW = 'reviews/addReview';
 const DELETE_REVIEW = 'reviews/deleteReview';
-const GET_REVIEWS_BY_SPOT = 'reviews/getReviewsBySpot';
+const SET_REVIEWS_FOR_SPOT = 'reviews/setReviewsForSpot';
 
 // Actions
 export const addReview = (review) => ({
@@ -11,9 +11,9 @@ export const addReview = (review) => ({
   payload: review,
 });
 
-export const getReviewsBySpot = (spotReviews) => ({
-  type: GET_REVIEWS_BY_SPOT,
-  payload: spotReviews,
+export const setReviewsForSpot = (reviews) => ({
+  type: SET_REVIEWS_FOR_SPOT,
+  payload: reviews,
 });
 
 export const deleteReview = (reviewId) => ({
@@ -24,7 +24,11 @@ export const deleteReview = (reviewId) => ({
 // Thunks
 export const addReviewThunk = (review) => async (dispatch) => {
   try {
-    const response = await csrfFetch('/reviews', 'POST', review);
+    const response = await csrfFetch(
+      `/spots/${review.spotId}/reviews`,
+      'POST',
+      review
+    );
     const newReview = await response.json();
     dispatch(addReview(newReview));
   } catch (error) {
@@ -35,16 +39,15 @@ export const addReviewThunk = (review) => async (dispatch) => {
 export const getReviewsBySpotThunk = (spotId) => async (dispatch) => {
   try {
     const response = await csrfFetch(`/spots/${spotId}/reviews`);
-    const spotReviews = await response.json();
-    dispatch(getReviewsBySpot(spotReviews));
+    const data = await response.json();
+    dispatch(setReviewsForSpot(data.Reviews));
   } catch (error) {
     console.log(error);
   }
 };
-
 export const deleteReviewThunk = (reviewId) => async (dispatch) => {
   try {
-    const response = await csrfFetch(`/reviews/${reviewId}`, 'DELETE');
+    await csrfFetch(`/reviews/${reviewId}`, 'DELETE');
     dispatch(deleteReview(reviewId));
   } catch (error) {
     console.log(error);
@@ -63,10 +66,10 @@ function reviewReducer(state = initialState, action) {
         ...state,
         reviews: [...state.reviews, action.payload],
       };
-    case GET_REVIEWS_BY_SPOT:
+    case SET_REVIEWS_FOR_SPOT:
       return {
         ...state,
-        reviews: [...action.payload],
+        reviews: action.payload,
       };
     case DELETE_REVIEW:
       return {
