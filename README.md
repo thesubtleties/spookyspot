@@ -4,10 +4,8 @@
 
 - User authentication (signup, login, logout)
 - Spot listings with detailed information and images
-- Search functionality to find spots by location
-- Booking system for users to reserve spots
 - Review system for users to rate and comment on their stays
-- User dashboard to manage listings and bookings
+- User dashboard to manage listings
 - Responsive design for mobile and desktop use
 
 ## Technologies Used
