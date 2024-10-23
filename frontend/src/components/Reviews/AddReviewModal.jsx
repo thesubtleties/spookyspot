@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { addReviewThunk } from '../../store/reviews';
 import { useModal } from '../../context/Modal';
 import { TbPumpkinScary } from 'react-icons/tb';
-import styles from './AddReviewModal.module.css';
+import styles from './styles/AddReviewModal.module.css';
 
-function AddReviewModal({ spotId, onReviewAdded }) {
+function AddReviewModal({ spotId }) {
   const [review, setReview] = useState('');
   const [stars, setStars] = useState(1);
   const dispatch = useDispatch();
@@ -21,7 +21,6 @@ function AddReviewModal({ spotId, onReviewAdded }) {
       })
     );
     closeModal();
-    onReviewAdded();
   };
 
   return (

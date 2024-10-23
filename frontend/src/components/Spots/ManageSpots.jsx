@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getUserSpotsThunk } from '../../store/spots';
 import SpotCard from './SpotCard';
-import styles from './ManageSpots.module.css';
+import styles from './styles/ManageSpots.module.css';
 
 function ManageSpots() {
   const dispatch = useDispatch();

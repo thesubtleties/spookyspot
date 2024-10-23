@@ -8,7 +8,7 @@ import {
   updateSpotThunk,
   addSpotImageThunk,
 } from '../../store/spots';
-import styles from './SpotForm.module.css';
+import styles from './styles/SpotForm.module.css';
 
 function SpotForm({ mode }) {
   const dispatch = useDispatch();

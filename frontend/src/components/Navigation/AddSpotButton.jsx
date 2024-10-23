@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import styles from './AddSpotButton.module.css';
+import styles from './styles/AddSpotButton.module.css';
 
 function AddSpotButton() {
   const navigate = useNavigate();

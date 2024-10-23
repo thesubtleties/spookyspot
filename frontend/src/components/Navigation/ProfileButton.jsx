@@ -5,7 +5,7 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
-import styles from './ProfileButton.module.css';
+import styles from './styles/ProfileButton.module.css';
 import { useNavigate } from 'react-router-dom';
 
 function ProfileButton({ user }) {

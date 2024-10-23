@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
-import styles from './ImageGallery.module.css';
+import styles from './styles/ImageGallery.module.css';
 
 function ImageGallery() {
   const spot = useSelector((state) => state.spots.currentSpot);

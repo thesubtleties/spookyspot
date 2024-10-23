@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { selectCurrentSpot } from '../../store/spots';
-import styles from './SpotInfo.module.css';
+import styles from './styles/SpotInfo.module.css';
 import { formatRating } from '../utils/ratingFormatter';
 import { GoDotFill } from 'react-icons/go';
 

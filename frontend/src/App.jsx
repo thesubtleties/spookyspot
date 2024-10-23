@@ -40,7 +40,7 @@ const router = createBrowserRouter([
             element: <AllSpots />,
           },
           {
-            path: 'spots/:id/edit',
+            path: 'spots/:spotId/edit',
             element: <SpotForm mode="update" />,
           },
           {
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
             element: <SpotForm />,
           },
           {
-            path: 'spots/:id',
+            path: 'spots/:spotId',
             element: <SpotDetail />,
           },
           {

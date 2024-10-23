@@ -1,5 +1,5 @@
 import { useModal } from '../../context/Modal';
-import styles from './OpenModalMenuItem.module.css';
+import styles from './styles/OpenModalMenuItem.module.css';
 
 function OpenModalMenuItem({
   modalComponent, // component to render inside the modal

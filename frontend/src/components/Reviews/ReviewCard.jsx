@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { TbPumpkinScary } from 'react-icons/tb';
 import { deleteReviewThunk } from '../../store/reviews';
-import styles from './ReviewCard.module.css';
+import styles from './styles/ReviewCard.module.css';
 import { formatDate } from '../utils/formatDate';
 
 function ReviewCard({ review }) {
@@ -9,6 +9,10 @@ function ReviewCard({ review }) {
   const currentUser = useSelector((state) => state.session.user);
   const isOwner = currentUser && currentUser.id === review.userId;
 
+  if (!review || !review.User) {
+    return null;
+  }
+  // TODO: update to modal
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this review?')) {
       try {

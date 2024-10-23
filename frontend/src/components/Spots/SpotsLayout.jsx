@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import styles from './SpotsLayout.module.css';
+import styles from './styles/SpotsLayout.module.css';
 
 function SpotsLayout() {
   return (

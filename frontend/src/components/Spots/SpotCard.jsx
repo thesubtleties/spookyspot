@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatRating } from '../utils/ratingFormatter';
 import { TbPumpkinScary } from 'react-icons/tb';
 import { setCurrentSpot, deleteSpotThunk } from '../../store/spots';
-import styles from './SpotCard.module.css';
+import styles from './styles/SpotCard.module.css';
 
 function SpotCard({ id, showEdit = false }) {
   const navigate = useNavigate();
