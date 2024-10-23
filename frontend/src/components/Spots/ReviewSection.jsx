@@ -1,17 +1,32 @@
-import { shallowEqual, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ReviewCard from '../Reviews/ReviewCard';
 import OpenModalButton from '../OpenModalButton';
 import AddReviewModal from '../Reviews/AddReviewModal';
-import { useMemo } from 'react';
+import { getReviewsBySpotThunk } from '../../store/reviews';
+import { fetchSpotDetailsThunk } from '../../store/spots';
+import { fetchSpotData } from '../utils/fetchSpotData';
 
 import styles from './styles/ReviewSection.module.css';
 
 function ReviewSection() {
   const { spotId } = useParams();
+  const dispatch = useDispatch();
   const sortedReviews = useSelector((state) => {
+    if (!state.reviews.reviews) {
+      fetchSpotData(dispatch, spotId, [
+        getReviewsBySpotThunk,
+        fetchSpotDetailsThunk,
+      ]);
+      return [];
+    }
+
     const reviews = state.reviews.reviews;
-    return reviews;
+    if (!reviews) return [];
+
+    return [...reviews].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
   });
   const currentUser = useSelector((state) => state.session.user);
   const currentSpot = useSelector((state) => state.spots.currentSpot);

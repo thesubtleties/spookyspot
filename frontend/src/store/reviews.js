@@ -37,7 +37,6 @@ export const addReviewThunk = (review) => async (dispatch, getState) => {
     const newReview = await response.json();
     const user = getState().session.user;
 
-    // Normalize to match your GET reviews structure
     const normalizedReview = {
       ...newReview,
       spotId: Number(newReview.spotId),
@@ -46,7 +45,7 @@ export const addReviewThunk = (review) => async (dispatch, getState) => {
         firstName: user.firstName,
         lastName: user.lastName,
       },
-      ReviewImages: [], // If your GET reviews include this
+      ReviewImages: [],
     };
 
     console.log('Normalized Review:', normalizedReview); // Debug log

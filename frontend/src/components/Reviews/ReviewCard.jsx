@@ -3,6 +3,7 @@ import { TbPumpkinScary } from 'react-icons/tb';
 import { deleteReviewThunk } from '../../store/reviews';
 import styles from './styles/ReviewCard.module.css';
 import { formatDate } from '../utils/formatDate';
+import { capitalize } from '../utils/stringFormat';
 
 function ReviewCard({ review }) {
   const dispatch = useDispatch();
@@ -26,9 +27,7 @@ function ReviewCard({ review }) {
   return (
     <div className={styles.reviewCard}>
       <div className={styles.userInfo}>
-        <h3>
-          {review.User.firstName} {review.User.lastName}
-        </h3>
+        <h3>{capitalize(review.User.firstName)}</h3>
         <p className={styles.date}>{formatDate(review.createdAt)}</p>
       </div>
       <div className={styles.rating}>
