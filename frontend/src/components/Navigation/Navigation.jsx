@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import LogoWithText from './LogoWithText';
-import styles from './Navigation.module.css';
+import styles from './styles/Navigation.module.css';
 import AddSpotButton from './AddSpotButton';
 
 function Navigation({ isLoaded }) {

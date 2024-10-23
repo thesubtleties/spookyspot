@@ -1,37 +1,27 @@
-import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import ReviewCard from '../Reviews/ReviewCard';
 import OpenModalButton from '../OpenModalButton';
 import AddReviewModal from '../Reviews/AddReviewModal';
-import { getReviewsBySpotThunk } from '../../store/reviews';
-import styles from './ReviewSection.module.css';
+import { useMemo } from 'react';
+
+import styles from './styles/ReviewSection.module.css';
 
 function ReviewSection() {
-  const dispatch = useDispatch();
-  const spotId = useSelector((state) => state.spots.currentSpot.id);
-  const allReviews = useSelector((state) => state.reviews.reviews);
+  const { spotId } = useParams();
+  const sortedReviews = useSelector((state) => {
+    const reviews = state.reviews.reviews;
+    return reviews;
+  });
   const currentUser = useSelector((state) => state.session.user);
   const currentSpot = useSelector((state) => state.spots.currentSpot);
-  const [localUpdateTrigger, setLocalUpdateTrigger] = useState(0);
-
-  useEffect(() => {
-    dispatch(getReviewsBySpotThunk(spotId));
-  }, [dispatch, spotId, localUpdateTrigger]);
-
-  const sortedReviews = allReviews
-    .filter((review) => review.spotId === spotId)
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const userHasReviewed =
     currentUser &&
-    sortedReviews.some((review) => review.userId === currentUser.id);
+    sortedReviews?.some((review) => review.userId === currentUser.id);
   const isOwner =
     currentUser && currentSpot && currentUser.id === currentSpot.ownerId;
   const showReviewButton = currentUser && !userHasReviewed && !isOwner;
-
-  const handleReviewAdded = () => {
-    setLocalUpdateTrigger((prev) => prev + 1); // This will trigger a re-render and a new fetch
-  };
 
   if (sortedReviews.length === 0) {
     if (currentUser && !isOwner) {
@@ -40,12 +30,7 @@ function ReviewSection() {
           <h2>Be the first to post a review!</h2>
           <OpenModalButton
             buttonText="Post Your Review"
-            modalComponent={
-              <AddReviewModal
-                spotId={spotId}
-                onReviewAdded={handleReviewAdded}
-              />
-            }
+            modalComponent={<AddReviewModal spotId={spotId} />}
             className={styles.reviewButton}
           />
         </div>
@@ -71,9 +56,7 @@ function ReviewSection() {
       {showReviewButton && (
         <OpenModalButton
           buttonText="Post Your Review"
-          modalComponent={
-            <AddReviewModal spotId={spotId} onReviewAdded={handleReviewAdded} />
-          }
+          modalComponent={<AddReviewModal spotId={spotId} />}
           className={styles.reviewButton}
         />
       )}

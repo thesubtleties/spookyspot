@@ -6,32 +6,26 @@ import { getReviewsBySpotThunk } from '../../store/reviews'; // adjust path as n
 import ImageGallery from './ImageGallery';
 import SpotInfo from './SpotInfo';
 import ReviewSection from './ReviewSection';
-import styles from './SpotDetail.module.css';
+import styles from './styles/SpotDetail.module.css';
+import { fetchSpotData } from '../utils/fetchSpotData';
 
 function SpotDetail() {
-  const { id } = useParams();
+  const { spotId } = useParams();
   const dispatch = useDispatch();
   const spot = useSelector((state) => state.spots.currentSpot);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        await dispatch(fetchSpotDetailsThunk(id));
-        await dispatch(getReviewsBySpotThunk(id));
-      } catch (err) {
-        setError('Failed to load spot details. Please try again.');
-        console.error('Error fetching spot details:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [dispatch, id]);
+    setIsLoading(true);
+    const fetchFns = [fetchSpotDetailsThunk, getReviewsBySpotThunk];
+    async function laodData() {
+      await fetchSpotData(dispatch, spotId, fetchFns);
+    }
+    laodData();
+    setIsLoading(false);
+    setError(false);
+  }, [dispatch, spotId]);
 
   if (isLoading) {
     return <div className={styles.loading}>Loading...</div>;

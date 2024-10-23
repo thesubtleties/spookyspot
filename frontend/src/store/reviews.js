@@ -22,17 +22,39 @@ export const deleteReview = (reviewId) => ({
 });
 
 // Thunks
-export const addReviewThunk = (review) => async (dispatch) => {
+export const addReviewThunk = (review) => async (dispatch, getState) => {
   try {
     const response = await csrfFetch(
       `/spots/${review.spotId}/reviews`,
       'POST',
       review
     );
+
+    if (!response.ok) {
+      throw new Error('Failed to add review');
+    }
+
     const newReview = await response.json();
-    dispatch(addReview(newReview));
+    const user = getState().session.user;
+
+    // Normalize to match your GET reviews structure
+    const normalizedReview = {
+      ...newReview,
+      spotId: Number(newReview.spotId),
+      User: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+      ReviewImages: [], // If your GET reviews include this
+    };
+
+    console.log('Normalized Review:', normalizedReview); // Debug log
+    dispatch(addReview(normalizedReview));
+    return normalizedReview;
   } catch (error) {
-    console.log(error);
+    console.error('Failed to add review:', error);
+    throw error;
   }
 };
 

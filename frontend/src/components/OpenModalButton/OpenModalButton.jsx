@@ -1,5 +1,5 @@
 import { useModal } from '../../context/Modal';
-import styles from './OpenModalButton.module.css'; // Create this CSS module
+import styles from './styles/OpenModalButton.module.css'; // Create this CSS module
 
 function OpenModalButton({
   modalComponent,
