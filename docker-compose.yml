@@ -6,8 +6,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: spookyspot-frontend
-    environment:
-      - VIRTUAL_HOST=spookyspot.sbtl.dev
+    expose:
+      - 80
     networks:
       - shared_portainer_network
     depends_on:
@@ -26,7 +26,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=spookyspot
       - DB_HOST=spookyspot-db
-      - SCHEMA=${SCHEMA}
+      - SCHEMA=airBnbSchema
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
     networks:
@@ -46,11 +46,6 @@ services:
       - spookyspot_data:/var/lib/postgresql/data
     networks:
       - shared_portainer_network
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d spookyspot']
-      interval: 10s
-      timeout: 5s
-      retries: 5
     restart: unless-stopped
 
 networks:

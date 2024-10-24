@@ -1,28 +1,25 @@
 FROM node:18-alpine
 
-# Add build dependencies
+# Add postgresql-client for wait-for-it script
 RUN apk add --no-cache postgresql-client
 
-# Create app directory
 WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
-RUN npm ci --only=production
+# Copy wait script first
+COPY wait-for-it.sh ./
+RUN chmod +x wait-for-it.sh
 
-# Copy app source
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy rest of the application
 COPY . .
 
-# Add healthcheck
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:5000/api/health || exit 1
+# Set production environment
+ENV NODE_ENV=production
 
-# Expose port
-EXPOSE 5000
-
-# Copy and make wait script executable
-COPY wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
-
-# Start command with wait script
-CMD ["/wait-for-it.sh", "spookyspot-db:5432", "--", "npm", "start"]
+# Command to run migrations and start app
+CMD ["sh", "-c", "./wait-for-it.sh spookyspot-db && npm install && npm run build && npx sequelize-cli db:seed:undo:all && npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && npm start"]
