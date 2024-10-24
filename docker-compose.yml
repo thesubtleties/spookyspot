@@ -2,19 +2,15 @@ version: '3.8'
 services:
   spookyspot-frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: /home/steven/projects/aa-projects/spookyspot/frontend
     container_name: spookyspot-frontend
-    restart: unless-stopped
     networks:
-      - shared_portainer_network # Changed this
-    depends_on:
-      - spookyspot-backend
+      - shared_portainer_network
+    restart: unless-stopped
 
   spookyspot-backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: /home/steven/projects/aa-projects/spookyspot/backend
     container_name: spookyspot-backend
     environment:
       - NODE_ENV=production
@@ -25,9 +21,7 @@ services:
       - DB_HOST=spookyspot-db
       - SCHEMA=${SCHEMA}
     networks:
-      - shared_portainer_network # Changed this
-    depends_on:
-      - spookyspot-db
+      - shared_portainer_network
     restart: unless-stopped
 
   spookyspot-db:
@@ -40,12 +34,12 @@ services:
     volumes:
       - spookyspot_data:/var/lib/postgresql/data
     networks:
-      - shared_portainer_network # Changed this
+      - shared_portainer_network
     restart: unless-stopped
 
 networks:
   shared_portainer_network:
-    external: true # Use existing network
+    external: true
 
 volumes:
   spookyspot_data:
