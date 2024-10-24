@@ -7,8 +7,7 @@ const bookingsRouter = require("./bookings");
 const reviewsRouter = require("./reviews.js");
 const reviewImagesRouter = require("./review-images.js");
 const spotImagesRouter = require("./spot-images.js");
-const { setTokenCookie } = require("../../utils/auth.js");
-const { User } = require("../../db/models");
+
 const { restoreUser } = require("../../utils/auth.js");
 const { requireAuth } = require("../../utils/auth.js");
 
@@ -40,15 +39,19 @@ router.use("/review-images", reviewImagesRouter);
 //   res.json({ requestBody: req.body });
 // });
 
-router.get("/set-token-cookie", async (_req, res) => {
-  const user = await User.findOne({
-    where: {
-      username: "Demo-lition",
-    },
-  });
-  setTokenCookie(res, user);
-  return res.json({ user: user });
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
 });
+
+// router.get("/set-token-cookie", async (_req, res) => {
+//   const user = await User.findOne({
+//     where: {
+//       username: "Demo-lition",
+//     },
+//   });
+//   setTokenCookie(res, user);
+//   return res.json({ user: user });
+// });
 
 router.get("/require-auth", requireAuth, (req, res) => {
   return res.json(req.user);

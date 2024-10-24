@@ -1,6 +1,4 @@
 version: '3.8'
-env_file:
-  - stack.env # Add this at the top level
 
 services:
   spookyspot-frontend:
@@ -13,7 +11,8 @@ services:
     networks:
       - shared_portainer_network
     depends_on:
-      - spookyspot-backend
+      spookyspot-backend:
+        condition: service_healthy # Add health check dependency
 
   spookyspot-backend:
     build:
@@ -29,10 +28,13 @@ services:
       - DB_NAME=spookyspot
       - DB_HOST=spookyspot-db
       - SCHEMA=${SCHEMA}
+      - JWT_SECRET=${JWT_SECRET} # Missing JWT config
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
     networks:
       - shared_portainer_network
     depends_on:
-      - spookyspot-db
+      spookyspot-db:
+        condition: service_healthy # Add health check dependency
     restart: unless-stopped
 
   spookyspot-db:
@@ -43,20 +45,15 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=spookyspot
+      - POSTGRES_SCHEMA=${SCHEMA} # Add schema
     volumes:
       - spookyspot_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql # Add init script
     networks:
       - shared_portainer_network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d spookyspot']
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d spookyspot']
       interval: 10s
       timeout: 5s
       retries: 5
     restart: unless-stopped
-
-networks:
-  shared_portainer_network:
-    external: true
-
-volumes:
-  spookyspot_data:
