@@ -7,7 +7,9 @@ services:
     container_name: spookyspot-frontend
     restart: unless-stopped
     networks:
-      - spookynet
+      - shared_portainer_network # Changed this
+    depends_on:
+      - spookyspot-backend
 
   spookyspot-backend:
     build:
@@ -17,14 +19,16 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=5000
-      - DB_HOST=spookyspot-db
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=spookyspot
+      - DB_HOST=spookyspot-db
+      - SCHEMA=${SCHEMA}
     networks:
-      - spookynet
+      - shared_portainer_network # Changed this
     depends_on:
       - spookyspot-db
+    restart: unless-stopped
 
   spookyspot-db:
     image: postgres:15-alpine
@@ -36,13 +40,12 @@ services:
     volumes:
       - spookyspot_data:/var/lib/postgresql/data
     networks:
-      - spookynet
+      - shared_portainer_network # Changed this
     restart: unless-stopped
 
 networks:
-  spookynet:
-    name: spookynet
+  shared_portainer_network:
+    external: true # Use existing network
 
 volumes:
   spookyspot_data:
-    name: spookyspot_data
