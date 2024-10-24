@@ -23,12 +23,25 @@ function SpotCard({ id, showEdit = false }) {
 
   const handleEdit = (e) => {
     e.stopPropagation();
-    dispatch(setCurrentSpot(spot));
+    document.dispatchEvent(
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      })
+    );
     navigate(`/spots/${spot.id}/edit`);
   };
 
   const handleDelete = async (e) => {
     e.stopPropagation();
+    document.dispatchEvent(
+      new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      })
+    );
     if (window.confirm('Are you sure you want to delete this spot?')) {
       try {
         await dispatch(deleteSpotThunk(id));

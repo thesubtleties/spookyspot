@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { validateSpotForm } from '../utils/formValidations';
+import { useParams } from 'react-router-dom';
+import { fetchSpotDetailsThunk } from '../../store/spots';
 
 import {
   createSpotThunk,
@@ -15,9 +17,14 @@ function SpotForm({ mode }) {
   const navigate = useNavigate();
   const currentSpot = useSelector((state) => state.spots.currentSpot);
   const isUpdating = mode === 'update';
-  const spotId = currentSpot.id;
+  const { spotId } = useParams();
+  console.log(currentSpot);
+  useEffect(() => {
+    dispatch(fetchSpotDetailsThunk(spotId));
+  }, [dispatch, spotId]);
   console.log('SpotForm rendered. spotId:', spotId);
   console.log('isUpdating:', isUpdating);
+  console.log(currentSpot);
 
   const [formData, setFormData] = useState({
     country: '',
@@ -29,11 +36,9 @@ function SpotForm({ mode }) {
     description: '',
     name: '',
     price: '',
-    previewImage: '',
     image1: '',
     image2: '',
     image3: '',
-    image4: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -50,11 +55,9 @@ function SpotForm({ mode }) {
         description: currentSpot.description || '',
         name: currentSpot.name || '',
         price: currentSpot.price || '',
-        previewImage: currentSpot.previewImage || '',
-        image1: currentSpot.images?.[0]?.url || '',
-        image2: currentSpot.images?.[1]?.url || '',
-        image3: currentSpot.images?.[2]?.url || '',
-        image4: currentSpot.images?.[3]?.url || '',
+        image1: currentSpot.SpotImages?.[0]?.url || '',
+        image2: currentSpot.SpotImages?.[1]?.url || '',
+        image3: currentSpot.SpotImages?.[2]?.url || '',
       });
     }
   }, [isUpdating, currentSpot]);
@@ -81,14 +84,11 @@ function SpotForm({ mode }) {
     console.log('Form is valid:', isValid);
     if (!isValid) return;
 
-    const { previewImage, image1, image2, image3, image4, ...spotData } =
-      formData;
+    const { image1, image2, image3, ...spotData } = formData;
     const images = [
-      { url: previewImage, preview: true },
-      { url: image1, preview: false },
+      { url: image1, preview: true },
       { url: image2, preview: false },
       { url: image3, preview: false },
-      { url: image4, preview: false },
     ].filter((img) => img.url);
 
     try {
@@ -308,9 +308,9 @@ function SpotForm({ mode }) {
           <p>Submit a link to at least one photo to publish your spot.</p>
           <input
             type="text"
-            id="previewImage"
-            name="previewImage"
-            value={formData.previewImage}
+            id="image1"
+            name="image1"
+            value={formData.image1}
             onChange={handleChange}
             placeholder="Preview Image URL"
           />
@@ -318,7 +318,7 @@ function SpotForm({ mode }) {
             <span className={styles.error}>{errors.previewImage}</span>
           )}
 
-          {['image1', 'image2', 'image3', 'image4'].map((imageName, index) => (
+          {['image2', 'image3'].map((imageName) => (
             <input
               key={imageName}
               type="text"
@@ -326,7 +326,7 @@ function SpotForm({ mode }) {
               name={imageName}
               value={formData[imageName]}
               onChange={handleChange}
-              placeholder={`Image URL ${index + 1}`}
+              placeholder={`Image URL`}
             />
           ))}
         </section>
