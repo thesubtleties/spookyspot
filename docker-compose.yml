@@ -1,4 +1,7 @@
 version: '3.8'
+env_file:
+  - stack.env # Add this at the top level
+
 services:
   spookyspot-frontend:
     build:
@@ -45,7 +48,7 @@ services:
     networks:
       - shared_portainer_network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d spookyspot']
       interval: 10s
       timeout: 5s
       retries: 5
