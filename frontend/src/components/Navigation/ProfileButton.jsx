@@ -42,6 +42,7 @@ function ProfileButton({ user }) {
     navigate('/');
   };
   const goToManageSpots = () => {
+    closeMenu();
     navigate('/profile');
   };
 

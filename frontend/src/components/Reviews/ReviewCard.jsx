@@ -41,7 +41,9 @@ function ReviewCard({ review }) {
             />
           ))}
         </span>
-        <span className={styles.starsText}>{review.stars} pumpkins</span>
+        <span className={styles.starsText}>
+          {review.stars} {review.stars === 1 ? 'pumpkin' : 'pumpkins'}
+        </span>
       </div>
       <p className={styles.reviewText}>{review.review}</p>
       {isOwner && (

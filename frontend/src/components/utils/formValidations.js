@@ -46,7 +46,7 @@ export const validateSpotForm = (formData) => {
     }
   }
 
-  if (!formData.previewImage?.trim()) {
+  if (!formData.image1?.trim()) {
     errors.previewImage = 'Preview image is required';
   }
 
