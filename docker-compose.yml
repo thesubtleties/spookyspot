@@ -4,10 +4,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    pull_policy: build
     container_name: spookyspot-frontend
     restart: unless-stopped
     networks:
-      - shared_portainer_network # Changed this
+      - shared_portainer_network
     depends_on:
       - spookyspot-backend
 
@@ -15,6 +16,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    pull_policy: build
     container_name: spookyspot-backend
     environment:
       - NODE_ENV=production
@@ -25,13 +27,14 @@ services:
       - DB_HOST=spookyspot-db
       - SCHEMA=${SCHEMA}
     networks:
-      - shared_portainer_network # Changed this
+      - shared_portainer_network
     depends_on:
       - spookyspot-db
     restart: unless-stopped
 
   spookyspot-db:
     image: postgres:15-alpine
+    pull_policy: always
     container_name: spookyspot-db
     environment:
       - POSTGRES_USER=${DB_USER}
@@ -50,7 +53,7 @@ services:
 
 networks:
   shared_portainer_network:
-    external: true # Use existing network
+    external: true
 
 volumes:
   spookyspot_data:
