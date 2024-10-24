@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  spookyspot-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: spookyspot-frontend
+    restart: unless-stopped
+    networks:
+      - spookynet
+
+  spookyspot-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: spookyspot-backend
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - DB_HOST=spookyspot-db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=spookyspot
+    networks:
+      - spookynet
+    depends_on:
+      - spookyspot-db
+
+  spookyspot-db:
+    image: postgres:15-alpine
+    container_name: spookyspot-db
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=spookyspot
+    volumes:
+      - spookyspot_data:/var/lib/postgresql/data
+    networks:
+      - spookynet
+    restart: unless-stopped
+
+networks:
+  spookynet:
+    name: spookynet
+
+volumes:
+  spookyspot_data:
+    name: spookyspot_data
