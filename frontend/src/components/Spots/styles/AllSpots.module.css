@@ -1,4 +1,41 @@
+@keyframes ghost-sway-1 {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(5px, 3px) rotate(1deg);
+  }
+  75% {
+    transform: translate(-5px, 3px) rotate(-1deg);
+  }
+}
 
+@keyframes ghost-sway-2 {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-4px, 4px) rotate(-0.5deg);
+  }
+  75% {
+    transform: translate(4px, 2px) rotate(0.5deg);
+  }
+}
+
+@keyframes ghost-sway-3 {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(3px, -3px) rotate(0.7deg);
+  }
+  75% {
+    transform: translate(-3px, 4px) rotate(-0.7deg);
+  }
+}
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -18,8 +55,19 @@
   row-gap: 50px;
   justify-items: center;
 }
-
-
+.spotCard {
+  animation: ghost-sway-1 3s ease-in-out infinite;
+  transform-origin: center center;
+}
+.sway1 {
+  animation: ghost-sway-1 3s ease-in-out infinite;
+}
+.sway2 {
+  animation: ghost-sway-2 3.5s ease-in-out infinite;
+}
+.sway3 {
+  animation: ghost-sway-3 4s ease-in-out infinite;
+}
 
 .loading,
 .error {
