@@ -15,8 +15,16 @@ function AllSpots() {
   return (
     <div className={styles.container}>
       <div className={styles.spotGrid}>
-        {spots.map((spot) => (
-          <SpotCard key={spot.id} id={spot.id} />
+        {spots.map((spot, index) => (
+          <SpotCard
+            key={spot.id}
+            id={spot.id}
+            className={`${styles.spotCard} ${styles[`sway${(index % 3) + 1}`]}`}
+            style={{
+              animationDelay: `${Math.random() * -5}s`, // Random start time
+              animationDuration: `${3 + Math.random() * 2}s`, // Random duration between 3-5s
+            }}
+          />
         ))}
       </div>
     </div>

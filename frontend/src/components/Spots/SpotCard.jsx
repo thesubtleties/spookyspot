@@ -5,7 +5,7 @@ import { TbPumpkinScary } from 'react-icons/tb';
 import { setCurrentSpot, deleteSpotThunk } from '../../store/spots';
 import styles from './styles/SpotCard.module.css';
 
-function SpotCard({ id, showEdit = false }) {
+function SpotCard({ id, showEdit = false, className = '', style = {} }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const spot = useSelector(
@@ -67,7 +67,7 @@ function SpotCard({ id, showEdit = false }) {
   };
 
   return (
-    <div className={styles.cardWrapper}>
+    <div className={`${styles.cardWrapper} ${className}`} style={style}>
       <div className={styles.tooltip}>{spot.name}</div>
       <div className={styles.card} onClick={handleCardClick}>
         <img src={spot.previewImage} alt={spot.name} className={styles.image} />

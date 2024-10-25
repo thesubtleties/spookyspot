@@ -1,9 +1,3 @@
-@keyframes ghost-sway {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  25% { transform: translate(5px, 3px) rotate(1deg); }
-  75% { transform: translate(-5px, 3px) rotate(-1deg); }
-}
-
 .card {
   width: 300px;
   border-radius: 10px;
@@ -65,7 +59,7 @@
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0);
   color: #d4af37;
   text-align: center;
   padding: 5px 10px;
@@ -82,15 +76,15 @@
 }
 
 .cardWrapper {
-  animation: ghost-sway 3s ease-in-out infinite;
   transition: all 0.3s ease;
-
 }
 
 .cardWrapper:hover {
-  animation: none;
-  transform: scale(1.02);
+  animation: none !important;
+  transform: translate(0, 0) rotate(0deg) scale(1.02) !important;
+  transition: transform 0.3s ease-out;
 }
+
 .buttonContainer {
   position: absolute;
   bottom: 15px;
