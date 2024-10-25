@@ -1,3 +1,9 @@
+@keyframes ghost-sway {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5px, 3px) rotate(1deg); }
+  75% { transform: translate(-5px, 3px) rotate(-1deg); }
+}
+
 .card {
   width: 300px;
   border-radius: 10px;
@@ -73,6 +79,17 @@
 .cardWrapper:hover .tooltip {
   visibility: visible;
   opacity: 1;
+}
+
+.cardWrapper {
+  animation: ghost-sway 3s ease-in-out infinite;
+  transition: all 0.3s ease;
+
+}
+
+.cardWrapper:hover {
+  animation: none;
+  transform: scale(1.02);
 }
 .buttonContainer {
   position: absolute;

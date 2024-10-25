@@ -16,7 +16,7 @@ function AllSpots() {
     <div className={styles.container}>
       <div className={styles.spotGrid}>
         {spots.map((spot) => (
-          <SpotCard key={spot.id} id={spot.id} className={styles.spotCard} />
+          <SpotCard key={spot.id} id={spot.id} />
         ))}
       </div>
     </div>
