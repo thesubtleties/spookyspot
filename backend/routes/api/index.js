@@ -39,8 +39,8 @@ router.use("/review-images", reviewImagesRouter);
 //   res.json({ requestBody: req.body });
 // });
 
-app.get("/health", (req, res) => {
-  res.status(200).send("OK");
+router.get("/health", (req, res) => {
+  res.status(200).json({ status: "healthy" });
 });
 
 // router.get("/set-token-cookie", async (_req, res) => {

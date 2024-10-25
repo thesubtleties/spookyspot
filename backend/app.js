@@ -18,8 +18,13 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.json());
 
-if (!isProduction) {
-  // enable cors only in development
+if (isProduction) {
+  app.use(
+    cors({
+      origin: "https://spookyspot.sbtl.dev",
+    })
+  );
+} else {
   app.use(cors());
 }
 
@@ -31,12 +36,14 @@ app.use(
 );
 
 // Set the _csrf token and create req.csrfToken method
+// app.js
 app.use(
   csurf({
     cookie: {
       secure: isProduction,
       sameSite: isProduction && "Lax",
       httpOnly: true,
+      domain: isProduction ? ".sbtl.dev" : undefined,
     },
   })
 );
