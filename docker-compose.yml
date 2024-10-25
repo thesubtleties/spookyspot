@@ -5,6 +5,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - BUILDKIT_STEP_LOG_MAX_SIZE=10485760
     container_name: spookyspot-frontend
     expose:
       - 80
@@ -18,24 +20,17 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
-    healthcheck:
-      test:
-        [
-          'CMD',
-          'wget',
-          '--quiet',
-          '--tries=1',
-          '--spider',
-          'http://localhost:80',
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+        mode: 'non-blocking'
+        max-buffer-size: '4m'
+    environment:
+      - NODE_DEBUG=*
 
   spookyspot-backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        - BUILDKIT_STEP_LOG_MAX_SIZE=10485760
     container_name: spookyspot-backend
     environment:
       - NODE_ENV=production
@@ -47,32 +42,21 @@ services:
       - SCHEMA=airBnbSchema
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
-      - DEBUG=app:*,express:* # Added for better logging
+      - DEBUG=express:*,app:*,sequelize:*
+      - NODE_DEBUG=*
+      - SEQUELIZE_LOGGING=true
     networks:
       - shared_portainer_network
     depends_on:
-      spookyspot-db:
-        condition: service_healthy
+      - spookyspot-db
     restart: unless-stopped
     logging:
       driver: 'json-file'
       options:
         max-size: '10m'
         max-file: '3'
-    healthcheck:
-      test:
-        [
-          'CMD',
-          'wget',
-          '--quiet',
-          '--tries=1',
-          '--spider',
-          'http://localhost:5000/api/health',
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+        mode: 'non-blocking'
+        max-buffer-size: '4m'
 
   spookyspot-db:
     image: postgres:15-alpine
@@ -82,6 +66,8 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=spookyspot
       - SCHEMA=airBnbSchema
+      - POSTGRES_INITDB_ARGS="--debug --verbose"
+      - POSTGRES_LOGGING=true
     volumes:
       - spookyspot_data:/var/lib/postgresql/data
     networks:
@@ -97,6 +83,8 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
+        mode: 'non-blocking'
+        max-buffer-size: '4m'
 
 networks:
   shared_portainer_network:
