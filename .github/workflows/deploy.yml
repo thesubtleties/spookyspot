@@ -13,7 +13,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          port: 2222    # Add this line
+          port: 2288    # Add this line
           script: |
             cd ~/projects/aa-projects/spookyspot
             git pull
