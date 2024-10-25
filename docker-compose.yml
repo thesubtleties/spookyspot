@@ -13,6 +13,24 @@ services:
     depends_on:
       - spookyspot-backend
     restart: unless-stopped
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--quiet',
+          '--tries=1',
+          '--spider',
+          'http://localhost:80',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   spookyspot-backend:
     build:
@@ -29,11 +47,32 @@ services:
       - SCHEMA=airBnbSchema
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - DEBUG=app:*,express:* # Added for better logging
     networks:
       - shared_portainer_network
     depends_on:
-      - spookyspot-db
+      spookyspot-db:
+        condition: service_healthy
     restart: unless-stopped
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'wget',
+          '--quiet',
+          '--tries=1',
+          '--spider',
+          'http://localhost:5000/api/health',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   spookyspot-db:
     image: postgres:15-alpine
@@ -42,7 +81,7 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=spookyspot
-      - SCHEMA=airBnbSchema # Added schema
+      - SCHEMA=airBnbSchema
     volumes:
       - spookyspot_data:/var/lib/postgresql/data
     networks:
@@ -53,6 +92,11 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
 networks:
   shared_portainer_network:
