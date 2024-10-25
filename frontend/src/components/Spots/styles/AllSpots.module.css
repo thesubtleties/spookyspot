@@ -1,3 +1,9 @@
+@keyframes ghost-sway {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5px, 3px) rotate(1deg); }
+  75% { transform: translate(-5px, 3px) rotate(-1deg); }
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -16,6 +22,15 @@
   gap: 20px;
   row-gap: 50px;
   justify-items: center;
+}
+
+.spotCard {
+  animation: ghost-sway 3s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+.spot-card:hover {
+  animation: none;
+  transform: scale(1.02);
 }
 
 .loading,

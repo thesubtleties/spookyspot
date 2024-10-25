@@ -1,16 +1,24 @@
 FROM node:18-alpine
 
-RUN apk add --no-cache postgresql-client wget  # Added wget
+# Install PostgreSQL client and wget for healthchecks
+RUN apk add --no-cache postgresql-client wget
 
 WORKDIR /app
 
-COPY wait-for-it.sh ./
-RUN chmod +x wait-for-it.sh
-
+# Install dependencies
 COPY package*.json ./
 RUN npm install
 
+# Copy app source
 COPY . .
+
+# Set production environment
 ENV NODE_ENV=production
 
-CMD ["sh", "-c", "./wait-for-it.sh spookyspot-db && npm install && npm run build && npx sequelize-cli db:seed:undo:all && npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && npm start"]
+# Create schema, then run migrations and start
+CMD ["sh", "-c", "until pg_isready -h spookyspot-db -U ${DB_USER}; do echo 'Waiting for database...'; sleep 2; done; \
+    PGPASSWORD=${DB_PASSWORD} psql -h spookyspot-db -U ${DB_USER} -d spookyspot -c 'CREATE SCHEMA IF NOT EXISTS \"airBnbSchema\";' && \
+    npm install && \
+    npx sequelize-cli db:migrate && \
+    npx sequelize-cli db:seed:all && \
+    npm start"]

@@ -12,6 +12,7 @@ export async function csrfFetch(
     headers: {
       ...headers,
     },
+    credentials: 'include'  // Add this line
   };
 
   if (method.toUpperCase() !== 'GET') {

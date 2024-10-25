@@ -22,12 +22,12 @@ if (isProduction) {
   app.use(
     cors({
       origin: "https://spookyspot.sbtl.dev",
+      credentials: true  // Add this
     })
   );
 } else {
   app.use(cors());
 }
-
 // helmet helps set a variety of headers to better secure your app
 app.use(
   helmet.crossOriginResourcePolicy({
