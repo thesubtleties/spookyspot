@@ -1,74 +1,11 @@
 version: '3.8'
 
 services:
-  spookyspot-frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: spookyspot-frontend
-    expose:
-      - 80
+  test:
+    image: nginx:alpine
     networks:
-      - shared_portainer_network    # Fixed network syntax
-    depends_on:
-      spookyspot-backend:
-        condition: service_started
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  spookyspot-backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: spookyspot-backend
-    environment:
-      - NODE_ENV=production
-      - PORT=5000
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=spookyspot
-      - DB_HOST=spookyspot-db
-      - SCHEMA=airBnbSchema
-      - JWT_SECRET=${JWT_SECRET}
-      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
-    networks:
-      - shared_portainer_network    
-    depends_on:
-      spookyspot-db:
-        condition: service_healthy
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  spookyspot-db:
-    image: postgres:15-alpine
-    container_name: spookyspot-db
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=spookyspot
-      - SCHEMA=airBnbSchema
-    volumes:
-      - spookyspot_data:/var/lib/postgresql/data
-    networks:
-      - shared_portainer_network    
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d spookyspot"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
+      - shared_portainer_network
 
 networks:
   shared_portainer_network:
     external: true
-
-volumes:
-  spookyspot_data:    # Fixed volume name
