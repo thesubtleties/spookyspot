@@ -8,30 +8,36 @@ import { restoreCSRF, csrfFetch } from './store/csrf';
 import * as sessionActions from './store/session';
 import { Modal, ModalProvider } from './context/Modal';
 
-const store = configureStore();
+// main.jsx
+const store = configureStore(); // This is fine at the top level
 
-async function initializeApp() {
-  if (!Cookies.get('XSRF-TOKEN')) {
+async function initializeApplication() {
+  try {
     await restoreCSRF();
-  }
+    const token = Cookies.get('XSRF-TOKEN');
+    if (!token) {
+      throw new Error('CSRF initialization failed');
+    }
 
-  // Only set debug tools in development
-  if (import.meta.env.MODE !== 'production') {
-    window.csrfFetch = csrfFetch;
-    window.store = store;
-    window.sessionActions = sessionActions;
-  }
+    if (import.meta.env.MODE !== 'production') {
+      window.csrfFetch = csrfFetch;
+      window.store = store;
+      window.sessionActions = sessionActions;
+    }
 
-  ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-      <ModalProvider>
-        <Provider store={store}>
-          <App />
-          <Modal />
-        </Provider>
-      </ModalProvider>
-    </React.StrictMode>
-  );
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      <React.StrictMode>
+        <ModalProvider>
+          <Provider store={store}>
+            <App />
+            <Modal />
+          </Provider>
+        </ModalProvider>
+      </React.StrictMode>
+    );
+  } catch (error) {
+    console.error('Failed to initialize application:', error);
+  }
 }
 
-initializeApp();
+initializeApplication();

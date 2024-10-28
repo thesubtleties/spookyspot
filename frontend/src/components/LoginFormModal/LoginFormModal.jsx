@@ -24,6 +24,9 @@ function LoginFormModal() {
   };
   const handleDemoLogin = (e) => {
     e.preventDefault();
+    console.log('About to make login request');
+    console.log('XSRF-TOKEN cookie:', Cookies.get('XSRF-TOKEN'));
+    console.log('All cookies:', document.cookie);
     dispatch(
       sessionActions.login({ credential: 'Demo-lition', password: 'password' })
     ).then(() => {
