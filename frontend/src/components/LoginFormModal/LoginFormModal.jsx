@@ -22,7 +22,8 @@ function LoginFormModal() {
         setErrors({ credential: 'The provided credentials were invalid' });
       });
   };
-  const handleDemoLogin = () => {
+  const handleDemoLogin = (e) => {
+    e.preventDefault();
     dispatch(
       sessionActions.login({ credential: 'Demo-lition', password: 'password' })
     ).then(() => {
