@@ -16,7 +16,7 @@ router.get("/api/csrf/restore", (req, res) => {
     domain: process.env.NODE_ENV === "production" ? ".sbtl.dev" : undefined,
   });
   res.status(200).json({
-    "XSRF-Token": csrfToken,
+    "XSRF-TOKEN": csrfToken,
   });
 });
 router.use("/api", apiRouter);

@@ -17,13 +17,41 @@ module.exports = {
       { allowConstantExport: true },
     ],
     'react/prop-types': 'off',
+    // Additional recommended rules
+    'no-console': 'warn',
+    'no-unused-vars': [
+      'warn',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      },
+    ],
+    'react-hooks/exhaustive-deps': 'warn',
+    'no-debugger': 'warn',
+    'no-alert': 'warn',
+    // Enforce consistent code style
+    'no-multiple-empty-lines': ['error', { max: 1 }],
+    'no-trailing-spaces': 'error',
+    // Catch common mistakes
+    eqeqeq: ['error', 'always'],
+    'no-var': 'error',
+    'prefer-const': 'warn',
   },
   overrides: [
-    //linter rule disabled for modal context file
     {
       files: ['src/context/*.jsx'],
       rules: {
         'react-refresh/only-export-components': 'off',
+      },
+    },
+    // Additional overrides for test files if you have any
+    {
+      files: ['**/*.test.js', '**/*.test.jsx'],
+      env: {
+        jest: true,
+      },
+      rules: {
+        'no-console': 'off',
       },
     },
   ],
