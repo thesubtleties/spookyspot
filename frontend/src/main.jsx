@@ -11,7 +11,7 @@ import { debug } from './components/utils/debug';
 
 // main.jsx
 const store = configureStore(); // This is fine at the top level
-
+window._DEBUG_MODE = true; // Enable debugging
 async function initializeApplication() {
   debug.log('App initializing');
   try {
