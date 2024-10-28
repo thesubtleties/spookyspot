@@ -35,18 +35,22 @@ function LoginFormModal() {
     <div className={styles.loginForm}>
       <h1>Log In</h1>
       <form onSubmit={handleSubmit}>
-        <label>
+        <label htmlFor="credential">
           Username or Email
           <input
+            id="credential"
+            name="credential"
             type="text"
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
             required
           />
         </label>
-        <label>
+        <label htmlFor="password">
           Password
           <input
+            id="password"
+            name="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -55,7 +59,11 @@ function LoginFormModal() {
         </label>
 
         <button type="submit">Log In</button>
-        <button onClick={handleDemoLogin} className={styles.demoButton}>
+        <button
+          type="button"
+          onClick={handleDemoLogin}
+          className={styles.demoButton}
+        >
           Log in as Demo User
         </button>
         {errors.credential && (
