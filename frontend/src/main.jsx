@@ -13,19 +13,23 @@ import { debug } from './components/utils/debug';
 const store = configureStore(); // This is fine at the top level
 window._DEBUG_MODE = true; // Enable debugging
 async function initializeApplication() {
-  debug.log('App initializing');
   try {
-    await restoreCSRF();
-    const token = Cookies.get('XSRF-TOKEN');
+    // Check if we have a token first
+    let token = Cookies.get('XSRF-TOKEN');
+
+    // Only restore if we don't have a token
     if (!token) {
-      throw new Error('CSRF initialization failed');
+      console.log('No existing CSRF token, getting fresh one');
+      await restoreCSRF();
+      token = Cookies.get('XSRF-TOKEN');
+    } else {
+      console.log('Using existing CSRF token');
     }
 
-    if (import.meta.env.MODE !== 'production') {
-      window.csrfFetch = csrfFetch;
-      window.store = store;
-      window.sessionActions = sessionActions;
-    }
+    console.log('App Init:', {
+      hasToken: !!token,
+      allCookies: Cookies.get(),
+    });
 
     ReactDOM.createRoot(document.getElementById('root')).render(
       <React.StrictMode>
@@ -38,7 +42,7 @@ async function initializeApplication() {
       </React.StrictMode>
     );
   } catch (error) {
-    console.error('Failed to initialize application:', error);
+    console.error('Critical initialization error:', error);
   }
 }
 
