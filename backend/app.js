@@ -14,30 +14,35 @@ const isProduction = environment === "production";
 const app = express();
 
 app.use(morgan("dev"));
-
 app.use(cookieParser());
 app.use(express.json());
 
+// CORS configuration
 if (isProduction) {
   app.use(
     cors({
       origin: "https://spookyspot.sbtl.dev",
-      credentials: true, // Add this
+      credentials: true,
     })
   );
 } else {
-  app.use(cors());
+  app.use(
+    cors({
+      origin: "http://localhost:5173", // adjust if your frontend uses a different port
+      credentials: true,
+    })
+  );
 }
-// helmet helps set a variety of headers to better secure your app
+
 app.use(
   helmet.crossOriginResourcePolicy({
     policy: "cross-origin",
   })
 );
 
-// Set the _csrf token and create req.csrfToken method
-// app.js
+// CSRF protection only for API routes
 app.use(
+  "/api",
   csurf({
     cookie: {
       secure: isProduction,
@@ -47,16 +52,6 @@ app.use(
     },
   })
 );
-app.use((req, res, next) => {
-  const token = req.csrfToken();
-  res.cookie("XSRF-TOKEN", token, {
-    secure: isProduction,
-    sameSite: isProduction && "Lax",
-    httpOnly: false,
-    domain: isProduction ? ".sbtl.dev" : undefined,
-  });
-  next();
-});
 
 app.use(routes);
 // Catch unhandled requests and forward to error handler.
