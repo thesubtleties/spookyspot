@@ -7,7 +7,11 @@ const apiRouter = require("./api");
 router.get("/api/csrf/restore", (req, res) => {
   const csrfToken = req.csrfToken();
   console.log("=== CSRF Restore ===");
-  console.log("Generated token:", csrfToken);
+  console.log({
+    generatedToken: csrfToken,
+    existingCookie: req.cookies["_csrf"],
+    allCookies: req.cookies,
+  });
 
   res.cookie("XSRF-TOKEN", csrfToken, {
     secure: process.env.NODE_ENV === "production",
