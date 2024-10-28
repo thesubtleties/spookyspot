@@ -22,6 +22,7 @@ export const login = (user) => async (dispatch) => {
     }
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 

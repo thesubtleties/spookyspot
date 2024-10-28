@@ -25,13 +25,9 @@ function LoginFormModal() {
   const handleDemoLogin = () => {
     dispatch(
       sessionActions.login({ credential: 'Demo-lition', password: 'password' })
-    )
-      .then(() => {
-        closeModal();
-      })
-      .catch(() => {
-        setErrors({ credential: 'The provided credentials were invalid' });
-      });
+    ).then(() => {
+      closeModal();
+    });
   };
 
   return (
