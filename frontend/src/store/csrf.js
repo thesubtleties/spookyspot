@@ -1,13 +1,17 @@
+import { debug } from '../components/utils/debug';
 export async function csrfFetch(
   endpoint,
   method = 'GET',
   body = null,
   headers = {}
 ) {
-  console.log('csrfFetch called with:', {
+  debug.request({
+    type: 'request-start',
     endpoint,
     method,
-    body,
+    hasToken: !!Cookies.get('XSRF-TOKEN'),
+    tokenValue: Cookies.get('XSRF-TOKEN'),
+    allCookies: Cookies.get(),
   });
 
   const options = {
@@ -19,43 +23,55 @@ export async function csrfFetch(
   };
 
   if (method.toUpperCase() !== 'GET') {
-    console.log('Setting up POST request headers');
+    const token = Cookies.get('XSRF-TOKEN');
+
+    if (!token) {
+      debug.error({
+        type: 'csrf-missing',
+        cookies: Cookies.get(),
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     options.headers['Content-Type'] =
       options.headers['Content-Type'] || 'application/json';
 
-    const token = Cookies.get('XSRF-TOKEN');
-    console.log('XSRF-TOKEN from cookie:', token); // Debug log
-
-    if (!token) {
-      console.error('No XSRF-TOKEN found in cookies!');
-      console.log('All cookies:', Cookies.get()); // See what cookies we do have
-    }
-
-    options.headers['XSRF-TOKEN'] = token;
+    // Use lowercase header name
+    options.headers['xsrf-token'] = token;
 
     if (body) {
       options.body = JSON.stringify(body);
     }
 
-    // Log final headers
-    console.log('Final request headers:', options.headers);
+    debug.request({
+      type: 'request-details',
+      url: `${API_BASE_URL}${endpoint}`,
+      headers: options.headers,
+      hasToken: !!token,
+    });
   }
 
   const url = `${API_BASE_URL}${endpoint}`;
-  console.log('Making fetch request with:', {
-    url,
-    method: options.method,
-    headers: options.headers,
-    body: options.body,
+  const res = await window.fetch(url, options);
+
+  debug.request({
+    type: 'response',
+    status: res.status,
+    endpoint,
+    method,
+    hasToken: !!Cookies.get('XSRF-TOKEN'),
   });
 
-  const res = await window.fetch(url, options);
-  console.log('Fetch response:', res.status);
-
-  if (res.status >= 400) throw res;
+  if (res.status >= 400) {
+    debug.error({
+      type: 'request-failed',
+      status: res.status,
+      endpoint,
+      method,
+      hasToken: !!Cookies.get('XSRF-TOKEN'),
+    });
+    throw res;
+  }
 
   return res;
-}
-export function restoreCSRF() {
-  return csrfFetch('/csrf/restore');
 }

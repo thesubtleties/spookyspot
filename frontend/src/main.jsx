@@ -7,11 +7,13 @@ import configureStore from './store';
 import { restoreCSRF, csrfFetch } from './store/csrf';
 import * as sessionActions from './store/session';
 import { Modal, ModalProvider } from './context/Modal';
+import { debug } from './components/utils/debug';
 
 // main.jsx
 const store = configureStore(); // This is fine at the top level
 
 async function initializeApplication() {
+  debug.log('App initializing');
   try {
     await restoreCSRF();
     const token = Cookies.get('XSRF-TOKEN');
