@@ -8,6 +8,7 @@ export const logoutUser = () => ({ type: LOGOUT_USER });
 
 export const login = (user) => async (dispatch) => {
   const { credential, password } = user;
+
   try {
     const response = await csrfFetch('/session', 'POST', {
       credential,
