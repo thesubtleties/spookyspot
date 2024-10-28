@@ -9,20 +9,46 @@ export const logoutUser = () => ({ type: LOGOUT_USER });
 export const login = (user) => async (dispatch) => {
   const { credential, password } = user;
 
+  console.log('Login attempt:', {
+    hasCSRFToken: !!Cookies.get('XSRF-TOKEN'),
+    allCookies: Cookies.get(),
+    timestamp: new Date().toISOString(),
+  });
+
   try {
     const response = await csrfFetch('/session', 'POST', {
       credential,
       password,
     });
-    const data = await response.json();
-    if (response.ok) {
-      dispatch(setUser(data.user));
-      return data;
-    } else {
-      throw new Error('The provided credentials were invalid');
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Login response not ok:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorData,
+        hasCSRFToken: !!Cookies.get('XSRF-TOKEN'),
+      });
+      throw new Error(
+        errorData.message || 'The provided credentials were invalid'
+      );
     }
+
+    const data = await response.json();
+    console.log('Login successful:', {
+      userId: data.user?.id,
+      hasCSRFToken: !!Cookies.get('XSRF-TOKEN'),
+    });
+
+    dispatch(setUser(data.user));
+    return data;
   } catch (error) {
-    console.log(error);
+    console.error('Login failed:', {
+      error: error.message,
+      status: error.status,
+      hasCSRFToken: !!Cookies.get('XSRF-TOKEN'),
+      stack: error.stack,
+    });
     throw error;
   }
 };
