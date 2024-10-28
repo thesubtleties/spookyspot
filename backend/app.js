@@ -51,9 +51,14 @@ app.use(
       domain: isProduction ? ".sbtl.dev" : undefined,
     },
     value: (req) => {
-      console.log("=== CSRF Validation ===");
-      console.log("Received token:", req.headers["XSRF-Token"]);
-      console.log("Cookie token:", req.cookies["_csrf"]);
+      console.log("=== CSRF Token Validation ===");
+      console.log({
+        path: req.path,
+        method: req.method,
+        headerToken: req.headers["xsrf-token"],
+        cookieToken: req.cookies["_csrf"],
+        allCookies: req.cookies,
+      });
       return req.headers["xsrf-token"];
     },
   })
