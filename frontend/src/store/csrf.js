@@ -56,3 +56,6 @@ export async function csrfFetch(
 
   return res;
 }
+export function restoreCSRF() {
+  return csrfFetch('/csrf/restore');
+}
