@@ -31,7 +31,7 @@ export async function csrfFetch(
       console.log('All cookies:', Cookies.get()); // See what cookies we do have
     }
 
-    options.headers['XSRF-Token'] = token;
+    options.headers['XSRF-TOKEN'] = token;
 
     if (body) {
       options.body = JSON.stringify(body);

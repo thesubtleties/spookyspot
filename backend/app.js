@@ -52,9 +52,9 @@ app.use(
     },
     value: (req) => {
       console.log("=== CSRF Validation ===");
-      console.log("Received token:", req.headers["xsrf-token"]);
+      console.log("Received token:", req.headers["XSRF-Token"]);
       console.log("Cookie token:", req.cookies["_csrf"]);
-      return req.headers["XSRF-TOKEN"];
+      return req.headers["xsrf-token"];
     },
   })
 );
