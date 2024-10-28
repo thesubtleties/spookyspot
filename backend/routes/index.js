@@ -6,7 +6,12 @@ const apiRouter = require("./api");
 // CSRF restore route - works for both dev and prod
 router.get("/api/csrf/restore", (req, res) => {
   const csrfToken = req.csrfToken();
-  res.cookie("XSRF-TOKEN", csrfToken);
+  res.cookie("XSRF-TOKEN", csrfToken, {
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" && "Lax",
+    httpOnly: false,
+    domain: process.env.NODE_ENV === "production" ? ".sbtl.dev" : undefined,
+  });
   res.status(200).json({
     "XSRF-Token": csrfToken,
   });
