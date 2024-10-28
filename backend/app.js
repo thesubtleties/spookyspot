@@ -22,7 +22,7 @@ if (isProduction) {
   app.use(
     cors({
       origin: "https://spookyspot.sbtl.dev",
-      credentials: true  // Add this
+      credentials: true, // Add this
     })
   );
 } else {
@@ -47,6 +47,16 @@ app.use(
     },
   })
 );
+app.use((req, res, next) => {
+  const token = req.csrfToken();
+  res.cookie("XSRF-TOKEN", token, {
+    secure: isProduction,
+    sameSite: isProduction && "Lax",
+    httpOnly: false,
+    domain: isProduction ? ".sbtl.dev" : undefined,
+  });
+  next();
+});
 
 app.use(routes);
 // Catch unhandled requests and forward to error handler.
