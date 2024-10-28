@@ -10,23 +10,27 @@ import { Modal, ModalProvider } from './context/Modal';
 
 const store = configureStore();
 
-// Always restore CSRF
-restoreCSRF();
+async function initializeApp() {
+  // Always restore CSRF
+  await restoreCSRF();
 
-// Only set debug tools in development
-if (import.meta.env.MODE !== 'production') {
-  window.csrfFetch = csrfFetch;
-  window.store = store;
-  window.sessionActions = sessionActions;
+  // Only set debug tools in development
+  if (import.meta.env.MODE !== 'production') {
+    window.csrfFetch = csrfFetch;
+    window.store = store;
+    window.sessionActions = sessionActions;
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    <React.StrictMode>
+      <ModalProvider>
+        <Provider store={store}>
+          <App />
+          <Modal />
+        </Provider>
+      </ModalProvider>
+    </React.StrictMode>
+  );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <ModalProvider>
-      <Provider store={store}>
-        <App />
-        <Modal />
-      </Provider>
-    </ModalProvider>
-  </React.StrictMode>
-);
+initializeApp();
