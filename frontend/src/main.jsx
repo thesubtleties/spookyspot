@@ -11,8 +11,9 @@ import { Modal, ModalProvider } from './context/Modal';
 const store = configureStore();
 
 async function initializeApp() {
-  // Always restore CSRF
-  await restoreCSRF();
+  if (!Cookies.get('XSRF-TOKEN')) {
+    await restoreCSRF();
+  }
 
   // Only set debug tools in development
   if (import.meta.env.MODE !== 'production') {
