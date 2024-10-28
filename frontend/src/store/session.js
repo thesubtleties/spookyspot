@@ -54,10 +54,19 @@ export const login = (user) => async (dispatch) => {
 };
 
 export const restoreUser = () => async (dispatch) => {
-  const response = await csrfFetch('/session');
-  const data = await response.json();
-  dispatch(setUser(data.user));
-  return response;
+  try {
+    // Ensure fresh CSRF token before checking session
+    await restoreCSRF();
+
+    const response = await csrfFetch('/session');
+    const data = await response.json();
+    dispatch(setUser(data.user));
+    return response;
+  } catch (error) {
+    console.error('Session restore failed:', error);
+    // Don't throw - just let the user be logged out
+    dispatch(setUser(null));
+  }
 };
 
 export const signup = (user) => async (dispatch) => {
