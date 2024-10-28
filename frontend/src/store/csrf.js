@@ -22,10 +22,23 @@ export async function csrfFetch(
     console.log('Setting up POST request headers');
     options.headers['Content-Type'] =
       options.headers['Content-Type'] || 'application/json';
-    options.headers['XSRF-Token'] = Cookies.get('XSRF-TOKEN');
+
+    const token = Cookies.get('XSRF-TOKEN');
+    console.log('XSRF-TOKEN from cookie:', token); // Debug log
+
+    if (!token) {
+      console.error('No XSRF-TOKEN found in cookies!');
+      console.log('All cookies:', Cookies.get()); // See what cookies we do have
+    }
+
+    options.headers['XSRF-Token'] = token;
+
     if (body) {
       options.body = JSON.stringify(body);
     }
+
+    // Log final headers
+    console.log('Final request headers:', options.headers);
   }
 
   const url = `${API_BASE_URL}${endpoint}`;
