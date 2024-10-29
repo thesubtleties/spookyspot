@@ -25,7 +25,7 @@ const setTokenCookie = (res, user) => {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction && "Lax",
-    domain: isProduction ? ".sbtl.dev" : undefined,
+    domain: isProduction ? "sbtl.dev" : undefined,
   });
 
   return token;
@@ -46,7 +46,7 @@ const restoreUser = (req, res, next) => {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction && "Lax",
-        domain: isProduction ? ".sbtl.dev" : undefined,
+        domain: isProduction ? "sbtl.dev" : undefined,
       });
       return next();
     }
@@ -65,7 +65,7 @@ const restoreUser = (req, res, next) => {
           httpOnly: true,
           secure: isProduction,
           sameSite: isProduction && "Lax",
-          domain: isProduction ? ".sbtl.dev" : undefined,
+          domain: isProduction ? "sbtl.dev" : undefined,
         });
       }
     } catch (e) {
@@ -74,7 +74,7 @@ const restoreUser = (req, res, next) => {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction && "Lax",
-        domain: isProduction ? ".sbtl.dev" : undefined,
+        domain: isProduction ? "sbtl.dev" : undefined,
       });
     }
 

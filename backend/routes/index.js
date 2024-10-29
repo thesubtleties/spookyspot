@@ -28,7 +28,7 @@ router.get("/api/csrf/restore", (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" && "Lax",
     httpOnly: false,
-    domain: process.env.NODE_ENV === "production" ? ".sbtl.dev" : undefined,
+    domain: process.env.NODE_ENV === "production" ? "sbtl.dev" : undefined,
   });
 
   res.json({ "XSRF-TOKEN": csrfToken });
