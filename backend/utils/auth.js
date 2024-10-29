@@ -32,12 +32,22 @@ const setTokenCookie = (res, user) => {
 };
 
 const restoreUser = (req, res, next) => {
-  // token parsed from cookies
   const { token } = req.cookies;
   req.user = null;
 
+  if (!token) {
+    return next();
+  }
+
   return jwt.verify(token, secret, null, async (err, jwtPayload) => {
     if (err) {
+      // Clear token if invalid
+      res.clearCookie("token", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction && "Lax",
+        domain: isProduction ? ".sbtl.dev" : undefined,
+      });
       return next();
     }
 
@@ -48,12 +58,25 @@ const restoreUser = (req, res, next) => {
           include: ["email", "createdAt", "updatedAt"],
         },
       });
-    } catch (e) {
-      res.clearCookie("token");
-      return next();
-    }
 
-    if (!req.user) res.clearCookie("token");
+      if (!req.user) {
+        // Clear token if user not found
+        res.clearCookie("token", {
+          httpOnly: true,
+          secure: isProduction,
+          sameSite: isProduction && "Lax",
+          domain: isProduction ? ".sbtl.dev" : undefined,
+        });
+      }
+    } catch (e) {
+      // Clear token on error
+      res.clearCookie("token", {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction && "Lax",
+        domain: isProduction ? ".sbtl.dev" : undefined,
+      });
+    }
 
     return next();
   });
