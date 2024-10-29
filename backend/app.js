@@ -40,7 +40,6 @@ app.use(
   })
 );
 
-// CSRF protection only for API routes
 app.use(
   "/api",
   csurf({
@@ -51,7 +50,15 @@ app.use(
       domain: isProduction ? ".sbtl.dev" : undefined,
     },
     value: (req) => {
-      return req.headers["xsrf-token"] || req.headers["XSRF-TOKEN"]; // Try both cases
+      console.log("=== CSRF Check ===", {
+        url: req.url,
+        method: req.method,
+        headerToken: req.headers["xsrf-token"],
+        cookieToken: req.cookies["_csrf"],
+        allHeaders: req.headers,
+        allCookies: req.cookies,
+      });
+      return req.headers["xsrf-token"];
     },
   })
 );
