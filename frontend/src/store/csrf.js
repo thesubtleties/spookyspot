@@ -1,8 +1,9 @@
 import { debug } from '../components/utils/debug';
+import Cookies from 'js-cookie';
 const API_BASE_URL =
   import.meta.env.MODE === 'production'
-    ? 'https://spookyspot.sbtl.dev' // Your production URL
-    : ''; // Empty string for development (will use relative URLs)
+    ? 'https://spookyspot.sbtl.dev/api' // Your production URL
+    : '/api'; // Empty string for development (will use relative URLs)
 export async function csrfFetch(
   endpoint,
   method = 'GET',

@@ -24,10 +24,19 @@ function LoginFormModal() {
   };
   const handleDemoLogin = async (e) => {
     e.preventDefault();
-    await Promise.all([setCredential('Demo-lition'), setPassword('password')]);
-    handleSubmit(e);
+    dispatch(
+      sessionActions.login({
+        credential: 'Demo-lition',
+        password: 'password',
+      })
+    )
+      .then(() => {
+        closeModal();
+      })
+      .catch(() => {
+        setErrors({ credential: 'The provided credentials were invalid' });
+      });
   };
-
   return (
     <div className={styles.loginForm}>
       <h1>Log In</h1>
