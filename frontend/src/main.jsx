@@ -27,3 +27,4 @@ async function initializeApplication() {
     console.error('Critical initialization error:', error);
   }
 }
+initializeApplication();
