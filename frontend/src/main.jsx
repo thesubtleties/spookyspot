@@ -1,3 +1,10 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import Cookies from 'js-cookie';
+import { Modal, ModalProvider } from './context/Modal';
+import { restoreCSRF } from './store/csrf';
+import App from './App';
 async function initializeApplication() {
   try {
     // ALWAYS get a fresh token before rendering

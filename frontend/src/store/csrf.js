@@ -1,4 +1,8 @@
 import { debug } from '../components/utils/debug';
+const API_BASE_URL =
+  import.meta.env.MODE === 'production'
+    ? 'https://spookyspot.sbtl.dev' // Your production URL
+    : ''; // Empty string for development (will use relative URLs)
 export async function csrfFetch(
   endpoint,
   method = 'GET',

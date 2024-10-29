@@ -104,7 +104,7 @@ function SpotForm({ mode }) {
         console.log('Create response:', newSpot);
 
         if (newSpot && newSpot.id) {
-          for (let image of images) {
+          for (const image of images) {
             try {
               await dispatch(
                 addSpotImageThunk(newSpot.id, image.url, image.preview)
