@@ -29,13 +29,9 @@ function LoginFormModal() {
         credential: 'Demo-lition',
         password: 'password',
       })
-    )
-      .then(() => {
-        closeModal();
-      })
-      .catch(() => {
-        setErrors({ credential: 'The provided credentials were invalid' });
-      });
+    ).then(() => {
+      closeModal();
+    });
   };
   return (
     <div className={styles.loginForm}>
