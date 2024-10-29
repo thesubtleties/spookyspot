@@ -6,20 +6,32 @@ const apiRouter = require("./api");
 // CSRF restore route - works for both dev and prod
 // routes/index.js
 router.get("/api/csrf/restore", (req, res) => {
-  // Only generate new token if one doesn't exist
-  if (!req.cookies["_csrf"]) {
-    const csrfToken = req.csrfToken();
-    res.cookie("XSRF-TOKEN", csrfToken, {
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" && "Lax",
-      httpOnly: false,
-      domain: process.env.NODE_ENV === "production" ? ".sbtl.dev" : undefined,
+  console.log("CSRF Restore Request:", {
+    existingCSRF: req.cookies["_csrf"],
+    existingXSRF: req.cookies["XSRF-TOKEN"],
+    allCookies: req.cookies,
+  });
+
+  // Check for both cookies
+  if (req.cookies["_csrf"] && req.cookies["XSRF-TOKEN"]) {
+    console.log("Reusing existing tokens");
+    return res.json({
+      "XSRF-TOKEN": req.cookies["XSRF-TOKEN"],
     });
-    res.json({ "XSRF-TOKEN": csrfToken });
-  } else {
-    // If token exists, just send the existing one
-    res.json({ "XSRF-TOKEN": req.cookies["XSRF-TOKEN"] });
   }
+
+  // Generate new token if either is missing
+  console.log("Generating new token");
+  const csrfToken = req.csrfToken(); // This sets _csrf cookie
+
+  res.cookie("XSRF-TOKEN", csrfToken, {
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" && "Lax",
+    httpOnly: false,
+    domain: process.env.NODE_ENV === "production" ? ".sbtl.dev" : undefined,
+  });
+
+  res.json({ "XSRF-TOKEN": csrfToken });
 });
 router.use("/api", apiRouter);
 
