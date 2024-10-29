@@ -1,4 +1,4 @@
-import { csrfFetch } from './csrf';
+import { csrfFetch, restoreCSRF } from './csrf';
 
 const SET_USER = 'user/setUser';
 const LOGOUT_USER = 'user/logout';
