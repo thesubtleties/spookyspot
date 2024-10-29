@@ -51,19 +51,10 @@ app.use(
       domain: isProduction ? ".sbtl.dev" : undefined,
     },
     value: (req) => {
-      console.log("=== CSRF Token Validation ===");
-      console.log({
-        path: req.path,
-        method: req.method,
-        headerToken: req.headers["xsrf-token"],
-        cookieToken: req.cookies["_csrf"],
-        allCookies: req.cookies,
-      });
-      return req.headers["xsrf-token"];
+      return req.headers["xsrf-token"] || req.headers["XSRF-TOKEN"]; // Try both cases
     },
   })
 );
-
 app.use(routes);
 // Catch unhandled requests and forward to error handler.
 app.use((_req, _res, next) => {
