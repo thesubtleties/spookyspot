@@ -24,6 +24,12 @@ export async function csrfFetch(
 
   if (method.toUpperCase() !== 'GET') {
     const token = Cookies.get('XSRF-TOKEN');
+    console.log('Making POST request:', {
+      endpoint,
+      token,
+      allCookies: Cookies.get(),
+      headers: options.headers,
+    });
 
     if (!token) {
       debug.error({
