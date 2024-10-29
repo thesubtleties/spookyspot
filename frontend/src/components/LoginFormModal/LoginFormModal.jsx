@@ -3,6 +3,7 @@ import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import styles from './styles/LoginForm.module.css';
+import Cookies from 'js-cookie';
 
 function LoginFormModal() {
   const dispatch = useDispatch();
@@ -22,16 +23,10 @@ function LoginFormModal() {
         setErrors({ credential: 'The provided credentials were invalid' });
       });
   };
-  const handleDemoLogin = (e) => {
+  const handleDemoLogin = async (e) => {
     e.preventDefault();
-    console.log('About to make login request');
-    console.log('XSRF-TOKEN cookie:', Cookies.get('XSRF-TOKEN'));
-    console.log('All cookies:', document.cookie);
-    dispatch(
-      sessionActions.login({ credential: 'Demo-lition', password: 'password' })
-    ).then(() => {
-      closeModal();
-    });
+    await Promise.all([setCredential('Demo-lition'), setPassword('password')]);
+    handleSubmit(e);
   };
 
   return (
