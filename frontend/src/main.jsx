@@ -4,22 +4,23 @@ import { Provider } from 'react-redux';
 import Cookies from 'js-cookie';
 import { Modal, ModalProvider } from './context/Modal';
 import { restoreCSRF } from './store/csrf';
+import configureStore from './store';
 import App from './App';
+
+const store = configureStore();
+
 async function initializeApplication() {
   try {
-    // ALWAYS get a fresh token before rendering
-    await restoreCSRF();
-    const token = Cookies.get('XSRF-TOKEN');
+    console.log('Starting initialization...');
 
-    if (!token) {
-      throw new Error('Failed to initialize CSRF token');
+    // Try to restore CSRF but don't block rendering on it
+    try {
+      await restoreCSRF();
+    } catch (error) {
+      console.error('CSRF restore failed:', error);
     }
 
-    console.log('App Init:', {
-      hasToken: !!token,
-      allCookies: Cookies.get(),
-    });
-
+    // Render the app regardless of CSRF status
     ReactDOM.createRoot(document.getElementById('root')).render(
       <React.StrictMode>
         <ModalProvider>
