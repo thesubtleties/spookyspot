@@ -3,7 +3,6 @@ import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
 import styles from './styles/LoginForm.module.css';
-import Cookies from 'js-cookie';
 
 function LoginFormModal() {
   const dispatch = useDispatch();
