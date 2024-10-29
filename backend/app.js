@@ -47,7 +47,7 @@ app.use(
       secure: isProduction,
       sameSite: isProduction && "Lax",
       httpOnly: true,
-      domain: isProduction ? ".sbtl.dev" : undefined,
+      domain: isProduction ? "sbtl.dev" : undefined,
     },
     value: (req) => {
       console.log("=== CSRF Check ===", {
