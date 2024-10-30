@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
+import { checkLengths } from '../utils/checkLengths';
 import styles from './styles/SignupForm.module.css';
 
 function SignUpFormModal() {
@@ -45,7 +46,9 @@ function SignUpFormModal() {
         .then(closeModal)
         .catch(async (res) => {
           const data = await res.json();
+          console.log(data);
           if (data?.errors) {
+            console.log(data.errors);
             setErrors(data.errors);
           }
         });
@@ -58,72 +61,75 @@ function SignUpFormModal() {
 
   return (
     <div className={styles.signupForm}>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
+      <div className={styles.signupContent}>
+        <h1>Sign Up</h1>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="email">Email</label>
           <input
+            id="email"
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
           />
-        </label>
-        {errors.email && <p>{errors.email}</p>}
-        <label>
-          Username
+          {errors.email && <p className={styles.error}>{errors.email}</p>}
+
+          <label htmlFor="username">Username</label>
           <input
+            id="username"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
           />
-        </label>
-        {errors.username && <p>{errors.username}</p>}
-        <label>
-          First Name
+          {errors.username && <p className={styles.error}>{errors.username}</p>}
+
+          <label htmlFor="firstName">First Name</label>
           <input
+            id="firstName"
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            required
           />
-        </label>
-        {errors.firstName && <p>{errors.firstName}</p>}
-        <label>
-          Last Name
+          {errors.firstName && (
+            <p className={styles.error}>{errors.firstName}</p>
+          )}
+
+          <label htmlFor="lastName">Last Name</label>
           <input
+            id="lastName"
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            required
           />
-        </label>
-        {errors.lastName && <p>{errors.lastName}</p>}
-        <label>
-          Password
+          {errors.lastName && <p className={styles.error}>{errors.lastName}</p>}
+
+          <label htmlFor="password">Password</label>
           <input
+            id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
-        </label>
-        {errors.password && <p>{errors.password}</p>}
-        <label>
-          Confirm Password
+          {errors.password && <p className={styles.error}>{errors.password}</p>}
+
+          <label htmlFor="confirmPassword">Confirm Password</label>
           <input
+            id="confirmPassword"
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            required
           />
-        </label>
-        {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-        <button type="submit" disabled={!isFormValid}>
-          Sign Up
-        </button>
-      </form>
+          {errors.confirmPassword && (
+            <p className={styles.error}>{errors.confirmPassword}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={!isFormValid || !checkLengths(password, username)}
+          >
+            Sign Up
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
