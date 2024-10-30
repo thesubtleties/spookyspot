@@ -3,6 +3,7 @@ import { selectCurrentSpot } from '../../store/spots';
 import styles from './styles/SpotInfo.module.css';
 import { formatRating } from '../utils/ratingFormatter';
 import { GoDotFill } from 'react-icons/go';
+import { TbPumpkinScary } from 'react-icons/tb';
 
 function SpotInfo() {
   const spot = useSelector(selectCurrentSpot);
@@ -28,7 +29,8 @@ function SpotInfo() {
         <div className={styles.priceRating}>
           <p className={styles.price}>${spot.price} / night</p>
           <p className={styles.rating}>
-            Rating: {rating}
+            {rating > 0 ? 'Rating:' : ''}
+            <TbPumpkinScary className={styles.pumpkin} /> {rating}
             {spot.numReviews > 0 && (
               <>
                 <GoDotFill />
