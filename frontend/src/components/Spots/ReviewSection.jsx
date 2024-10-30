@@ -6,6 +6,8 @@ import AddReviewModal from '../Reviews/AddReviewModal';
 import { getReviewsBySpotThunk } from '../../store/reviews';
 import { fetchSpotDetailsThunk } from '../../store/spots';
 import { fetchSpotData } from '../utils/fetchSpotData';
+import { TbPumpkinScary } from 'react-icons/tb';
+import { formatRating } from '../utils/ratingFormatter';
 
 import styles from './styles/ReviewSection.module.css';
 
@@ -30,6 +32,10 @@ function ReviewSection() {
   });
   const currentUser = useSelector((state) => state.session.user);
   const currentSpot = useSelector((state) => state.spots.currentSpot);
+
+  const rating = currentSpot.avgStarRating
+    ? formatRating(currentSpot.avgStarRating)
+    : 'New';
 
   const userHasReviewed =
     currentUser &&
@@ -61,9 +67,17 @@ function ReviewSection() {
 
   return (
     <div className={styles.reviews}>
-      <h2>
-        {sortedReviews.length}{' '}
-        {sortedReviews.length === 1 ? 'Review' : 'Reviews'}
+      <h2 className={styles.reviewHeader}>
+        <div className={styles.reviewCount}>
+          {sortedReviews.length}{' '}
+          {sortedReviews.length === 1 ? 'Review' : 'Reviews'}
+        </div>
+        {sortedReviews.length > 0 && (
+          <div className={styles.reviewsRating}>
+            <TbPumpkinScary />
+            {rating}
+          </div>
+        )}
       </h2>
       {sortedReviews.map((review) => (
         <ReviewCard key={review.id} review={review} />

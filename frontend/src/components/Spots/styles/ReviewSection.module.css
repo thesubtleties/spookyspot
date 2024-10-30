@@ -2,3 +2,19 @@
   margin-top: 20px;
   margin-bottom: 50px;
 }
+.reviewHeader {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.reviewCount {
+  font-weight: bold;
+}
+
+.reviewsRating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
