@@ -2,6 +2,7 @@ import { useState } from 'react';
 import * as sessionActions from '../../store/session';
 import { useDispatch } from 'react-redux';
 import { useModal } from '../../context/Modal';
+import { checkLengths } from '../utils/checkLengths';
 import styles from './styles/LoginForm.module.css';
 
 function LoginFormModal() {
@@ -33,6 +34,7 @@ function LoginFormModal() {
       closeModal();
     });
   };
+
   return (
     <div className={styles.loginForm}>
       <h1>Log In</h1>
@@ -45,7 +47,6 @@ function LoginFormModal() {
             type="text"
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
-            required
           />
         </label>
         <label htmlFor="password">
@@ -56,11 +57,16 @@ function LoginFormModal() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
         </label>
 
-        <button type="submit">Log In</button>
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          disabled={!checkLengths(password, credential)}
+        >
+          Log In
+        </button>
         <button
           type="button"
           onClick={handleDemoLogin}
