@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { addReviewThunk } from '../../store/reviews';
+import { fetchSpotDetailsThunk } from '../../store/spots';
 import { useModal } from '../../context/Modal';
 import { TbPumpkinScary } from 'react-icons/tb';
 import styles from './styles/AddReviewModal.module.css';
@@ -22,6 +23,7 @@ function AddReviewModal({ spotId }) {
           spotId,
         })
       );
+      await dispatch(fetchSpotDetailsThunk(spotId));
       closeModal();
     } catch (e) {
       setError(e.message);
