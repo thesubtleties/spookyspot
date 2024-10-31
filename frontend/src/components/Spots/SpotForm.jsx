@@ -208,7 +208,7 @@ function SpotForm({ mode }) {
 
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label htmlFor="latitude">Latitude</label>
+              <label htmlFor="lat">Latitude</label>
               <input
                 type="number"
                 id="lat"
@@ -224,7 +224,7 @@ function SpotForm({ mode }) {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="longitude">Longitude</label>
+              <label htmlFor="lng">Longitude</label>
               <input
                 type="number"
                 id="lng"
@@ -278,6 +278,7 @@ function SpotForm({ mode }) {
             value={formData.name}
             onChange={handleChange}
             placeholder="Name of your Spot"
+            className={styles.spotNameInput}
           />
           {errors.name && <span className={styles.error}>{errors.name}</span>}
         </section>

@@ -38,6 +38,7 @@ textarea {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  box-sizing: border-box;
 }
 
 .textArea {
@@ -82,4 +83,8 @@ hr {
   width: 100%;
   margin-top: 20px;
   box-sizing: border-box;
+}
+
+.spotNameInput {
+  width: 100%;
 }
