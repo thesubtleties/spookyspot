@@ -62,3 +62,10 @@
 .submitButton:hover {
   background-color: rgb(255, 122, 20);
 }
+
+.error {
+  color: #dc2626; /* or any error red color that matches your design */
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}

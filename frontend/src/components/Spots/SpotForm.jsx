@@ -256,6 +256,7 @@ function SpotForm({ mode }) {
             onChange={handleChange}
             placeholder="Please enter at least 30 characters"
             rows="5"
+            className={styles.textArea}
           />
           {errors.description && (
             <span className={styles.error}>{errors.description}</span>
@@ -313,6 +314,7 @@ function SpotForm({ mode }) {
             value={formData.image1}
             onChange={handleChange}
             placeholder="Preview Image URL"
+            className={styles.imageInput1}
           />
           {errors.previewImage && (
             <span className={styles.error}>{errors.previewImage}</span>
@@ -327,6 +329,7 @@ function SpotForm({ mode }) {
               value={formData[imageName]}
               onChange={handleChange}
               placeholder={`Image URL`}
+              className={styles.imageInput2}
             />
           ))}
         </section>

@@ -7,20 +7,25 @@ import styles from './styles/AddReviewModal.module.css';
 
 function AddReviewModal({ spotId }) {
   const [review, setReview] = useState('');
-  const [stars, setStars] = useState(1);
+  const [stars, setStars] = useState(0);
+  const [error, setError] = useState();
   const dispatch = useDispatch();
   const { closeModal } = useModal();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await dispatch(
-      addReviewThunk({
-        review,
-        stars,
-        spotId,
-      })
-    );
-    closeModal();
+    try {
+      await dispatch(
+        addReviewThunk({
+          review,
+          stars,
+          spotId,
+        })
+      );
+      closeModal();
+    } catch (e) {
+      setError(e.message);
+    }
   };
 
   return (
@@ -28,6 +33,7 @@ function AddReviewModal({ spotId }) {
       <h2>How was your stay?</h2>
       <form onSubmit={handleSubmit}>
         <textarea
+          id="review"
           value={review}
           onChange={(e) => setReview(e.target.value)}
           placeholder="Leave your review here..."
@@ -44,10 +50,15 @@ function AddReviewModal({ spotId }) {
             />
           ))}
         </div>
-        <button type="submit" className={styles.submitButton}>
+        <button
+          type="submit"
+          className={styles.submitButton}
+          disabled={stars === 0 || review.length < 10}
+        >
           Submit Your Review
         </button>
       </form>
+      {error && <p className={styles.error}>{error.message}</p>}
     </div>
   );
 }
