@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { validateSpotForm } from '../utils/formValidations';
 import { useParams } from 'react-router-dom';
 import { fetchSpotDetailsThunk } from '../../store/spots';
+import PhotoUpload from './PhotoUpload';
 
 import {
   createSpotThunk,
@@ -18,6 +19,9 @@ function SpotForm({ mode }) {
   const currentSpot = useSelector((state) => state.spots.currentSpot);
   const isUpdating = mode === 'update';
   const { spotId } = useParams();
+
+  console.log(currentSpot);
+
   console.log(currentSpot);
   useEffect(() => {
     dispatch(fetchSpotDetailsThunk(spotId));
@@ -36,9 +40,7 @@ function SpotForm({ mode }) {
     description: '',
     name: '',
     price: '',
-    image1: '',
-    image2: '',
-    image3: '',
+    images: [],
   });
 
   const [errors, setErrors] = useState({});
@@ -55,9 +57,7 @@ function SpotForm({ mode }) {
         description: currentSpot.description || '',
         name: currentSpot.name || '',
         price: currentSpot.price || '',
-        image1: currentSpot.SpotImages?.[0]?.url || '',
-        image2: currentSpot.SpotImages?.[1]?.url || '',
-        image3: currentSpot.SpotImages?.[2]?.url || '',
+        images: [...currentSpot.SpotImages] || [],
       });
     }
   }, [isUpdating, currentSpot]);
@@ -84,12 +84,7 @@ function SpotForm({ mode }) {
     console.log('Form is valid:', isValid);
     if (!isValid) return;
 
-    const { image1, image2, image3, ...spotData } = formData;
-    const images = [
-      { url: image1, preview: true },
-      { url: image2, preview: false },
-      { url: image3, preview: false },
-    ].filter((img) => img.url);
+    const { images, ...spotData } = formData;
 
     try {
       let newSpot;
@@ -307,32 +302,32 @@ function SpotForm({ mode }) {
 
         <section>
           <h2>Show off your Spot with photos</h2>
-          <p>Submit a link to at least one photo to publish your spot.</p>
-          <input
-            type="text"
-            id="image1"
-            name="image1"
-            value={formData.image1}
-            onChange={handleChange}
-            placeholder="Preview Image URL"
-            className={styles.imageInput1}
+          <p>Submit up to 5 photos of your spot.</p>
+          <PhotoUpload
+            onUploadSuccess={(imageUrl) => {
+              setFormData((prev) => ({
+                ...prev,
+                images: [
+                  ...prev.images,
+                  {
+                    url: imageUrl,
+                    preview: prev.images.length === 0,
+                  },
+                ],
+              }));
+            }}
+            images={formData.images}
+            maxImages={5}
+            onRemoveImage={(index) => {
+              setFormData((prev) => ({
+                ...prev,
+                images: prev.images.filter((_, i) => i !== index),
+              }));
+            }}
           />
-          {errors.previewImage && (
-            <span className={styles.error}>{errors.previewImage}</span>
+          {errors.images && (
+            <span className={styles.error}>{errors.images}</span>
           )}
-
-          {['image2', 'image3'].map((imageName) => (
-            <input
-              key={imageName}
-              type="text"
-              id={imageName}
-              name={imageName}
-              value={formData[imageName]}
-              onChange={handleChange}
-              placeholder={`Image URL`}
-              className={styles.imageInput2}
-            />
-          ))}
         </section>
 
         <button type="submit" className={styles.submitButton}>
