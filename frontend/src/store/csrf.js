@@ -44,15 +44,16 @@ export async function csrfFetch(
       });
     }
 
-    options.headers['Content-Type'] =
-      options.headers['Content-Type'] || 'application/json';
-
-    // Use lowercase header name
-    options.headers['xsrf-token'] = token;
-
-    if (body) {
-      options.body = JSON.stringify(body);
+    if (body instanceof FormData) {
+      options.body = body;
+    } else {
+      options.headers['Content-Type'] = 'application/json';
+      if (body) {
+        options.body = JSON.stringify(body);
+      }
     }
+
+    options.headers['xsrf-token'] = token;
 
     debug.request({
       type: 'request-details',
