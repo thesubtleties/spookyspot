@@ -3,7 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { validateSpotForm } from '../utils/formValidations';
 import { useParams } from 'react-router-dom';
-import { fetchSpotDetailsThunk } from '../../store/spots';
+import {
+  deleteSpotImageThunk,
+  fetchSpotDetailsThunk,
+  getUserSpotsThunk,
+} from '../../store/spots';
 import PhotoUpload from './PhotoUpload';
 
 import {
@@ -91,15 +95,44 @@ function SpotForm({ mode }) {
       if (isUpdating) {
         console.log('Updating spot with ID:', spotId);
         console.log('Update data:', { ...spotData, id: spotId });
+
+        const updatedImages = images.map((image, index) => ({
+          ...image,
+          preview: index === 0,
+        }));
         newSpot = await dispatch(updateSpotThunk({ ...spotData, id: spotId }));
         console.log('Update response:', newSpot);
+
+        if (currentSpot.SpotImages) {
+          for (const spotImage of currentSpot.SpotImages) {
+            try {
+              await dispatch(deleteSpotImageThunk(spotImage.id));
+            } catch (error) {
+              console.error('Failed to delete image:', spotImage.id, error);
+            }
+          }
+        }
+        for (const image of updatedImages) {
+          try {
+            await dispatch(
+              addSpotImageThunk(newSpot.id, image.url, image.preview)
+            );
+          } catch (imageError) {
+            console.error('Failed to upload image:', image.url, imageError);
+          }
+        }
       } else {
         console.log('Creating new spot');
         newSpot = await dispatch(createSpotThunk(spotData));
         console.log('Create response:', newSpot);
 
+        const newImages = images.map((image, index) => ({
+          ...image,
+          preview: index === 0,
+        }));
+
         if (newSpot && newSpot.id) {
-          for (const image of images) {
+          for (const image of newImages) {
             try {
               await dispatch(
                 addSpotImageThunk(newSpot.id, image.url, image.preview)
@@ -113,6 +146,7 @@ function SpotForm({ mode }) {
 
       if (newSpot) {
         console.log('Navigation to new/updated spot page');
+        await dispatch(getUserSpotsThunk());
         navigate(`/spots/${newSpot.id}`);
       } else {
         throw new Error('Failed to create/update spot');
@@ -319,10 +353,16 @@ function SpotForm({ mode }) {
             images={formData.images}
             maxImages={5}
             onRemoveImage={(index) => {
-              setFormData((prev) => ({
-                ...prev,
-                images: prev.images.filter((_, i) => i !== index),
-              }));
+              setFormData((prev) => {
+                const newImages = prev.images.filter((_, i) => i !== index);
+                return {
+                  ...prev,
+                  images: newImages.map((img, i) => ({
+                    ...img,
+                    preview: i === 0,
+                  })),
+                };
+              });
             }}
           />
           {errors.images && (

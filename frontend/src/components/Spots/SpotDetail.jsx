@@ -20,11 +20,15 @@ function SpotDetail() {
     setIsLoading(true);
     const fetchFns = [fetchSpotDetailsThunk, getReviewsBySpotThunk];
     async function laodData() {
-      await fetchSpotData(dispatch, spotId, fetchFns);
+      try {
+        await fetchSpotData(dispatch, spotId, fetchFns);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setIsLoading(false);
+      }
     }
     laodData();
-    setIsLoading(false);
-    setError(false);
   }, [dispatch, spotId]);
 
   if (isLoading) {

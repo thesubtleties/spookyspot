@@ -165,7 +165,7 @@ export const addSpotImageThunk =
 
 export const deleteSpotImageThunk = (imageId) => async (dispatch) => {
   try {
-    const response = await csrfFetch(`/spot-images/${imageId}`);
+    const response = await csrfFetch(`/spot-images/${imageId}`, 'DELETE');
 
     if (response.ok) {
       dispatch(deleteSpotImage(imageId));
