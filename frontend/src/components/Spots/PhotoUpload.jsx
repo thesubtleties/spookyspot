@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { csrfFetch } from '../../store/csrf';
-import styles from './styles/ManageSpots.module.css';
+import styles from './styles/PhotoUpload.module.css';
 
 function PhotoUpload({ onUploadSuccess, onRemoveImage, images, maxImages }) {
   const [loading, setLoading] = useState(false);
@@ -33,13 +33,16 @@ function PhotoUpload({ onUploadSuccess, onRemoveImage, images, maxImages }) {
   };
   return (
     <div className={styles.imageGrid}>
-      {/* Existing images */}
       {images.map((image, index) => (
         <div key={index} className={styles.imageContainer}>
           <img src={image.url} alt={`Spot image ${index + 1}`} />
           {index === 0 && <span className={styles.previewBadge}>Preview</span>}
           <button
-            onClick={() => onRemoveImage(index)}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              onRemoveImage(index);
+            }}
             className={styles.removeButton}
           >
             ×
@@ -56,13 +59,23 @@ function PhotoUpload({ onUploadSuccess, onRemoveImage, images, maxImages }) {
             style={{ display: 'none' }}
             id="image-upload"
           />
-          <button
-            onClick={() => document.getElementById('image-upload').click()}
-            disabled={loading}
-            className={styles.addButton}
-          >
-            {loading ? 'Uploading...' : '+ Add Image'}
-          </button>
+          {images.length < maxImages && (
+            <>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                style={{ display: 'none' }}
+                id="image-upload"
+              />
+              <div
+                className={styles.addImageBox}
+                onClick={() => document.getElementById('image-upload').click()}
+              >
+                +
+              </div>
+            </>
+          )}
         </div>
       )}
 
