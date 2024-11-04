@@ -19,7 +19,7 @@ function SpotDetail() {
   useEffect(() => {
     setIsLoading(true);
     const fetchFns = [fetchSpotDetailsThunk, getReviewsBySpotThunk];
-    async function laodData() {
+    async function loadData() {
       try {
         await fetchSpotData(dispatch, spotId, fetchFns);
       } catch (error) {
@@ -28,7 +28,7 @@ function SpotDetail() {
         setIsLoading(false);
       }
     }
-    laodData();
+    loadData();
   }, [dispatch, spotId]);
 
   if (isLoading) {
