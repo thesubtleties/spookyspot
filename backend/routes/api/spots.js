@@ -135,6 +135,7 @@ router.get("/", async (req, res) => {
       where,
       limit,
       offset,
+      order: [['id', 'ASC']],
       attributes: {
         include: [
           // Calculate average rating using a subquery
