@@ -69,7 +69,7 @@ export const fetchSpotDetailsThunk = (spotId) => async (dispatch) => {
     const spot = await response.json();
     dispatch(setCurrentSpot(spot));
   } catch (error) {
-    console.log(error);
+    console.log('error in thunk', error);
   }
 };
 

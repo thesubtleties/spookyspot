@@ -23,16 +23,18 @@ function SpotForm({ mode }) {
   const currentSpot = useSelector((state) => state.spots.currentSpot);
   const isUpdating = mode === 'update';
   const { spotId } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
 
-  console.log(currentSpot);
-
-  console.log(currentSpot);
   useEffect(() => {
-    dispatch(fetchSpotDetailsThunk(spotId));
-  }, [dispatch, spotId]);
-  console.log('SpotForm rendered. spotId:', spotId);
-  console.log('isUpdating:', isUpdating);
-  console.log(currentSpot);
+    if (isUpdating && spotId) {
+      console.log('Fetching spot details for:', spotId);
+      dispatch(fetchSpotDetailsThunk(spotId)).then(() => {
+        setIsLoading(false);
+      });
+    } else {
+      setIsLoading(false);
+    }
+  }, [dispatch, spotId, isUpdating]);
 
   const [formData, setFormData] = useState({
     country: '',
@@ -50,7 +52,8 @@ function SpotForm({ mode }) {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (isUpdating && currentSpot) {
+    if (isUpdating && currentSpot && !isLoading) {
+      console.log('Populating form with spot data:', currentSpot);
       setFormData({
         country: currentSpot.country || '',
         address: currentSpot.address || '',
@@ -61,10 +64,16 @@ function SpotForm({ mode }) {
         description: currentSpot.description || '',
         name: currentSpot.name || '',
         price: currentSpot.price || '',
-        images: [...currentSpot.SpotImages] || [],
+        images: Array.isArray(currentSpot.SpotImages)
+          ? [...currentSpot.SpotImages]
+          : [],
       });
     }
-  }, [isUpdating, currentSpot]);
+  }, [currentSpot, isUpdating, isLoading]);
+
+  if (isUpdating && isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
@@ -83,6 +92,7 @@ function SpotForm({ mode }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     console.log('Form data:', formData);
     const isValid = validateForm();
     console.log('Form is valid:', isValid);
@@ -153,6 +163,7 @@ function SpotForm({ mode }) {
       }
     } catch (error) {
       console.error('Error submitting form:', error);
+      setIsLoading(false);
       if (error.response) {
         console.error('Response data:', error.response.data);
         console.error('Response status:', error.response.status);
