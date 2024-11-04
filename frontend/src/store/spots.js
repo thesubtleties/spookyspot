@@ -8,6 +8,7 @@ const DELETE_SPOT = 'spots/deleteSpot';
 const SET_CURRENT_SPOT = 'spots/setSpot';
 const GET_USER_SPOTS = 'spots/getUserSpots';
 const ADD_SPOT_IMAGE = 'spots/addSpotImage';
+const DELETE_SPOT_IMAGE = 'spots/deleteSpotImage';
 
 // Actions
 export const getAllSpots = (spotsData) => ({
@@ -43,6 +44,11 @@ export const getUserSpots = (spots) => ({
 export const addSpotImage = (spotId, imageUrl) => ({
   type: ADD_SPOT_IMAGE,
   payload: { spotId, imageUrl },
+});
+
+export const deleteSpotImage = (imageId) => ({
+  type: DELETE_SPOT_IMAGE,
+  payload: imageId,
 });
 
 // Thunks
@@ -156,6 +162,19 @@ export const addSpotImageThunk =
       throw error;
     }
   };
+
+export const deleteSpotImageThunk = (imageId) => async (dispatch) => {
+  try {
+    const response = await csrfFetch(`/spot-images/${imageId}`, 'DELETE');
+
+    if (response.ok) {
+      dispatch(deleteSpotImage(imageId));
+    }
+  } catch (error) {
+    console.error('Error deleting spot image:', error);
+    throw error;
+  }
+};
 // Initial State
 const initialState = {
   allSpots: [],
@@ -206,24 +225,33 @@ function spotReducer(state = initialState, action) {
     case ADD_SPOT_IMAGE:
       return {
         ...state,
-        allSpots: state.allSpots.map((spot) =>
-          spot.id === action.payload.spotId
-            ? {
-                ...spot,
-                images: [...(spot.images || []), action.payload.imageUrl],
-              }
-            : spot
-        ),
         currentSpot:
           state.currentSpot && state.currentSpot.id === action.payload.spotId
             ? {
                 ...state.currentSpot,
-                images: [
-                  ...(state.currentSpot.images || []),
-                  action.payload.imageUrl,
+                SpotImages: [
+                  ...(state.currentSpot.SpotImages || []),
+                  //! updated to have all image data in here
+                  {
+                    id: action.payload.id,
+                    url: action.payload.url,
+                    preview: action.payload.preview,
+                  },
                 ],
               }
             : state.currentSpot,
+      };
+    case DELETE_SPOT_IMAGE:
+      return {
+        ...state,
+        currentSpot: state.currentSpot
+          ? {
+              ...state.currentSpot,
+              SpotImages: state.currentSpot?.SpotImages.filter(
+                (image) => image.id !== action.payload.imageId
+              ),
+            }
+          : { ...state.currentSpot },
       };
     default:
       return state;
