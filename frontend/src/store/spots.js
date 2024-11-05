@@ -133,11 +133,11 @@ export const getUserSpotsThunk = () => async (dispatch) => {
       throw new Error('Failed to fetch user spots');
     }
     const userSpots = await response.json();
-    console.log('Fetched user spots:', userSpots); // Add this log
+    console.log('Fetched user spots:', userSpots);
     dispatch(getUserSpots(userSpots));
   } catch (error) {
     console.error('Error in getUserSpotsThunk:', error);
-    throw error; // Re-throw the error so it can be caught in the component
+    throw error;
   }
 };
 

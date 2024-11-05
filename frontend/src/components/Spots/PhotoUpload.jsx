@@ -67,6 +67,7 @@ function PhotoUpload({ onUploadSuccess, onRemoveImage, images, maxImages }) {
                 onChange={handleFileSelect}
                 style={{ display: 'none' }}
                 id="image-upload"
+                disabled={loading}
               />
               <div
                 className={styles.addImageBox}

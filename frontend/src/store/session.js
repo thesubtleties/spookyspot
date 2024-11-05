@@ -1,4 +1,4 @@
-import { csrfFetch, restoreCSRF } from './csrf';
+import { csrfFetch } from './csrf';
 import Cookies from 'js-cookie';
 
 const SET_USER = 'user/setUser';
