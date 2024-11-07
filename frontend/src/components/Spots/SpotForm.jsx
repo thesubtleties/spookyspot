@@ -67,6 +67,7 @@ function SpotForm({ mode }) {
         images: Array.isArray(currentSpot.SpotImages)
           ? [...currentSpot.SpotImages]
           : [],
+        deletedImages: [],
       });
     }
   }, [currentSpot, isUpdating, isLoading]);
@@ -102,10 +103,10 @@ function SpotForm({ mode }) {
 
     try {
       let newSpot;
+      const deletedImageIds = formData.deletedImages.map((image) => image.id);
       if (isUpdating) {
         console.log('Updating spot with ID:', spotId);
         console.log('Update data:', { ...spotData, id: spotId });
-
         const updatedImages = images.map((image, index) => ({
           ...image,
           preview: index === 0,
@@ -116,7 +117,9 @@ function SpotForm({ mode }) {
         if (currentSpot.SpotImages) {
           for (const spotImage of currentSpot.SpotImages) {
             try {
-              await dispatch(deleteSpotImageThunk(spotImage.id));
+              await dispatch(
+                deleteSpotImageThunk(spotImage.id, deletedImageIds)
+              );
             } catch (error) {
               console.error('Failed to delete image:', spotImage.id, error);
             }
@@ -365,6 +368,7 @@ function SpotForm({ mode }) {
             maxImages={5}
             onRemoveImage={(index) => {
               setFormData((prev) => {
+                const removedImage = prev.images[index];
                 const newImages = prev.images.filter((_, i) => i !== index);
                 return {
                   ...prev,
@@ -372,6 +376,7 @@ function SpotForm({ mode }) {
                     ...img,
                     preview: i === 0,
                   })),
+                  deletedImages: [...prev.deletedImages, removedImage.id],
                 };
               });
             }}

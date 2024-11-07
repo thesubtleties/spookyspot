@@ -8,10 +8,10 @@ import styles from './styles/SpotCard.module.css';
 function SpotCard({ id, showEdit = false, className = '', style = {} }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const spot = useSelector(
-    (state) =>
-      state.spots.allSpots.find((s) => s.id === id) ||
-      state.spots.userSpots.find((s) => s.id === id)
+  const spot = useSelector((state) =>
+    showEdit
+      ? state.spots.userSpots.find((s) => s.id === id)
+      : state.spots.allSpots.find((s) => s.id === id)
   );
 
   if (!spot) return null;
@@ -65,7 +65,7 @@ function SpotCard({ id, showEdit = false, className = '', style = {} }) {
       return <span className={styles.newLabel}>New</span>;
     }
   };
-
+  console.log('Spot in Spot Card', spot);
   return (
     <div className={`${styles.cardWrapper} ${className}`} style={style}>
       <div className={styles.tooltip}>{spot.name}</div>

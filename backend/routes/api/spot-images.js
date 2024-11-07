@@ -68,7 +68,8 @@ router.post(
 router.delete("/:imageId", requireAuth, async (req, res) => {
   const { imageId } = req.params;
   const userId = req.user.id;
-
+  const { deletedImageIds } = req.body;
+  console.log("deleted image ids", deletedImageIds);
   try {
     const spotImage = await SpotImage.findByPk(imageId, {
       include: {
@@ -84,11 +85,13 @@ router.delete("/:imageId", requireAuth, async (req, res) => {
     if (spotImage.Spot.ownerId !== userId) {
       return res.status(403).json({ message: "Forbidden" });
     }
-    try {
-      const filename = spotImage.url.split("/").pop();
-      await minioClient.removeObject("spookyspot", filename);
-    } catch (minioError) {
-      console.error("MinIO deletion error:", minioError);
+    if (deletedImageIds.includes(parseInt(imageId))) {
+      try {
+        const filename = spotImage.url.split("/").pop();
+        await minioClient.removeObject("spookyspot", filename);
+      } catch (minioError) {
+        console.error("MinIO deletion error:", minioError);
+      }
     }
 
     await spotImage.destroy();
