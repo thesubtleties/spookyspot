@@ -163,18 +163,21 @@ export const addSpotImageThunk =
     }
   };
 
-export const deleteSpotImageThunk = (imageId) => async (dispatch) => {
-  try {
-    const response = await csrfFetch(`/spot-images/${imageId}`, 'DELETE');
+export const deleteSpotImageThunk =
+  (imageId, deletedImageIds) => async (dispatch) => {
+    try {
+      const response = await csrfFetch(`/spot-images/${imageId}`, 'DELETE', {
+        deletedImageIds,
+      });
 
-    if (response.ok) {
-      dispatch(deleteSpotImage(imageId));
+      if (response.ok) {
+        dispatch(deleteSpotImage(imageId));
+      }
+    } catch (error) {
+      console.error('Error deleting spot image:', error);
+      throw error;
     }
-  } catch (error) {
-    console.error('Error deleting spot image:', error);
-    throw error;
-  }
-};
+  };
 // Initial State
 const initialState = {
   allSpots: [],
