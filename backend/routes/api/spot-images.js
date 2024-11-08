@@ -38,6 +38,32 @@ const generateFileName = (originalname) => {
   return `${timestamp}-${random}.${ext}`;
 };
 
+// Quick and dirty route to just get a text list
+router.get("/bucket-list", requireAuth, async (req, res) => {
+  try {
+    const stream = minioClient.listObjects("spookyspot", "", true);
+    const files = [];
+
+    stream.on("data", (obj) => {
+      files.push(obj.name); // Just get filenames
+    });
+
+    stream.on("end", () => {
+      // Send as plain text, one filename per line
+      res.setHeader("Content-Type", "text/plain");
+      res.send(files.join("\n"));
+    });
+
+    stream.on("error", (err) => {
+      console.error("Error listing bucket:", err);
+      res.status(500).json({ error: "Failed to list bucket contents" });
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 router.post(
   "/upload",
   requireAuth,
