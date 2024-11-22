@@ -92,3 +92,15 @@ h2 {
     align-self: center;
   }
 }
+@media (max-width: 600px) {
+  .priceRating {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    align-items: center;
+  }
+  .rating {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
