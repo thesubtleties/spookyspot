@@ -88,3 +88,11 @@ hr {
 .spotNameInput {
   width: 100%;
 }
+
+@media (max-width: 768px) {
+  .formRow {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+}
