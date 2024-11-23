@@ -1,5 +1,6 @@
 .navigation {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   background-color: #000000;
@@ -15,4 +16,19 @@
 }
 .profileContainer {
   width: 5rem;
+  justify-self: flex-end;
+}
+
+@media (max-width: 444px) {
+  .addSpotButtonContainer {
+    order: 3;
+    justify-content: center;
+    flex-shrink: 2;
+    width: 100%;
+    text-align: center;
+  }
+
+  .navigation {
+    height: auto;
+  }
 }
