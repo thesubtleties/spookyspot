@@ -9,6 +9,7 @@ import {
   getUserSpotsThunk,
 } from '../../store/spots';
 import PhotoUpload from './PhotoUpload';
+import LoadingAnimation from '../LoadingAnimation/LoadingAnimation';
 
 import {
   createSpotThunk,
@@ -71,10 +72,25 @@ function SpotForm({ mode }) {
         deletedImages: [],
       });
     }
+    if (!isUpdating) {
+      setFormData({
+        country: '',
+        address: '',
+        city: '',
+        state: '',
+        lat: '',
+        lng: '',
+        description: '',
+        name: '',
+        price: '',
+        images: [],
+        deletedImages: [],
+      });
+    }
   }, [currentSpot, isUpdating, isLoading]);
 
-  if (isUpdating && isLoading) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <LoadingAnimation />;
   }
 
   const handleChange = (e) => {

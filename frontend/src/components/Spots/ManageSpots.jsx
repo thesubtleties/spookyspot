@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { getUserSpotsThunk } from '../../store/spots';
 import SpotCard from './SpotCard';
+import LoadingAnimation from '../LoadingAnimation/LoadingAnimation';
 import styles from './styles/ManageSpots.module.css';
 
 function ManageSpots() {
@@ -34,7 +35,7 @@ function ManageSpots() {
   }
 
   if (isLoading) {
-    return <div>Loading your spots...</div>;
+    return <LoadingAnimation />;
   }
 
   console.log('Rendering ManageSpots, userSpots:', userSpots);

@@ -58,8 +58,6 @@ function ImageGallery() {
         />
       )}
 
-      {/* Rest of your component... */}
-
       {/* Right side images */}
       <div className={styles.thumbnails}>
         {/* Top right images with fade */}

@@ -6,6 +6,7 @@ import { getReviewsBySpotThunk } from '../../store/reviews'; // adjust path as n
 import ImageGallery from './ImageGallery';
 import SpotInfo from './SpotInfo';
 import ReviewSection from './ReviewSection';
+import LoadingAnimation from '../LoadingAnimation/LoadingAnimation';
 import styles from './styles/SpotDetail.module.css';
 import { fetchSpotData } from '../utils/fetchSpotData';
 
@@ -32,7 +33,7 @@ function SpotDetail() {
   }, [dispatch, spotId]);
 
   if (isLoading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return <LoadingAnimation />;
   }
 
   if (error) {
