@@ -47,6 +47,7 @@ function SpotForm({ mode }) {
     name: '',
     price: '',
     images: [],
+    deletedImages: [],
   });
 
   const [errors, setErrors] = useState({});
@@ -97,7 +98,10 @@ function SpotForm({ mode }) {
     console.log('Form data:', formData);
     const isValid = validateForm();
     console.log('Form is valid:', isValid);
-    if (!isValid) return;
+    if (!isValid) {
+      setIsLoading(false);
+      return;
+    }
 
     const { images, ...spotData } = formData;
 
@@ -381,8 +385,8 @@ function SpotForm({ mode }) {
               });
             }}
           />
-          {errors.images && (
-            <span className={styles.error}>{errors.images}</span>
+          {errors.previewImage && (
+            <span className={styles.error}>{errors.previewImage}</span>
           )}
         </section>
 
