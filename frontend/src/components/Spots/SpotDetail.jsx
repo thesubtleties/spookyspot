@@ -6,6 +6,7 @@ import { getReviewsBySpotThunk } from '../../store/reviews'; // adjust path as n
 import ImageGallery from './ImageGallery';
 import SpotInfo from './SpotInfo';
 import ReviewSection from './ReviewSection';
+import LoadingAnimation from '../LoadingAnimation/LoadingAnimation';
 import styles from './styles/SpotDetail.module.css';
 import { fetchSpotData } from '../utils/fetchSpotData';
 
@@ -19,16 +20,20 @@ function SpotDetail() {
   useEffect(() => {
     setIsLoading(true);
     const fetchFns = [fetchSpotDetailsThunk, getReviewsBySpotThunk];
-    async function laodData() {
-      await fetchSpotData(dispatch, spotId, fetchFns);
+    async function loadData() {
+      try {
+        await fetchSpotData(dispatch, spotId, fetchFns);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setIsLoading(false);
+      }
     }
-    laodData();
-    setIsLoading(false);
-    setError(false);
+    loadData();
   }, [dispatch, spotId]);
 
   if (isLoading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return <LoadingAnimation />;
   }
 
   if (error) {

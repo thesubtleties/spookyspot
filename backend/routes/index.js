@@ -1,10 +1,7 @@
-// routes/index.js
 const express = require("express");
 const router = express.Router();
 const apiRouter = require("./api");
 
-// CSRF restore route - works for both dev and prod
-// routes/index.js
 router.get("/api/csrf/restore", (req, res) => {
   console.log("CSRF Restore Request:", {
     existingCSRF: req.cookies["_csrf"],
@@ -12,7 +9,6 @@ router.get("/api/csrf/restore", (req, res) => {
     allCookies: req.cookies,
   });
 
-  // Check for both cookies
   if (req.cookies["_csrf"] && req.cookies["XSRF-TOKEN"]) {
     console.log("Reusing existing tokens");
     return res.json({
@@ -20,7 +16,6 @@ router.get("/api/csrf/restore", (req, res) => {
     });
   }
 
-  // Generate new token if either is missing
   console.log("Generating new token");
   const csrfToken = req.csrfToken(); // This sets _csrf cookie
 

@@ -8,6 +8,7 @@ const DELETE_SPOT = 'spots/deleteSpot';
 const SET_CURRENT_SPOT = 'spots/setSpot';
 const GET_USER_SPOTS = 'spots/getUserSpots';
 const ADD_SPOT_IMAGE = 'spots/addSpotImage';
+const DELETE_SPOT_IMAGE = 'spots/deleteSpotImage';
 
 // Actions
 export const getAllSpots = (spotsData) => ({
@@ -45,6 +46,11 @@ export const addSpotImage = (spotId, imageUrl) => ({
   payload: { spotId, imageUrl },
 });
 
+export const deleteSpotImage = (imageId) => ({
+  type: DELETE_SPOT_IMAGE,
+  payload: imageId,
+});
+
 // Thunks
 export const fetchAllSpotsThunk = () => async (dispatch) => {
   try {
@@ -63,7 +69,7 @@ export const fetchSpotDetailsThunk = (spotId) => async (dispatch) => {
     const spot = await response.json();
     dispatch(setCurrentSpot(spot));
   } catch (error) {
-    console.log(error);
+    console.log('error in thunk', error);
   }
 };
 
@@ -127,11 +133,11 @@ export const getUserSpotsThunk = () => async (dispatch) => {
       throw new Error('Failed to fetch user spots');
     }
     const userSpots = await response.json();
-    console.log('Fetched user spots:', userSpots); // Add this log
+    console.log('Fetched user spots:', userSpots);
     dispatch(getUserSpots(userSpots));
   } catch (error) {
     console.error('Error in getUserSpotsThunk:', error);
-    throw error; // Re-throw the error so it can be caught in the component
+    throw error;
   }
 };
 
@@ -153,6 +159,22 @@ export const addSpotImageThunk =
       }
     } catch (error) {
       console.error('Error adding spot image:', error);
+      throw error;
+    }
+  };
+
+export const deleteSpotImageThunk =
+  (imageId, deletedImageIds) => async (dispatch) => {
+    try {
+      const response = await csrfFetch(`/spot-images/${imageId}`, 'DELETE', {
+        deletedImageIds,
+      });
+
+      if (response.ok) {
+        dispatch(deleteSpotImage(imageId));
+      }
+    } catch (error) {
+      console.error('Error deleting spot image:', error);
       throw error;
     }
   };
@@ -206,24 +228,33 @@ function spotReducer(state = initialState, action) {
     case ADD_SPOT_IMAGE:
       return {
         ...state,
-        allSpots: state.allSpots.map((spot) =>
-          spot.id === action.payload.spotId
-            ? {
-                ...spot,
-                images: [...(spot.images || []), action.payload.imageUrl],
-              }
-            : spot
-        ),
         currentSpot:
           state.currentSpot && state.currentSpot.id === action.payload.spotId
             ? {
                 ...state.currentSpot,
-                images: [
-                  ...(state.currentSpot.images || []),
-                  action.payload.imageUrl,
+                SpotImages: [
+                  ...(state.currentSpot.SpotImages || []),
+                  //! updated to have all image data in here
+                  {
+                    id: action.payload.id,
+                    url: action.payload.url,
+                    preview: action.payload.preview,
+                  },
                 ],
               }
             : state.currentSpot,
+      };
+    case DELETE_SPOT_IMAGE:
+      return {
+        ...state,
+        currentSpot: state.currentSpot
+          ? {
+              ...state.currentSpot,
+              SpotImages: state.currentSpot?.SpotImages.filter(
+                (image) => image.id !== action.payload.imageId
+              ),
+            }
+          : { ...state.currentSpot },
       };
     default:
       return state;

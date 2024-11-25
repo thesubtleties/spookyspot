@@ -1,11 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { TbPumpkinScary } from 'react-icons/tb';
 import { deleteReviewThunk } from '../../store/reviews';
+import { fetchSpotDetailsThunk } from '../../store/spots';
 import styles from './styles/ReviewCard.module.css';
 import { formatDate } from '../utils/formatDate';
 import { capitalize } from '../utils/stringFormat';
 
-function ReviewCard({ review }) {
+function ReviewCard({ review, spotId }) {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.session.user);
   const isOwner = currentUser && currentUser.id === review.userId;
@@ -18,6 +19,7 @@ function ReviewCard({ review }) {
     if (window.confirm('Are you sure you want to delete this review?')) {
       try {
         await dispatch(deleteReviewThunk(review.id));
+        await dispatch(fetchSpotDetailsThunk(spotId));
       } catch (error) {
         console.error('Failed to delete review:', error);
       }

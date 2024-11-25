@@ -3,15 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { formatRating } from '../utils/ratingFormatter';
 import { TbPumpkinScary } from 'react-icons/tb';
 import { setCurrentSpot, deleteSpotThunk } from '../../store/spots';
+import DeleteSpotModal from './DeleteSpotModal';
 import styles from './styles/SpotCard.module.css';
+import OpenDeleteSpotModal from './OpenDeleteSpotModal';
 
 function SpotCard({ id, showEdit = false, className = '', style = {} }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const spot = useSelector(
-    (state) =>
-      state.spots.allSpots.find((s) => s.id === id) ||
-      state.spots.userSpots.find((s) => s.id === id)
+  const spot = useSelector((state) =>
+    showEdit
+      ? state.spots.userSpots.find((s) => s.id === id)
+      : state.spots.allSpots.find((s) => s.id === id)
   );
 
   if (!spot) return null;
@@ -33,26 +35,6 @@ function SpotCard({ id, showEdit = false, className = '', style = {} }) {
     navigate(`/spots/${spot.id}/edit`);
   };
 
-  const handleDelete = async (e) => {
-    e.stopPropagation();
-    document.dispatchEvent(
-      new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-      })
-    );
-    if (window.confirm('Are you sure you want to delete this spot?')) {
-      try {
-        await dispatch(deleteSpotThunk(id));
-        // Optionally add a success message
-      } catch (error) {
-        console.error('Failed to delete spot:', error);
-        // Optionally show an error message
-      }
-    }
-  };
-
   const renderRatingOrNew = () => {
     if (spot.avgRating && spot.avgRating !== '0.0') {
       return (
@@ -65,7 +47,7 @@ function SpotCard({ id, showEdit = false, className = '', style = {} }) {
       return <span className={styles.newLabel}>New</span>;
     }
   };
-
+  console.log('Spot in Spot Card', spot);
   return (
     <div className={`${styles.cardWrapper} ${className}`} style={style}>
       <div className={styles.tooltip}>{spot.name}</div>
@@ -81,9 +63,11 @@ function SpotCard({ id, showEdit = false, className = '', style = {} }) {
               <button onClick={handleEdit} className={styles.editButton}>
                 Edit
               </button>
-              <button onClick={handleDelete} className={styles.deleteButton}>
-                Delete
-              </button>
+              <OpenDeleteSpotModal
+                modalComponent={<DeleteSpotModal spotId={id} />}
+                itemText={`Delete`}
+                spotId={id}
+              />
             </div>
           )}
         </div>

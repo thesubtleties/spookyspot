@@ -57,4 +57,10 @@ router.get("/require-auth", requireAuth, (req, res) => {
   return res.json(req.user);
 });
 
+router.stack.forEach(function (r) {
+  if (r.route && r.route.path) {
+    console.log(r.route.path);
+  }
+});
+
 module.exports = router;

@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Outlet,
+  ScrollRestoration,
+} from 'react-router-dom';
 import Navigation from './components/Navigation';
 import * as sessionActions from './store/session';
 import SpotsLayout from './components/Spots/SpotsLayout';
@@ -22,6 +27,7 @@ function Layout() {
   return (
     <>
       <Navigation isLoaded={isLoaded} />
+      <ScrollRestoration />
       {isLoaded && <Outlet />}
     </>
   );

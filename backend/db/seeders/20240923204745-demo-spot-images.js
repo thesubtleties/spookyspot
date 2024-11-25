@@ -8,6 +8,8 @@ if (process.env.NODE_ENV === "production") {
   options.schema = process.env.SCHEMA;
 }
 
+const BASE_URL = "https://storage.sbtl.dev/spookyspot";
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     const demoSpots = await Spot.findAll({
@@ -39,176 +41,176 @@ module.exports = {
       [
         {
           spotId: demoSpots.find((spot) => spot.name === "Whisper Manor").id,
-          url: "https://i.ibb.co/7gDKbrM/victorian1.png",
+          url: `${BASE_URL}/victorian1.png`,
           preview: true,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Whisper Manor").id,
-          url: "https://i.ibb.co/QKmyQvY/victorian2.png",
+          url: `${BASE_URL}/victorian2.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Whisper Manor").id,
-          url: "https://i.ibb.co/zGkwKRz/victorian3.png",
+          url: `${BASE_URL}/victorian3.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Crypt Cavern Inn").id,
-          url: "https://i.ibb.co/LnNmfxL/cave1.png",
+          url: `${BASE_URL}/cave1.png`,
           preview: true,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Crypt Cavern Inn").id,
-          url: "https://i.ibb.co/VvnsxNH/cave2.png",
+          url: `${BASE_URL}/cave2.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Crypt Cavern Inn").id,
-          url: "https://i.ibb.co/S0qCjvS/cave3.png",
+          url: `${BASE_URL}/cave3.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Banshee's Bungalow")
             .id,
-          url: "https://i.ibb.co/zZK6ZBW/cottage1.png",
+          url: `${BASE_URL}/cottage1.png`,
           preview: true,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Banshee's Bungalow")
             .id,
-          url: "https://i.ibb.co/6vGtspP/cottage2.png",
+          url: `${BASE_URL}/cottage2.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Banshee's Bungalow")
             .id,
-          url: "https://i.ibb.co/mDzZLHF/cottage3.png",
+          url: `${BASE_URL}/cottage3.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Phantom Lighthouse")
             .id,
-          url: "https://i.ibb.co/Htf5RqR/lighthouse1.png",
+          url: `${BASE_URL}/lighthouse1.png`,
           preview: true,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Phantom Lighthouse")
             .id,
-          url: "https://i.ibb.co/Xkw97cr/lighthouse2.png",
+          url: `${BASE_URL}/lighthouse2.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Phantom Lighthouse")
             .id,
-          url: "https://i.ibb.co/qnh0FMn/lighthouse3.png",
+          url: `${BASE_URL}/lighthouse3.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Witch's Treehouse")
             .id,
-          url: "https://i.ibb.co/606jQRK/treehouse1.png",
+          url: `${BASE_URL}/treehouse1.png`,
           preview: true,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Witch's Treehouse")
             .id,
-          url: "https://i.ibb.co/2vTq5N0/treehouse2.png",
+          url: `${BASE_URL}/treehouse2.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Witch's Treehouse")
             .id,
-          url: "https://i.ibb.co/NZRJVyn/treehouse3.png",
+          url: `${BASE_URL}/treehouse3.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Dracula's Chateau")
             .id,
-          url: "https://i.ibb.co/chx8fH7/castle1.png",
+          url: `${BASE_URL}/castle1.png`,
           preview: true,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Dracula's Chateau")
             .id,
-          url: "https://i.ibb.co/TBk09tJ/castle2.png",
+          url: `${BASE_URL}/castle2.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Dracula's Chateau")
             .id,
-          url: "https://i.ibb.co/fvy7cqr/castle3.png",
+          url: `${BASE_URL}/castle3.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Werewolf Lodge").id,
-          url: "https://i.ibb.co/Y7JBqCy/cabin1.png",
+          url: `${BASE_URL}/cabin1.png`,
           preview: true,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Werewolf Lodge").id,
-          url: "https://i.ibb.co/xHDTgQ4/cabin2.png",
+          url: `${BASE_URL}/cabin2.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Werewolf Lodge").id,
-          url: "https://i.ibb.co/KrS9w2H/cabin3.png",
+          url: `${BASE_URL}/cabin3.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find(
             (spot) => spot.name === "Mermaid's Sunken Palace"
           ).id,
-          url: "https://i.ibb.co/XV532fp/underwater1.png",
+          url: `${BASE_URL}/underwater1.png`,
           preview: true,
         },
         {
           spotId: demoSpots.find(
             (spot) => spot.name === "Mermaid's Sunken Palace"
           ).id,
-          url: "https://i.ibb.co/fS1XS5P/underwater2.png",
+          url: `${BASE_URL}/underwater2.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find(
             (spot) => spot.name === "Mermaid's Sunken Palace"
           ).id,
-          url: "https://i.ibb.co/zhXTDcv/underwater3.png",
+          url: `${BASE_URL}/underwater3.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find(
             (spot) => spot.name === "Pharaoh's Pyramid Retreat"
           ).id,
-          url: "https://i.ibb.co/vQYMpsB/pyramid1.png",
+          url: `${BASE_URL}/pyramid1.png`,
           preview: true,
         },
         {
           spotId: demoSpots.find(
             (spot) => spot.name === "Pharaoh's Pyramid Retreat"
           ).id,
-          url: "https://i.ibb.co/LnQPyXn/pyramid2.png",
+          url: `${BASE_URL}/pyramid2.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find(
             (spot) => spot.name === "Pharaoh's Pyramid Retreat"
           ).id,
-          url: "https://i.ibb.co/hfBHsZJ/pyramid3.png",
+          url: `${BASE_URL}/pyramid3.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Alien Abode").id,
-          url: "https://i.ibb.co/HTtMYXn/ufo1.png",
+          url: `${BASE_URL}/ufo1.png`,
           preview: true,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Alien Abode").id,
-          url: "https://i.ibb.co/zr0BYyh/ufo2.png",
+          url: `${BASE_URL}/ufo2.png`,
           preview: false,
         },
         {
           spotId: demoSpots.find((spot) => spot.name === "Alien Abode").id,
-          url: "https://i.ibb.co/CzxHQfj/ufo3.png",
+          url: `${BASE_URL}/ufo3.png`,
           preview: false,
         },
       ],
