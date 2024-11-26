@@ -10,20 +10,16 @@ function Navigation({ isLoaded }) {
   return (
     <ul>
       <li>
-        <NavLink to="/">Home</NavLink>
+        <NavLink to="/" className="home-link">
+          <img src="/favicon.ico" alt="Favicon" className="navbar-favicon" />
+        </NavLink>
       </li>
       {isLoaded && (
-        <React.Fragment>
-          <li className="navbar-icon">
-            <img src="/favicon.ico" alt="Favicon" className="navbar-favicon" />
-          </li>
-          <li className="navbar-title">
-            <h1>Airbnb Clone</h1>
-          </li>
+        <>
           <li className="profile-button">
             <ProfileButton user={sessionUser} />
           </li>
-        </React.Fragment>
+        </>
       )}
     </ul>
   );
