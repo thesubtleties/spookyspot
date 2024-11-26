@@ -13,10 +13,10 @@ SpookySpot is a full-stack Airbnb-inspired web application focused on haunted lo
 - 🏠 Browse and search haunted properties
 - 👻 Detailed property listings with AI-generated imagery
 - ⭐ Review and rating system
-- 📅 Booking management
 - 👤 User authentication and profiles
 - 💾 Persistent data storage
 - 🖼️ Image upload and management
+- 📱 Responsive design for mobile and desktop
 
 ## Technology Stack
 
@@ -62,6 +62,7 @@ The application is containerized using Docker and includes:
 ## Future Enhancements
 
 - [ ] Advanced search filters
+- [ ] Booking management
 - [ ] Interactive property maps
 - [ ] Real-time availability calendar
 - [ ] Mobile application
