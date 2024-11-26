@@ -22,7 +22,7 @@ function ImageGallery() {
         };
       });
     }
-  }, [spot]); // Only run when spot changes
+  }, [spot, images]); // Only run when spot changes
 
   // Always call hooks, regardless of conditions
   const alternateTop = useAlternate(6000);
