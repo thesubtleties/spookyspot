@@ -64,7 +64,7 @@ function SpotCard({ id, showEdit = false, className = '', style = {} }) {
                 Edit
               </button>
               <OpenDeleteSpotModal
-                modalComponent={<DeleteModal id={id} itemType={'spot'} />}
+                modalComponent={<DeleteModal id={id} type={'spot'} />}
                 itemText={`Delete`}
               />
             </div>
