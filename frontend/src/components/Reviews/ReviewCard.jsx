@@ -1,32 +1,18 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { TbPumpkinScary } from 'react-icons/tb';
-import { deleteReviewThunk } from '../../store/reviews';
-import { fetchSpotDetailsThunk } from '../../store/spots';
 import OpenDeleteReviewModal from './OpenDeleteReviewModal';
 import DeleteModal from '../DeleteModal';
 import styles from './styles/ReviewCard.module.css';
 import { formatDate } from '../utils/formatDate';
 import { capitalize } from '../utils/stringFormat';
 
-function ReviewCard({ review, spotId }) {
-  const dispatch = useDispatch();
+function ReviewCard({ review }) {
   const currentUser = useSelector((state) => state.session.user);
   const isOwner = currentUser && currentUser.id === review.userId;
 
   if (!review || !review.User) {
     return null;
   }
-  // TODO: update to modal
-  const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this review?')) {
-      try {
-        await dispatch(deleteReviewThunk(review.id));
-        await dispatch(fetchSpotDetailsThunk(spotId));
-      } catch (error) {
-        console.error('Failed to delete review:', error);
-      }
-    }
-  };
 
   return (
     <div className={styles.reviewCard}>

@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { formatRating } from '../utils/ratingFormatter';
 import { TbPumpkinScary } from 'react-icons/tb';
-import { setCurrentSpot, deleteSpotThunk } from '../../store/spots';
+import { setCurrentSpot } from '../../store/spots';
 import DeleteModal from '../DeleteModal';
 import styles from './styles/SpotCard.module.css';
 import OpenDeleteSpotModal from './OpenDeleteSpotModal';
