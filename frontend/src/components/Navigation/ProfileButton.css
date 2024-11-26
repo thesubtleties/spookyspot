@@ -1,0 +1,31 @@
+.login-signup-Wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  min-width: 150px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.profile-dropdown li {
+  width: 100%;
+  padding: 8px;
+  cursor: pointer;
+  margin: 0;
+  display: block;
+}
+
+.profile-dropdown li:hover {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}

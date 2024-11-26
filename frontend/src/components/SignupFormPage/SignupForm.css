@@ -3,15 +3,41 @@ form {
   flex-direction: column;
   width: 300px;
   margin: 0 auto;
+  padding: 20px;
+}
+
+.error-message {
+  color: #FF385C;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 4px 0;
+}
+
+.error-message.above-input {
+  margin-bottom: -4px;
+}
+
+.error-input {
+  border-color: #FF385C;
 }
 
 label {
-  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 12px;
 }
 
 input {
-  margin-top: 5px;
-  padding: 5px;
+  padding: 8px 12px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+input:focus {
+  border-color: #000000;
+  outline: none;
 }
 
 button {
