@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatRating } from '../utils/ratingFormatter';
 import { TbPumpkinScary } from 'react-icons/tb';
 import { setCurrentSpot, deleteSpotThunk } from '../../store/spots';
-import DeleteSpotModal from './DeleteSpotModal';
+import DeleteModal from '../DeleteModal';
 import styles from './styles/SpotCard.module.css';
 import OpenDeleteSpotModal from './OpenDeleteSpotModal';
 
@@ -64,9 +64,8 @@ function SpotCard({ id, showEdit = false, className = '', style = {} }) {
                 Edit
               </button>
               <OpenDeleteSpotModal
-                modalComponent={<DeleteSpotModal spotId={id} />}
+                modalComponent={<DeleteModal id={id} itemType={'spot'} />}
                 itemText={`Delete`}
-                spotId={id}
               />
             </div>
           )}

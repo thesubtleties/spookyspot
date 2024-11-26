@@ -2,6 +2,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { TbPumpkinScary } from 'react-icons/tb';
 import { deleteReviewThunk } from '../../store/reviews';
 import { fetchSpotDetailsThunk } from '../../store/spots';
+import OpenDeleteReviewModal from './OpenDeleteReviewModal';
+import DeleteModal from '../DeleteModal';
 import styles from './styles/ReviewCard.module.css';
 import { formatDate } from '../utils/formatDate';
 import { capitalize } from '../utils/stringFormat';
@@ -49,9 +51,10 @@ function ReviewCard({ review, spotId }) {
       </div>
       <p className={styles.reviewText}>{review.review}</p>
       {isOwner && (
-        <button onClick={handleDelete} className={styles.deleteButton}>
-          Delete Review
-        </button>
+        <OpenDeleteReviewModal
+          modalComponent={<DeleteModal id={review.id} type={'review'} />}
+          itemText={`Delete`}
+        />
       )}
     </div>
   );
