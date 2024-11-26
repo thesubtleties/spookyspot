@@ -41,12 +41,53 @@ SpookySpot is a full-stack Airbnb-inspired web application focused on haunted lo
 - Nginx Proxy Manager
 - Ubuntu 22.04.5 LTS on KVM VPS
 
+## Prerequisites
+
+Before running the application, you'll need to have installed:
+
+- Node.js (v18 recommended)
+- PostgreSQL (v14 or higher)
+- MinIO Server
+
 ## Local Development
 
 1. Clone the repository
-2. Install dependencies: `npm install`
-3. Configure environment variables
-4. Start development server: `npm run dev`
+2. Install backend dependencies from the root directory:
+
+```bash
+npm install
+```
+
+3. Install frontend dependencies:
+
+```bash
+cd frontend
+npm install
+cd ..
+```
+
+4. Set up environment variables:
+
+```bash
+cd backend
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+5. Start the backend server from the root directory:
+
+```bash
+npm run dev
+```
+
+6. In a new terminal, start the frontend development server:
+
+```bash
+cd frontend
+npm run dev
+```
+
+The application will be available at `http://localhost:5173`, with the backend API running on `http://localhost:5000`.
 
 ## Deployment
 
