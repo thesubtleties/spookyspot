@@ -123,8 +123,9 @@ function SpotForm({ mode }) {
 
     try {
       let newSpot;
-      const deletedImageIds = formData.deletedImages.map((image) => image.id);
+
       if (isUpdating) {
+        const deletedImageIds = formData.deletedImages.map((image) => image.id);
         console.log('Updating spot with ID:', spotId);
         console.log('Update data:', { ...spotData, id: spotId });
         const updatedImages = images.map((image, index) => ({
