@@ -1,0 +1,65 @@
+.review-modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90vw;
+  }
+  
+  .review-modal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .review-modal textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
+  .stars-input {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .star {
+    font-size: 20px;
+    cursor: pointer;
+    color: #cccccc;
+  }
+  
+  .star.filled {
+    color: #ff385c;
+  }
+  
+  .stars-text {
+    margin-left: 5px;
+    color: #717171;
+  }
+  
+  .submit-review-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff385c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .submit-review-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .error {
+    color: #ff385c;
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+  }

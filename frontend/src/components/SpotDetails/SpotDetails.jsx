@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import OpenModalButton from '../OpenModalButton';
+import CreateReviewModal from '../CreateReviewModal/CreateReviewModal';
 import './SpotDetails.css';
-import { useDispatch, useSelector } from 'react-redux';
 
 function SpotDetails() {
-  const dispatch = useDispatch();
   const { spotId } = useParams();
   const [spot, setSpot] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const sessionUser = useSelector(state => state.session.user);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
       try {
         // Fetch spot details
         const spotResponse = await fetch(`/api/spots/${spotId}`);
@@ -22,16 +22,47 @@ function SpotDetails() {
         const reviewsResponse = await fetch(`/api/spots/${spotId}/reviews`);
         const reviewsData = await reviewsResponse.json();
         
+        // Fetch current user
+        const userResponse = await fetch('/api/session');
+        const userData = await userResponse.json();
+
         setSpot(spotData);
         setReviews(reviewsData.Reviews);
+        setCurrentUser(userData.user);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
-      } finally {
         setIsLoading(false);
       }
-    }
+    };
+
     fetchData();
   }, [spotId]);
+
+  const hasUserReviewed = currentUser && reviews.some(review => 
+    review.User.id === currentUser.id
+  );
+
+  const isOwner = currentUser && spot?.Owner && currentUser.id === spot.Owner.id;
+
+  const handleReviewSubmit = async (newReview) => {
+    try {
+      // Fetch updated spot details to get new rating
+      const spotResponse = await fetch(`/api/spots/${spotId}`);
+      const updatedSpot = await spotResponse.json();
+      
+      // Fetch updated reviews to get them in correct order
+      const reviewsResponse = await fetch(`/api/spots/${spotId}/reviews`);
+      const reviewsData = await reviewsResponse.json();
+
+      // Update both spot and reviews state
+      setSpot(updatedSpot);
+      setReviews(reviewsData.Reviews);
+      
+    } catch (error) {
+      console.error('Error updating after review:', error);
+    }
+  };
 
   if (isLoading || !spot) return <div>Loading...</div>;
 
@@ -85,6 +116,19 @@ function SpotDetails() {
           )}
         </h2>
         
+        {currentUser && 
+         !hasUserReviewed && 
+         !isOwner && (
+          <OpenModalButton
+            buttonText="Post Your Review"
+            modalComponent={<CreateReviewModal 
+              spotId={spotId} 
+              onReviewSubmit={handleReviewSubmit}
+            />}
+            className="post-review-button"
+          />
+        )}
+
         {reviews.length > 0 ? (
           <div className="reviews-list">
             {reviews.map(review => (
@@ -103,7 +147,8 @@ function SpotDetails() {
             ))}
           </div>
         ) : (
-          sessionUser && sessionUser.id !== spot.Owner.id && (
+          currentUser && 
+          !isOwner && (
             <p className="no-reviews">Be the first to post a review!</p>
           )
         )}
