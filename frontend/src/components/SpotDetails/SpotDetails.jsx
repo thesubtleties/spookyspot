@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './SpotDetails.css';
+import { useDispatch, useSelector } from 'react-redux';
 
 function SpotDetails() {
+  const dispatch = useDispatch();
   const { spotId } = useParams();
   const [spot, setSpot] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const sessionUser = useSelector(state => state.session.user);
 
   useEffect(() => {
     async function fetchData() {
@@ -36,7 +39,7 @@ function SpotDetails() {
     <div className="spot-details">
       <div className="spot-header">
         <h1>{spot.name}</h1>
-        <p>{spot.city}, {spot.state}, {spot.country}</p>
+        <p className="spot-location">{spot.city}, {spot.state}, {spot.country}</p>
       </div>
 
       <div className="spot-images">
@@ -82,22 +85,28 @@ function SpotDetails() {
           )}
         </h2>
         
-        <div className="reviews-list">
-          {reviews.map(review => (
-            <div key={review.id} className="review-item">
-              <div className="review-header">
-                <h3>{review.User.firstName}</h3>
-                <span className="review-date">
-                  {new Date(review.createdAt).toLocaleDateString('en-US', { 
-                    month: 'long', 
-                    year: 'numeric' 
-                  })}
-                </span>
+        {reviews.length > 0 ? (
+          <div className="reviews-list">
+            {reviews.map(review => (
+              <div key={review.id} className="review-item">
+                <div className="review-header">
+                  <h3>{review.User.firstName}</h3>
+                  <span className="review-date">
+                    {new Date(review.createdAt).toLocaleDateString('en-US', { 
+                      month: 'long', 
+                      year: 'numeric' 
+                    })}
+                  </span>
+                </div>
+                <p className="review-text">{review.review}</p>
               </div>
-              <p className="review-text">{review.review}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          sessionUser && sessionUser.id !== spot.Owner.id && (
+            <p className="no-reviews">Be the first to post a review!</p>
+          )
+        )}
       </div>
     </div>
   );

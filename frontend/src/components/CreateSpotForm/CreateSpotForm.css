@@ -1,0 +1,112 @@
+.create-spot-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: calc(100vh - 80px);
+  padding: 40px 20px;
+  background-color: #fff;
+}
+
+.create-spot-form-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.create-spot-form-container h1 {
+  text-align: left;
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+section {
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #ddd;
+}
+
+section h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+section p {
+  color: #717171;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+input, textarea {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.error {
+  color: #FF385C;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.submit-error {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.submit-button {
+  background-color: #FF385C;
+  color: white;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.submit-button:hover {
+  background-color: #E31C5F;
+}
+
+input.error-input, textarea.error-input {
+  border-color: #FF385C;
+}
+
+@media (max-width: 768px) {
+  .create-spot-form-container {
+    padding: 16px;
+  }
+  
+  section {
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+  }
+}
