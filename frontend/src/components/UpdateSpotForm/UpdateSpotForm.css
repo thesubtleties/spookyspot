@@ -1,0 +1,90 @@
+.update-spot-page {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.update-spot-form-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.update-spot-form-container h1 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.update-spot-form-container section {
+  margin-bottom: 30px;
+}
+
+.update-spot-form-container h2 {
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.price-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.currency {
+  font-size: 16px;
+  color: #333;
+}
+
+.error {
+  color: #ff385c;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.submit-button {
+  background-color: #ff385c;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.submit-button:hover {
+  background-color: #e31c5f;
+}
+
+.errors {
+  background-color: #fff3f3;
+  border: 1px solid #ffd1d1;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.errors p {
+  color: #ff385c;
+  margin: 5px 0;
+}

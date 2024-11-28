@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import OpenModalButton from '../OpenModalButton';
 import CreateReviewModal from '../CreateReviewModal/CreateReviewModal';
+import DeleteReviewModal from '../DeleteReviewModal/DeleteReviewModal';
 import './SpotDetails.css';
 
 function SpotDetails() {
@@ -62,6 +63,19 @@ function SpotDetails() {
     } catch (error) {
       console.error('Error updating after review:', error);
     }
+  };
+
+  const handleReviewDelete = (deletedReviewId) => {
+    setReviews(reviews.filter(review => review.id !== deletedReviewId));
+    const updatedNumReviews = spot.numReviews - 1;
+    const updatedAvgRating = updatedNumReviews === 0 ? 0 : 
+      ((spot.avgStarRating * spot.numReviews) - reviews.find(r => r.id === deletedReviewId).stars) / updatedNumReviews;
+
+    setSpot(prevSpot => ({
+      ...prevSpot,
+      numReviews: updatedNumReviews,
+      avgStarRating: updatedAvgRating
+    }));
   };
 
   if (isLoading || !spot) return <div>Loading...</div>;
@@ -143,6 +157,19 @@ function SpotDetails() {
                   </span>
                 </div>
                 <p className="review-text">{review.review}</p>
+
+                {currentUser && currentUser.id === review.userId && (
+                  <OpenModalButton
+                    buttonText="Delete"
+                    modalComponent={
+                      <DeleteReviewModal 
+                        reviewId={review.id} 
+                        onReviewDelete={handleReviewDelete}
+                      />
+                    }
+                    className="delete-review-button"
+                  />
+                )}
               </div>
             ))}
           </div>

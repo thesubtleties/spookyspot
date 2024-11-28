@@ -74,6 +74,9 @@ function CreateSpotForm() {
       // Create the spot using csrfFetch
       const spotResponse = await csrfFetch('/api/spots', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           address: formData.address,
           city: formData.city,
@@ -88,8 +91,8 @@ function CreateSpotForm() {
       });
 
       if (!spotResponse.ok) {
-        const data = await spotResponse.json();
-        setErrors(data.errors || { submit: 'Failed to create spot' });
+        const errorData = await spotResponse.json();
+        setErrors(errorData.errors || { submit: 'Failed to create spot' });
         return;
       }
 
