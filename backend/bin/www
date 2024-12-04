@@ -1,59 +1,27 @@
-// backend/routes/index.js
-const express = require('express');
-const router = express.Router();
-const apiRouter = require('../routes/api');
+#!/usr/bin/env node
+// backend/bin/www
 
-router.use('/api', apiRouter);
+// Import environment variables
+require("dotenv").config();
 
-// Static routes
-// Serve React build files in production
-if (process.env.NODE_ENV === 'production') {
-  const path = require('path');
-  // Serve the frontend's index.html file at the root route
-  router.get('/', (req, res) => {
-    res.cookie('XSRF-TOKEN', req.csrfToken());
-    res.sendFile(
-      path.resolve(__dirname, '../../frontend', 'dist', 'index.html')
-    );
-  });
+const { port } = require("../config");
 
-  // Serve the static assets in the frontend's build folder
-  router.use(express.static(path.resolve("../frontend/dist")));
-
-  // Serve the frontend's index.html file at all other routes NOT starting with /api
-  router.get(/^(?!\/?api).*/, (req, res) => {
-    res.cookie('XSRF-TOKEN', req.csrfToken());
-    res.sendFile(
-      path.resolve(__dirname, '../../frontend', 'dist', 'index.html')
-    );
-  });
-}
+const app = require("../app");
+const db = require("../db/models");
 
 // Check the database connection before starting the app
 db.sequelize
   .authenticate()
   .then(() => {
     if (process.env.NODE_ENV !== "production") {
-
+      console.log("Database connection success! Sequelize is ready to use...");
       // Start listening for connections
     }
-    app.listen(port);
+    app.listen(port, () => console.log(`Listening on port ${port}...`));
   })
   .catch((err) => {
     if (process.env.NODE_ENV !== "production") {
+      console.log("Database connection failure.");
       console.error(err);
     }
-  })
-
-// Add a XSRF-TOKEN cookie in development
-if (process.env.NODE_ENV !== 'production') {
-  router.get("/api/csrf/restore", (req, res) => {
-    const csrfToken = req.csrfToken();
-    res.cookie("XSRF-TOKEN", csrfToken);
-    res.status(200).json({
-      'XSRF-Token': csrfToken
-    });
   });
-}
-
-module.exports = router;
