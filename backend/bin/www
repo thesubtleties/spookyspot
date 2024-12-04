@@ -29,7 +29,22 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Add a XSRF-TOKEN cookie in development
+// Check the database connection before starting the app
+db.sequelize
+  .authenticate()
+  .then(() => {
+    if (process.env.NODE_ENV !== "production") {
+
+      // Start listening for connections
+    }
+    app.listen(port);
+  })
+  .catch((err) => {
+    if (process.env.NODE_ENV !== "production") {
+      console.error(err);
+    }
+
+  // Add a XSRF-TOKEN cookie in development
 if (process.env.NODE_ENV !== 'production') {
   router.get("/api/csrf/restore", (req, res) => {
     const csrfToken = req.csrfToken();
