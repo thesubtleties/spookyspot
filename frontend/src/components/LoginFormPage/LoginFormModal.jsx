@@ -15,20 +15,25 @@ function LoginFormModal() {
     e.preventDefault();
     setErrors({});
     return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal)
+      .then((response) => {
+        if (response.ok) {
+          closeModal();
+        }
+      })
       .catch(async (res) => {
         const data = await res.json();
-        setErrors({
-          credential: "The provided credentials were invalid"
-        });
+        console.log(data);
+        if (res.status === 401) {
+          setErrors({ credential: "The provided credentials were invalid" });
+        }
       });
   };
 
   const handleDemoLogin = (e) => {
     e.preventDefault();
-    return dispatch(sessionActions.login({ 
-      credential: 'Demo-lition', 
-      password: 'password' 
+    return dispatch(sessionActions.login({
+      credential: 'Demo-lition',
+      password: 'password'
     }))
       .then(closeModal);
   };
