@@ -6,9 +6,8 @@ import OpenModalButton from '../OpenModalButton/OpenModalButton';
 import LoginFormModal from '../LoginFormPage/LoginFormModal';
 import SignupFormModal from '../SignupFormPage/SignupFormModal';
 import OpenModalMenuItem from './OpenModalMenuItem';
-import './ProfileButton.css'
+import './ProfileButton.css';
 import { useNavigate } from 'react-router-dom';
-
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -17,7 +16,7 @@ function ProfileButton({ user }) {
   const ulRef = useRef();
 
   const toggleMenu = (e) => {
-    e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
+    e.stopPropagation();
     setShowMenu(!showMenu);
   };
 
@@ -31,7 +30,6 @@ function ProfileButton({ user }) {
     };
 
     document.addEventListener('click', closeMenu);
-
     return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
 
@@ -52,10 +50,10 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button data-testid="user-menu-button" onClick={toggleMenu}>
+      <button onClick={toggleMenu} data-testid="user-menu-button">
         <FaUserCircle />
       </button>
-      <ul className={ulClassName} ref={ulRef}>
+      <ul className={ulClassName} ref={ulRef} data-testid="user-dropdown-menu">
         {user ? (
           <>
             <li>{user.username}</li>
@@ -65,7 +63,7 @@ function ProfileButton({ user }) {
               <button onClick={handleManageSpots}>Manage Spots</button>
             </li>
             <li>
-              <button  onClick={logout}>Log Out</button>
+              <button onClick={logout}>Log Out</button>
             </li>
           </>
         ) : (

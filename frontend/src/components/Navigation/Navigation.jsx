@@ -14,14 +14,14 @@ function Navigation({ isLoaded }) {
       <ul>
         <li>
           <NavLink to="/" className="home-link">
-            <img src="/favicon.ico" alt="Favicon" className="navbar-favicon" />
+            <img src="/favicon.ico" alt="Favicon" className="navbar-favicon" data-testid="logo" />
           </NavLink>
         </li>
         {isLoaded && (
           <div className="nav-right">
             {sessionUser && (
               <li className="create-spot-link">
-                <NavLink 
+                <NavLink
                   to="/spots/new"
                   className="create-button"
                 >
