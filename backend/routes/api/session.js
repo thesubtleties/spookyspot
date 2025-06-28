@@ -69,7 +69,15 @@ router.post("/", validateLogin, async (req, res, next) => {
 });
 // log out
 router.delete("/", (_req, res) => {
-  res.clearCookie("token");
+  const isProduction = process.env.NODE_ENV === "production";
+  
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction && "Lax",
+    domain: isProduction ? "sbtl.dev" : undefined,
+  });
+  
   return res.json({ message: "Successfully logged out" });
 });
 module.exports = router;
