@@ -1,0 +1,34 @@
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.noSpots {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.createButton {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ff5a5f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.spotGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 50px;
+  margin-top: 40px;
+  justify-items: center;
+}
+
+@media (max-width: 768px) {
+  .spotGrid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}

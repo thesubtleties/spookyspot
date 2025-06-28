@@ -14,33 +14,54 @@ const isProduction = environment === "production";
 const app = express();
 
 app.use(morgan("dev"));
-
 app.use(cookieParser());
 app.use(express.json());
 
-if (!isProduction) {
-  // enable cors only in development
-  app.use(cors());
+// CORS configuration
+if (isProduction) {
+  app.use(
+    cors({
+      origin: "https://spookyspot.sbtl.dev",
+      credentials: true,
+    })
+  );
+} else {
+  app.use(
+    cors({
+      origin: "http://localhost:5173", // adjust if your frontend uses a different port
+      credentials: true,
+    })
+  );
 }
 
-// helmet helps set a variety of headers to better secure your app
 app.use(
   helmet.crossOriginResourcePolicy({
     policy: "cross-origin",
   })
 );
 
-// Set the _csrf token and create req.csrfToken method
 app.use(
+  "/api",
   csurf({
     cookie: {
       secure: isProduction,
       sameSite: isProduction && "Lax",
       httpOnly: true,
+      domain: isProduction ? "sbtl.dev" : undefined,
+    },
+    value: (req) => {
+      console.log("=== CSRF Check ===", {
+        url: req.url,
+        method: req.method,
+        headerToken: req.headers["xsrf-token"],
+        cookieToken: req.cookies["_csrf"],
+        allHeaders: req.headers,
+        allCookies: req.cookies,
+      });
+      return req.headers["xsrf-token"];
     },
   })
 );
-
 app.use(routes);
 // Catch unhandled requests and forward to error handler.
 app.use((_req, _res, next) => {
@@ -68,7 +89,7 @@ app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
   console.error(err);
   res.json({
-    title: err.title || "Server Error",
+    // title: err.title || "Server Error",
     message: err.message,
     errors: err.errors,
     stack: isProduction ? null : err.stack,

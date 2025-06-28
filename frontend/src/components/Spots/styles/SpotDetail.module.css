@@ -1,0 +1,24 @@
+/* SpotDetail.module.css */
+.spotDetail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.spotHeader {
+  margin-bottom: 20px;
+}
+
+.spotName {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.spotLocation,
+.spotAddress {
+  font-size: 20px;
+  color: #a1a1a1;
+  margin: 0;
+}

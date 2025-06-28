@@ -1,0 +1,98 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  aspect-ratio: 3 / 2;
+}
+
+.mainImage {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+/* Add this specific rule for the main image */
+.mainImage.loaded {
+  opacity: 1;
+}
+
+.thumbnails {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+}
+
+.fadeContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.thumbnail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+  pointer-events: none;
+}
+
+/* Initial load */
+.loading {
+  opacity: 0;
+}
+
+/* After load, but before fade */
+.loaded {
+  opacity: 0;
+}
+
+/* Active fade state */
+.loaded.fadeImage {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .gallery {
+    grid-template-columns: 1fr;
+    grid-template-rows: 2fr 1fr;
+    aspect-ratio: auto;
+  }
+
+  .mainImage {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+
+  .thumbnails {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  .fadeContainer {
+    height: 200px;
+  }
+}

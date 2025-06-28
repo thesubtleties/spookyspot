@@ -1,0 +1,62 @@
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSpotDetailsThunk } from '../../store/spots'; // adjust path as needed
+import { getReviewsBySpotThunk } from '../../store/reviews'; // adjust path as needed
+import ImageGallery from './ImageGallery';
+import SpotInfo from './SpotInfo';
+import ReviewSection from './ReviewSection';
+import LoadingAnimation from '../LoadingAnimation/LoadingAnimation';
+import styles from './styles/SpotDetail.module.css';
+import { fetchSpotData } from '../utils/fetchSpotData';
+
+function SpotDetail() {
+  const { spotId } = useParams();
+  const dispatch = useDispatch();
+  const spot = useSelector((state) => state.spots.currentSpot);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchFns = [fetchSpotDetailsThunk, getReviewsBySpotThunk];
+    async function loadData() {
+      try {
+        await fetchSpotData(dispatch, spotId, fetchFns);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadData();
+  }, [dispatch, spotId]);
+
+  if (isLoading) {
+    return <LoadingAnimation />;
+  }
+
+  if (error) {
+    return <div className={styles.error}>{error}</div>;
+  }
+
+  if (!spot || !spot.name) {
+    return <div className={styles.error}>Spot not found</div>;
+  }
+
+  return (
+    <div className={styles.spotDetail}>
+      <div className={styles.spotHeader}>
+        <h1 className={styles.spotName}>{spot.name}</h1>
+        <p className={styles.spotLocation}>
+          {spot.city}, {spot.state}, {spot.country}
+        </p>
+      </div>
+      <ImageGallery />
+      <SpotInfo />
+      <ReviewSection />
+    </div>
+  );
+}
+
+export default SpotDetail;

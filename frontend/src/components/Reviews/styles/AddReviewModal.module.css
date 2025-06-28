@@ -1,0 +1,71 @@
+.modalContent {
+  background-color: #1a1a1a;
+  padding: 20px 40px; /* Increased horizontal padding */
+  border-radius: 8px;
+  color: rgb(212, 175, 55);
+  width: 350px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modalContent h2 {
+  margin-bottom: 20px;
+}
+
+.reviewInput {
+  height: 150px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #2a2a2a;
+  border: 1px solid rgb(255, 102, 0);
+  color: white;
+  border-radius: 4px;
+}
+
+.pumpkinRating {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.pumpkinEmpty,
+.pumpkinFilled {
+  font-size: 28px; /* Slightly larger icons */
+  cursor: pointer;
+  margin: 0 8px; /* Increased space between pumpkins */
+}
+
+.pumpkinEmpty {
+  color: #444;
+}
+
+.pumpkinFilled {
+  color: rgb(255, 102, 0);
+}
+
+.submitButton {
+  width: 100%;
+  max-width: 200px; /* Limits button width for better aesthetics */
+  padding: 10px;
+  background-color: rgb(255, 102, 0);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 0 auto; /* Centers the button */
+  display: block; /* Allows margin auto to work */
+}
+
+.submitButton:hover {
+  background-color: rgb(255, 122, 20);
+}
+
+.error {
+  color: #dc2626; /* or any error red color that matches your design */
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}

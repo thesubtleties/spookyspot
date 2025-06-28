@@ -1,0 +1,75 @@
+.loginForm {
+  background-color: #1a1a1a;
+  color: rgb(212, 175, 55); /* Golden color */
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  box-sizing: box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginForm h1 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 0px;
+  font-family: 'Playfair Display', serif;
+}
+
+.loginForm form {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+}
+
+.loginForm label {
+  margin-bottom: 10px;
+  font-family: 'EB Garamond', serif;
+}
+
+.loginForm input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid rgb(212, 175, 55);
+  background-color: #2c2c2c;
+  color: rgb(212, 175, 55);
+  border-radius: 4px;
+}
+
+.loginForm input:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+}
+
+.loginForm button {
+  background-color: rgb(212, 175, 55);
+  color: #1a1a1a;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 4px;
+  margin-top: 15px;
+  font-weight: bold;
+  border: 1px solid rgb(212, 175, 55);
+  margin-right: 10%;
+  margin-left: 10%;
+  text-align: center;
+}
+
+.loginForm button:hover {
+  background-color: #1a1a1a;
+  color: rgb(212, 175, 55);
+  border: 1px solid rgb(212, 175, 55);
+}
+
+.error {
+  color: #ff6b6b;
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: center;
+}

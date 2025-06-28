@@ -1,0 +1,11 @@
+.menuButton {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.menuButton:hover {
+  transform: scale(1.1);
+}

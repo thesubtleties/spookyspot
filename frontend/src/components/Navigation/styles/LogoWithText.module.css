@@ -1,0 +1,25 @@
+.logoLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  height: 5rem;
+  padding-top: 10px;
+}
+
+.logo {
+  width: 6rem;
+  height: auto;
+  align-self: center;
+}
+
+.logoText {
+  font-size: 2rem;
+  color: #d4af37;
+  font-family: 'Creepster', cursive;
+  align-self: center;
+}

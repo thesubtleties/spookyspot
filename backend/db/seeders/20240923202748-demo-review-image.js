@@ -2,17 +2,12 @@
 const { ReviewImage } = require("../models");
 
 /** @type {import('sequelize-cli').Migration} */
+let options = {};
+if (process.env.NODE_ENV === "production") {
+  options.schema = process.env.SCHEMA; 
+}
 module.exports = {
   async up(queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-     */
     await ReviewImage.bulkCreate(
       [
         {
@@ -55,13 +50,8 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-
-    await queryInterface.bulkDelete("ReviewImage", null, {});
+    options.tableName = "ReviewImages";
+    const Op = Sequelize.Op;
+    await queryInterface.bulkDelete(options, null, {});
   },
 };

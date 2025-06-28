@@ -1,0 +1,23 @@
+name: Deploy SpookySpot
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 2288    # Add this line
+          script: |
+            cd ~/projects/aa-projects/spookyspot
+            git pull
+            docker-compose pull
+            docker-compose build --no-cache
+            docker-compose up -d
+            docker image prune -f

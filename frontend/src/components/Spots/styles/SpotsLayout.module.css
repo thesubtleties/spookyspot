@@ -1,0 +1,13 @@
+.spotsLayout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #000000;
+  color: #d4af37;
+}
+
+.main {
+  flex-grow: 1;
+  padding-left: 20px;
+  padding-right: 20px;
+}

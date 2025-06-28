@@ -1,0 +1,20 @@
+.addSpotButton {
+  background-color: black;
+  color: rgb(255, 165, 0); /* Orange text */
+  border: 2px solid #d4af37; /* Orange border */
+  padding: 10px 20px;
+  font-size: 18px;
+  font-family: 'Jolly Lodger', cursive;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+  letter-spacing: 1px;
+}
+
+.addSpotButton:hover {
+  background-color: rgba(201, 84, 201, 0.39); /* Orange background on hover */
+  color: white; /* White text on hover */
+  border-color: #d4af37; /* Keep orange border on hover */
+  box-shadow: 0 0 10px orange, 0 0 20px #ffffff;
+  transform: scale(1.1);
+}

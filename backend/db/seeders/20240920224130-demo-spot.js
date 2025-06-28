@@ -1,172 +1,160 @@
 "use strict";
 
-const { Spot } = require("../models");
+const { Spot, User } = require("../models");
 
-/** @type {import('sequelize-cli').Migration} */
+let options = {};
+if (process.env.NODE_ENV === "production") {
+  options.schema = process.env.SCHEMA;
+}
+
 module.exports = {
   async up(queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-     */
+    const demoUsers = await User.findAll({
+      attributes: ["id", "username"],
+      where: {
+        username: ["Demo-lition", "FakeUser1", "FakeUser2"],
+      },
+    });
 
-    const demoUsers = await queryInterface.sequelize.query(
-      `SELECT id, username FROM Users WHERE username IN ('Demo-lition', 'FakeUser1', 'FakeUser2');`
-    );
-
-    const userRows = demoUsers[0];
-    //prettier-ignore-start
     await Spot.bulkCreate(
       [
         {
-          ownerId: userRows.find((user) => user.username === "Demo-lition").id,
-          address: "123 Maple Street",
-          city: "San Francisco",
-          state: "California",
-          country: "USA",
-          lat: 37.7749,
-          lng: -122.4194,
-          name: "Cozy SF Apartment",
+          ownerId: demoUsers.find((user) => user.username === "Demo-lition").id,
+          address: "13 Specter Lane",
+          city: "Shadowville",
+          state: "Transylvania",
+          country: "Romania",
+          lat: 45.7489,
+          lng: 21.2087,
+          name: "Whisper Manor",
           description:
-            "A charming apartment in the heart of San Francisco with a view of the bay.",
-          price: 250.0,
+            "A grand Victorian mansion where whispers echo through the halls and ghostly figures dance in the moonlit ballroom. Perfect for those seeking an elegant haunting experience.",
+          price: 666,
         },
         {
-          ownerId: userRows.find((user) => user.username === "Demo-lition").id,
-          address: "456 Oak Avenue",
-          city: "New York",
-          state: "New York",
-          country: "USA",
-          lat: 40.7128,
-          lng: -74.006,
-          name: "Manhattan Loft",
+          ownerId: demoUsers.find((user) => user.username === "Demo-lition").id,
+          address: "666 Underworld Avenue",
+          city: "Necropolis",
+          state: "Hades",
+          country: "Underworld",
+          lat: 37.8044,
+          lng: -122.2712,
+          name: "Crypt Cavern Inn",
           description:
-            "Spacious loft in downtown Manhattan, walking distance to major attractions.",
-          price: 300.0,
+            "Nestled deep underground, this unique inn offers a bone-chilling stay with its skeleton staff and eerie ambiance. Don't miss the spirits at the ghostly bar!",
+          price: 99,
         },
         {
-          ownerId: userRows.find((user) => user.username === "Demo-lition").id,
-          address: "789 Pine Road",
-          city: "Los Angeles",
-          state: "California",
-          country: "USA",
-          lat: 34.0522,
-          lng: -118.2437,
-          name: "Hollywood Hills Villa",
+          ownerId: demoUsers.find((user) => user.username === "Demo-lition").id,
+          address: "7 Wail Way",
+          city: "Mournful Meadows",
+          state: "Ethereal",
+          country: "Ireland",
+          lat: 53.3498,
+          lng: -6.2603,
+          name: "Banshee's Bungalow",
           description:
-            "Luxurious villa with a pool and stunning views of the Hollywood sign.",
-          price: 500.0,
+            "A cozy cottage on the misty moors where the cries of banshees lull you to sleep. Enjoy the warmth of the hearth while spectral figures flit by.",
+          price: 150,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser1").id,
-          address: "101 Beach Boulevard",
-          city: "Miami",
-          state: "Florida",
-          country: "USA",
-          lat: 25.7617,
-          lng: -80.1918,
-          name: "Beachfront Condo",
+          ownerId: demoUsers.find((user) => user.username === "FakeUser1").id,
+          address: "1 Foghorn Fright",
+          city: "Mist Harbor",
+          state: "Spectral Shores",
+          country: "Atlantic",
+          lat: 43.8563,
+          lng: -66.1127,
+          name: "Phantom Lighthouse",
           description:
-            "Modern condo with direct access to Miami Beach and ocean views.",
-          price: 275.0,
+            "Stand watch with the ghostly keeper in this historic lighthouse. Brave the spiral staircase for breathtaking views of the stormy, haunted seas.",
+          price: 250,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser1").id,
-          address: "202 Mountain View Drive",
-          city: "Denver",
-          state: "Colorado",
-          country: "USA",
-          lat: 39.7392,
-          lng: -104.9903,
-          name: "Rocky Mountain Retreat",
+          ownerId: demoUsers.find((user) => user.username === "FakeUser1").id,
+          address: "22 Spellbound Street",
+          city: "Enchanted Forest",
+          state: "Mystic",
+          country: "Fairyland",
+          lat: 51.1789,
+          lng: -1.8262,
+          name: "Witch's Treehouse",
           description:
-            "Cozy cabin with breathtaking views of the Rocky Mountains.",
-          price: 180.0,
+            "Perched in an ancient tree, this magical abode offers a unique stay among flying books and bubbling cauldrons. Perfect for aspiring witches and warlocks.",
+          price: 333,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser1").id,
-          address: "303 Bourbon Street",
-          city: "New Orleans",
-          state: "Louisiana",
-          country: "USA",
-          lat: 29.9511,
-          lng: -90.0715,
-          name: "French Quarter Gem",
+          ownerId: demoUsers.find((user) => user.username === "FakeUser1").id,
+          address: "666 Vampire Vista",
+          city: "Sighișoara",
+          state: "Transylvania",
+          country: "Romania",
+          lat: 46.2197,
+          lng: 24.7964,
+          name: "Dracula's Chateau",
           description:
-            "Historic property in the heart of the French Quarter, perfect for experiencing NOLA culture.",
-          price: 220.0,
+            "Experience the luxurious undead lifestyle in this gothic castle nestled in the Transylvanian mountains. Enjoy panoramic views of bat-filled night skies and misty forests. Don't forget to try the Bloody Mary at our coffin-shaped bar!",
+          price: 1000,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser2").id,
-          address: "404 Lakeside Lane",
-          city: "Chicago",
-          state: "Illinois",
-          country: "USA",
-          lat: 41.8781,
-          lng: -87.6298,
-          name: "Luxury Lakeshore Apartment",
+          ownerId: demoUsers.find((user) => user.username === "FakeUser2").id,
+          address: "13 Moonlight Trail",
+          city: "Lupine Grove",
+          state: "Montana",
+          country: "United States",
+          lat: 46.8797,
+          lng: -110.3626,
+          name: "Werewolf Lodge",
           description:
-            "High-rise apartment with stunning views of Lake Michigan and easy access to downtown Chicago.",
-          price: 280.0,
+            "Embrace your wild side in this rustic log cabin. Howl at the moon from our custom moon-viewing window and enjoy the comfort of our fur rugs and antler chandeliers. Perfect for a transformative getaway!",
+          price: 450,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser2").id,
-          address: "505 Desert Road",
-          city: "Phoenix",
-          state: "Arizona",
-          country: "USA",
-          lat: 33.4484,
-          lng: -112.074,
-          name: "Desert Oasis",
+          ownerId: demoUsers.find((user) => user.username === "FakeUser2").id,
+          address: "Ocean Floor, Sector 7",
+          city: "Atlantis",
+          state: "Pacific",
+          country: "Oceania",
+          lat: -8.7832,
+          lng: 124.5085,
+          name: "Mermaid's Sunken Palace",
           description:
-            "Modern home with a private pool, perfect for enjoying the Arizona sunshine.",
-          price: 200.0,
+            "Dive into luxury in this underwater dome house. Surrounded by vibrant coral reefs and mysterious shipwrecks, you'll experience the magic of living under the sea. Our bioluminescent algae garden offers a mesmerizing nighttime display.",
+          price: 1500,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser2").id,
-          address: "606 Rainier Avenue",
-          city: "Seattle",
-          state: "Washington",
-          country: "USA",
-          lat: 47.6062,
-          lng: -122.3321,
-          name: "Seattle Skyline Suite",
+          ownerId: demoUsers.find((user) => user.username === "FakeUser2").id,
+          address: "1 Sphinx Road",
+          city: "Giza",
+          state: "Cairo Governorate",
+          country: "Egypt",
+          lat: 29.9773,
+          lng: 31.1325,
+          name: "Pharaoh's Pyramid Retreat",
           description:
-            "Upscale apartment with views of the Space Needle and easy access to Pike Place Market.",
-          price: 260.0,
+            "Step back in time in this modern pyramid house. Explore hieroglyph-covered walls, relax by our Nile-inspired pool, and enjoy a drink at the golden sarcophagus bar. Experience the luxury of ancient Egypt with all modern amenities.",
+          price: 800,
         },
         {
-          ownerId: userRows.find((user) => user.username === "FakeUser2").id,
-          address: "707 Peachtree Street",
-          city: "Atlanta",
-          state: "Georgia",
-          country: "USA",
-          lat: 33.749,
-          lng: -84.388,
-          name: "Southern Charm Bungalow",
+          ownerId: demoUsers.find((user) => user.username === "Demo-lition").id,
+          address: "Area 51, Hangar 18",
+          city: "Roswell",
+          state: "New Mexico",
+          country: "United States",
+          lat: 33.3943,
+          lng: -104.523,
+          name: "Alien Abode",
           description:
-            "Charming bungalow in a historic Atlanta neighborhood, close to major attractions.",
-          price: 190.0,
+            "Beam yourself up to this out-of-this-world flying saucer house. Featuring levitating furniture, a holographic entertainment system, and an anti-gravity shower, this home is truly from another planet. Crop circle view included!",
+          price: 1200,
         },
       ],
       { validate: true }
     );
   },
-  //prettier-ignore-end
 
   async down(queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-
-    await queryInterface.bulkDelete("Spots", null, {});
+    options.tableName = "Spots";
+    return queryInterface.bulkDelete(options, null, {});
   },
 };
