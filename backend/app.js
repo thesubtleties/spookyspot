@@ -21,7 +21,10 @@ app.use(express.json());
 if (isProduction) {
   app.use(
     cors({
-      origin: "https://spookyspot.sbtl.dev",
+      origin: [
+        "https://spookyspot.sbtl.dev",
+        "https://www.spookyspot.sbtl.dev"
+      ],
       credentials: true,
     })
   );
