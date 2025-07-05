@@ -1,17 +1,14 @@
 # SpookySpot Frontend .dockerignore
 
-# Environment files
+# Environment files (most important to exclude)
 .env
 .env.*
 !.env.example
 
-# Dependencies
+# Dependencies (will be installed fresh)
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Build output (Vite)
+# Build output (will be created during build)
 dist/
 build/
 
@@ -19,27 +16,30 @@ build/
 .git/
 .gitignore
 
-# IDE and OS files
+# Logs and debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# IDE files
 .vscode/
 .idea/
-*.swp
-*.swo
+
+# OS files
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
 
-# Logs and temporary files
-logs/
-*.log
+# Test coverage (not needed for build)
+coverage/
+.nyc_output/
+
+# Temporary files
 tmp/
 temp/
 *.tmp
 
-# Test files
-coverage/
-.nyc_output/
-__tests__/
-*.test.js
-*.spec.js
-
-# Documentation
-README.md
+# Keep all source files, index.html, vite.config.js, etc.
+# The build needs these!
