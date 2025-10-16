@@ -1,9 +1,10 @@
-const config = require("./index");
-
 module.exports = {
   development: {
-    storage: config.dbFile,
-    dialect: "sqlite",
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: "spookyspot",
+    host: process.env.DB_HOST || "localhost",
+    dialect: "postgres",
     seederStorage: "sequelize",
     logQueryParameters: true,
     typeValidation: true,
